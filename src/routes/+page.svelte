@@ -27,10 +27,11 @@
     }
   ));
 
-  const table_columns = ["Name", "Activity", "Decentralization", "Proposal", "Relayer Exchange", "Relayer Account"];
+  const table_columns = ["Name", "Rank", "Activity", "Decentralization", "Proposal", "Relayer Exchange", "Relayer Account"];
   const table_rows = Object.keys(chain_data).map((key) => (
     [
       chains[key].name,
+      chains[key].rank,
       chains[key].ev_activity,
       chains[key].ev_decentralization,
       chains[key].ev_proposal,

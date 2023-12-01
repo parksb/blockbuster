@@ -48,7 +48,7 @@
       .domain([Math.min(...data.map(d => d.r)), Math.max(...data.map(d => d.r))])
       .range([10, 35]);
 
-    var tooltip = d3.select(el)
+    const tooltip = d3.select(el)
       .append("div")
       .style("position", "absolute")
       .style("visibility", "hidden");
@@ -61,10 +61,10 @@
       .attr("cx", d => x(d.x))
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r))
-      .style("fill", "#69b3a2")
+      .style("fill", d => `#${d.chain.rank}9b3a2`)
       .style("opacity", "0.7")
       .on("mouseover", (_, d) => tooltip.text(d.chain.name).style("visibility", "visible"))
-      .on("mouseout", (_, d) => tooltip.style("visibility", "hidden"))
+      .on("mouseout", (_, _d) => tooltip.style("visibility", "hidden"))
       .on("click", (e, d) => onClick(e, d));
 
     svg.call(
