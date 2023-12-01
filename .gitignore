@@ -22,3 +22,5 @@ vite.config.ts.timestamp-*
 .firebase/
 
 # End of https://www.toptal.com/developers/gitignore/api/firebase
+
+src/data/*.json
