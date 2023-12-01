@@ -64,6 +64,7 @@
       .style("fill", "#69b3a2")
       .style("opacity", "0.7")
       .on("mouseover", (_, d) => tooltip.text(d.chain.name).style("visibility", "visible"))
+      .on("mouseout", (_, d) => tooltip.style("visibility", "hidden"))
       .on("click", (e, d) => onClick(e, d));
 
     svg.call(

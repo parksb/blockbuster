@@ -1,29 +1,27 @@
+<script lang="ts">
+  import type { Chain } from "@src/data/models";
+
+  export let columns: string[] = [];
+  export let rows: string[][] = [];
+  export let highlighted: Chain[] = [];
+</script>
+
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Decentralization</th>
-      <th>Scalability</th>
-      <th>Activate</th>
-      <th>Rank</th>
+      {#each columns as column}
+        <th>{column}</th>
+      {/each}
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Column 1</td>
-      <td>Column 2</td>
-      <td>AAA</td>
-    </tr>
-    <tr>
-      <td>Column 1</td>
-      <td>Column 2</td>
-      <td>AAA</td>
-    </tr>
-    <tr>
-      <td>Column 1</td>
-      <td>Column 2</td>
-      <td>AAA</td>
-    </tr>
+    {#each rows as row}
+      <tr class={highlighted.map(x => x.name).includes(row[0]) ? "highlighted" : ""}>
+        {#each row as cell}
+          <td>{cell}</td>
+        {/each}
+      </tr>
+    {/each}
   </tbody>
 </table>
 
@@ -47,6 +45,10 @@
   tbody {
     & > tr > td {
       padding: 10px 0;
+    }
+
+    & > tr.highlighted {
+      background-color: var(--color-line);
     }
   }
 </style>

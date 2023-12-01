@@ -1,5 +1,6 @@
 <script lang="ts">
   export let title: string;
+  export const marginBottom: number = 0;
 </script>
 
 <div class="card">
