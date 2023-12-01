@@ -2,7 +2,7 @@
   import type { Chain } from "@src/data/models";
 
   export let columns: string[] = [];
-  export let rows: string[][] = [];
+  export let rows: (string | number)[][] = [];
   export let highlighted: Chain[] = [];
 </script>
 
@@ -16,7 +16,7 @@
   </thead>
   <tbody>
     {#each rows as row}
-      <tr class={highlighted.map(x => x.name).includes(row[0]) ? "highlighted" : ""}>
+      <tr class={highlighted.map(x => x.name).includes(row[0].toString()) ? "highlighted" : ""}>
         {#each row as cell}
           <td>{cell}</td>
         {/each}

@@ -27,8 +27,8 @@
 
     // Add X axis
     const x = d3.scaleLinear()
-    .domain([-0.05, Math.max(...data.map(d => d.x)) + 0.05])
-    .range([0, width ]);
+      .domain([Math.min(...data.map(d => d.x)), Math.max(...data.map(d => d.x))])
+      .range([0, width ]);
     if (has_axis) {
       svg.append("g")
         .attr("transform", `translate(0, ${height})`)
@@ -37,21 +37,21 @@
 
     // Add Y axis
     const y = d3.scaleLinear()
-    .domain([0, Math.max(...data.map(d => d.y)) + 0.05])
-    .range([height, 0]);
+      .domain([Math.min(...data.map(d => d.y)), Math.max(...data.map(d => d.y))])
+      .range([height, 0]);
     if (has_axis) {
       svg.append("g").call(d3.axisLeft(y));
     }
 
     // Add a scale for bubble size
     const z = d3.scaleLinear()
-    .domain([0, 30])
-    .range([0, 30]);
+      .domain([Math.min(...data.map(d => d.r)), Math.max(...data.map(d => d.r))])
+      .range([10, 35]);
 
     var tooltip = d3.select(el)
-    .append("div")
-    .style("position", "absolute")
-    .style("visibility", "hidden");
+      .append("div")
+      .style("position", "absolute")
+      .style("visibility", "hidden");
 
     // Add dots
     svg.append('g')
@@ -75,7 +75,6 @@
     );
 
     el?.append(svg.node()!!);
-
   });
 </script>
 

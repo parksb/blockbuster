@@ -10,14 +10,14 @@
 
 <style lang="scss">
   .card {
-    background-color: #fff;
-    border: 1.5px solid #e1e6eb;
+    background-color: var(--color-bg2);
+    border: 1.5px solid var(--color-line);
     border-radius: 5px;
     margin-bottom: var(--marginBottom);
 
     .header {
       padding: 15px;
-      border-bottom: 1.5px solid #e1e6eb;
+      border-bottom: 1.5px solid var(--color-line);
       font-weight: 700;
       color: var(--color-main);
     }

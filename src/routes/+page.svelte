@@ -3,34 +3,39 @@
   import Card from "@src/components/Card.svelte";
   import Table from "@src/components/Table.svelte";
   import BubbleChart from "../components/BubbleChart.svelte";
+  import RadarChart from "@src/components/RadarChart.svelte";
+  import type { Chain, ChainWrapper } from "../data/models";
+
   import tsne_data from "../data/blockbuster_chain_tsne.json";
   import chain_data from "../data/blockbuster_chains.json";
-  import RadarChart from "@src/components/RadarChart.svelte";
-  import type { Chain } from "../data/models";
+
+  const chains: ChainWrapper = chain_data;
+  const chain_tsne: { [key: string]: { x: number, y: number } } = tsne_data;
 
   const bubble_data = Object.keys(tsne_data).map((key) => (
     {
-      chain: chain_data[key],
-      x: (tsne_data[key].x + 1) / 2,
-      y: (tsne_data[key].y + 1) / 2,
+      chain: chains[key],
+      x: (chain_tsne[key].x + 1) / 2,
+      y: (chain_tsne[key].y + 1) / 2,
       r: (
-        chain_data[key].ev_activity +
-        chain_data[key].ev_decentralization +
-        chain_data[key].ev_proposal +
-        chain_data[key].ev_relayer_exchange +
-        chain_data[key].ev_relayer_account
-      ) * 7,
+        chains[key].ev_activity +
+        chains[key].ev_decentralization +
+        chains[key].ev_proposal +
+        chains[key].ev_relayer_exchange +
+        chains[key].ev_relayer_account
+      ),
     }
   ));
 
-  const table_data = Object.keys(chain_data).map((key) => (
+  const table_columns = ["Name", "Activity", "Decentralization", "Proposal", "Relayer Exchange", "Relayer Account"];
+  const table_rows = Object.keys(chain_data).map((key) => (
     [
-      chain_data[key].name,
-      chain_data[key].ev_activity,
-      chain_data[key].ev_decentralization,
-      chain_data[key].ev_proposal,
-      chain_data[key].ev_relayer_exchange,
-      chain_data[key].ev_relayer_account
+      chains[key].name,
+      chains[key].ev_activity,
+      chains[key].ev_decentralization,
+      chains[key].ev_proposal,
+      chains[key].ev_relayer_exchange,
+      chains[key].ev_relayer_account,
     ]
   ));
 
@@ -64,8 +69,8 @@
       </Card>
       <Card title="List" --marginBottom="50px">
         <Table
-          columns={["Name", "Activity", "Decentralization", "Proposal", "Relayer Exchange", "Relayer Account"]}
-          rows={table_data}
+          columns={table_columns}
+          rows={table_rows}
           highlighted={selected}
         />
       </Card>
@@ -89,7 +94,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: var(--color-white);
+    background-color: var(--color-bg2);
     width: 400px;
     height: 100%;
     border-left: 1.5px solid var(--color-line);
@@ -116,6 +121,7 @@
     --color-description: #8f94b0;
     --color-line: #e1e6eb;
     --color-bg: #fafbfc;
+    --color-bg2: #ffffff;
     --color-white: #ffffff;
   }
 </style>
