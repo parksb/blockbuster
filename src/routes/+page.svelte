@@ -57,8 +57,9 @@
         <Card --flex="1" --right="30px">
           <BubbleChart
             data={bubble_data}
+            selected={selected}
             onClick={(e, d) => {
-              if (selected.map(x => x.name).includes(d.chain.name)) {
+              if (selected.find((x) => x.name === d.chain.name)) {
                 d3.select(e.target).attr("stroke", "none");
                 selected = selected.filter((x) => x.name !== d.chain.name);
               } else {
@@ -71,17 +72,21 @@
               d3.select(e.target).attr("stroke", "white");
             }}
             onMouseOut={(e, _) => {
+              if (!selected.some((x) => x.name === preview?.name)) {
+                d3.select(e.target).attr("stroke", "none");
+              }
               preview = null;
-              d3.select(e.target).attr("stroke", "none");
             }}
           />
         </Card>
-        <Card --direction="column" --padding="20px">
+        <Card --direction="column">
           <RadarChart data={preview ? [...selected, preview] : selected} />
-          <List --margin="20px 0"
-            data={selected.sort((a, b) => a.rank - b.rank)}
-            onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
-          />
+          <div class="list-container">
+            <List --margin="20px 0"
+              data={selected.sort((a, b) => a.rank - b.rank)}
+              onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
+            />
+          </div>
         </Card>
       </Section>
     </div>
@@ -143,6 +148,10 @@
           margin-top: 1rem;
         }
       }
+    }
+
+    div.list-container {
+      padding: 0 20px;
     }
   }
 

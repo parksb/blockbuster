@@ -16,8 +16,12 @@
 
     .header {
       display: flex;
-      font-size: 1.1rem;
       color: var(--color-text);
+
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
     }
 
     .body {

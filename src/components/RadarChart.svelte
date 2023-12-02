@@ -24,7 +24,7 @@
           type: "azimuthal-equidistant",
           rotate: [0, -90],
           // Note: 0.625° corresponds to max. length (here, 0.5), plus enough room for the labels
-          domain: d3.geoCircle().center([0, 90]).radius(1.0)()
+          domain: d3.geoCircle().center([0, 90]).radius(1.2)()
         },
         color: { legend: false },
         marks: [
