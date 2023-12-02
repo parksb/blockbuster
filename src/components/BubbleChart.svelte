@@ -5,7 +5,6 @@
   import { rankNumToColor } from "@src/utils";
 
   export let data: { chain: Chain, x: number, y: number, r: number }[];
-  export let selected: Chain[];
   export let onClick: (e: any, d: any) => void;
   export let onMouseOver: (e: any, d: any) => void;
   export let onMouseOut: (e: any, d: any) => void;
