@@ -1,13 +1,14 @@
 <script lang="ts">
   import * as d3 from "d3";
+  import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
-  import Table from "@src/components/Table.svelte";
   import BubbleChart from "../components/BubbleChart.svelte";
   import RadarChart from "@src/components/RadarChart.svelte";
   import type { Chain, ChainWrapper } from "../data/models";
 
   import tsne_data from "../data/blockbuster_chain_tsne.json";
   import chain_data from "../data/blockbuster_chains.json";
+  import List from "@src/components/List.svelte";
 
   const chains: ChainWrapper = chain_data;
   const chain_tsne: { [key: string]: { x: number, y: number } } = tsne_data;
@@ -27,21 +28,11 @@
     }
   ));
 
-  const table_columns = ["Name", "Rank", "Activity", "Decentralization", "Proposal", "Relayer Exchange", "Relayer Account"];
-  const table_rows = Object.keys(chain_data).map((key) => (
-    [
-      chains[key].name,
-      chains[key].rank,
-      chains[key].ev_activity,
-      chains[key].ev_decentralization,
-      chains[key].ev_proposal,
-      chains[key].ev_relayer_exchange,
-      chains[key].ev_relayer_account,
-    ]
-  ));
-
   let selected: Chain[];
   $: selected = [];
+
+  let preview: Chain | null;
+  $: preview = null;
 </script>
 
 <svelte:head>
@@ -49,36 +40,51 @@
 </svelte:head>
 
 <div class="root">
+  <div class="side">
+    <h1>BLOCKBUSTER</h1>
+  </div>
   <div class="main">
     <div class="header">
-      <h2>Blockbuster</h2>
+      <h2>Score</h2>
+      <div class="title-section">
+        <h3>Score</h3>
+        <p>Analyze and score blockchains based on on-chain data.</p>
+      </div>
     </div>
     <div class="body">
-      <Card title="T-SNE" --marginBottom="30px">
-        <BubbleChart
-          data={bubble_data}
-          onClick={(e, d) => {
-            if (selected.map(x => x.name).includes(d.chain.name)) {
+      <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
+      <Section title="Chain Ranking" --bottom="30px">
+        <Card --flex="1" --right="30px">
+          <BubbleChart
+            data={bubble_data}
+            onClick={(e, d) => {
+              if (selected.map(x => x.name).includes(d.chain.name)) {
+                d3.select(e.target).attr("stroke", "none");
+                selected = selected.filter((x) => x.name !== d.chain.name);
+              } else {
+                d3.select(e.target).attr("stroke", "white");
+                selected = [...selected, d.chain]
+              }
+            }}
+            onMouseOver={(e, d) => {
+              preview = d.chain;
+              d3.select(e.target).attr("stroke", "white");
+            }}
+            onMouseOut={(e, _) => {
+              preview = null;
               d3.select(e.target).attr("stroke", "none");
-              selected = selected.filter((x) => x.name !== d.chain.name);
-            } else {
-              d3.select(e.target).attr("stroke", "black");
-              selected = [...selected, d.chain]
-            }
-          }}
-        />
-      </Card>
-      <Card title="List" --marginBottom="50px">
-        <Table
-          columns={table_columns}
-          rows={table_rows}
-          highlighted={selected}
-        />
-      </Card>
+            }}
+          />
+        </Card>
+        <Card --direction="column" --padding="20px">
+          <RadarChart data={preview ? [...selected, preview] : selected} />
+          <List --margin="20px 0"
+            data={selected.sort((a, b) => a.rank - b.rank)}
+            onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
+          />
+        </Card>
+      </Section>
     </div>
-  </div>
-  <div class="side">
-    <RadarChart data={selected} />
   </div>
 </div>
 
@@ -93,13 +99,17 @@
 
   .side {
     display: flex;
-    align-items: center;
     flex-direction: column;
     background-color: var(--color-bg2);
-    width: 400px;
+    width: 350px;
     height: 100%;
-    border-left: 1.5px solid var(--color-line);
-    padding: 15px;
+    border-right: 2px solid var(--color-line);
+
+    & > h1 {
+      font-size: 1rem;
+      color: var(--color-text);
+      padding: 20px;
+    }
   }
 
   .main {
@@ -110,8 +120,28 @@
     overflow: auto;
 
     .header {
+      padding: 10px 0;
+      margin-bottom: 20px;
+
       & > h2 {
-        color: var(--color-main);
+        font-size: 1rem;
+        color: var(--color-text);
+      }
+
+      & > div.title-section {
+        margin-top: 40px;
+
+        h3 {
+          font-size: 2rem;
+          color: var(--color-text);
+          margin: 0;
+        }
+
+        p {
+          font-size: 1rem;
+          color: var(--color-description);
+          margin-top: 1rem;
+        }
       }
     }
   }
@@ -119,10 +149,10 @@
   :global(:root) {
     --color-emphasis: #1325AE;
     --color-main: #1e2860;
-    --color-description: #8f94b0;
-    --color-line: #e1e6eb;
-    --color-bg: #fafbfc;
-    --color-bg2: #ffffff;
-    --color-white: #ffffff;
+    --color-text: #DDE0E3;
+    --color-description: #98A2AE;
+    --color-line: #202429;
+    --color-bg: #13151A;
+    --color-bg2: #181A20;
   }
 </style>

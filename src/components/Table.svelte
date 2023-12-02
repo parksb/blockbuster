@@ -29,6 +29,7 @@
   table {
     border-collapse: collapse;
     width: 100%;
+    color: var(--color-text);
   }
 
   thead {
@@ -37,7 +38,7 @@
 
     & > tr > th {
       padding-bottom: 10px;
-      color: var(--color-description);
+      color: var(--color-text);
       font-weight: 400;
     }
   }

@@ -9,7 +9,9 @@
 
   $: {
     const points = data.flatMap(({ name, ...values }) =>
-      Object.entries(values).map(([key, value]) => ({ name, key, value }))
+      Object.entries(values)
+        .filter(([k, _]) => k.startsWith("ev_"))
+        .map(([key, value]) => ({ name, key: `${key.replaceAll("ev_", "").replaceAll("_", "\n")}`, value }))
     );
 
     const longitude = d3.scalePoint(new Set(Plot.valueof(points, "key")), [180, -180]).padding(0.5).align(1)
@@ -17,7 +19,7 @@
     el?.firstChild?.remove();
     el?.append(
       Plot.plot({
-        width: 300,
+        width: 250,
         projection: {
           type: "azimuthal-equidistant",
           rotate: [0, -90],
@@ -27,10 +29,9 @@
         color: { legend: false },
         marks: [
           // grey discs
-          Plot.geo([1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1], {
+          Plot.geo([1.0, 0.8, 0.6, 0.4, 0.2], {
             geometry: (r) => d3.geoCircle().center([0, 90]).radius(r)(),
-            stroke: "black",
-            fill: "black",
+            stroke: "white",
             strokeOpacity: 0.3,
             fillOpacity: 0.03,
             strokeWidth: 0.5
@@ -42,9 +43,9 @@
             y1: 0,
             x2: 0,
             y2: 90,
-            stroke: "white",
-            strokeOpacity: 0.5,
-            strokeWidth: 2.5
+            stroke: "#181A20",
+            strokeOpacity: 0.7,
+            strokeWidth: 2.5,
           }),
 
           // tick labels
@@ -54,9 +55,8 @@
             dx: 0,
             textAnchor: "start",
             text: (d) => `${d}`,
-            fill: "currentColor",
-            stroke: "white",
-            fontSize: 9
+            fill: "white",
+            fontSize: 9,
           }),
 
           // axes labels
@@ -64,6 +64,7 @@
             x: longitude,
             y: 90 - 0.9,
             text: Plot.identity,
+            fill: "white",
             lineWidth: 5
           }),
 
@@ -103,7 +104,16 @@
         ]
       })
     );
+
+    if (el) (el.getElementsByTagName("svg")[0]).style.backgroundColor = "var(--color-bg2)";
   }
 </script>
 
-<div bind:this={el} role="img" />
+<div class="root" bind:this={el} role="img" />
+
+<style>
+  div.root {
+    background-color: var(--color-bg2);
+    width: 100%;
+  }
+</style>

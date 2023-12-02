@@ -6,6 +6,8 @@
   export let data: { chain: Chain, x: number, y: number, r: number }[];
   export let has_axis: boolean = false;
   export let onClick: (e: any, d: any) => void;
+  export let onMouseOver: (e: any, d: any) => void;
+  export let onMouseOut: (e: any, d: any) => void;
 
   let el: HTMLElement;
 
@@ -13,12 +15,13 @@
     // set the dimensions and margins of the graph
     const margin = {top: 0, right: 0, bottom: 0, left: 0};
     const width = 1430 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
+    const height = 700 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.create("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("height", "100%");
       // .attr("width", width + margin.left + margin.right)
       // .attr("height", height + margin.top + margin.bottom);
 
@@ -46,7 +49,7 @@
     // Add a scale for bubble size
     const z = d3.scaleLinear()
       .domain([Math.min(...data.map(d => d.r)), Math.max(...data.map(d => d.r))])
-      .range([10, 35]);
+      .range([10, 40]);
 
     const tooltip = d3.select(el)
       .append("div")
@@ -63,8 +66,8 @@
       .attr("r", d => z(d.r))
       .style("fill", d => `#${d.chain.rank}9b3a2`)
       .style("opacity", "0.7")
-      .on("mouseover", (_, d) => tooltip.text(d.chain.name).style("visibility", "visible"))
-      .on("mouseout", (_, _d) => tooltip.style("visibility", "hidden"))
+      .on("mouseover", (e, d) => onMouseOver(e, d))
+      .on("mouseout", (e, d) => onMouseOut(e, d))
       .on("click", (e, d) => onClick(e, d));
 
     svg.call(
@@ -78,5 +81,12 @@
   });
 </script>
 
-<div bind:this={el} role="img"></div>
+<div class="root" bind:this={el} role="img"></div>
 
+<style>
+  div.root {
+    background-color: var(--color-bg2);
+    width: 100%;
+    height: 100%;
+  }
+</style>
