@@ -57,7 +57,6 @@
         <Card --flex="1" --right="30px">
           <BubbleChart
             data={bubble_data}
-            selected={selected}
             onClick={(e, d) => {
               if (selected.find((x) => x.name === d.chain.name)) {
                 d3.select(e.target).attr("stroke", "none");
