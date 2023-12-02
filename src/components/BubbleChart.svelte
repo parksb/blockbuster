@@ -2,6 +2,7 @@
   import * as d3 from 'd3';
   import {onMount} from 'svelte';
   import type {Chain} from "../data/models";
+  import { rankNumToColor } from "@src/utils";
 
   export let data: { chain: Chain, x: number, y: number, r: number }[];
   export let selected: Chain[];
@@ -52,7 +53,7 @@
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r))
       .attr("stroke-width", 3)
-      .style("fill", d => `#${d.chain.rank}9b3a2`)
+      .style("fill", d => rankNumToColor(d.chain.rank))
       .style("opacity", "0.7")
       .on("mouseover", (e, d) => onMouseOver(e, d))
       .on("mouseout", (e, d) => onMouseOut(e, d))
