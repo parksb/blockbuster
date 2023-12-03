@@ -12,8 +12,10 @@
   import type { Chain, ChainTsneMap } from "@src/data/models";
   import tsne_data from "@src/data/blockbuster_chain_tsne.json";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
+  import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
 
   let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
+  let radar_data = toRadarChartData([]);
 
   let selected: Chain[] = [];
   let preview: Chain | null = null;
@@ -22,12 +24,16 @@
 
   $: {
     if (!highlight) {
-      bubble_data = highlightBubbleChart(bubble_data,
-        (k) => !k.toLowerCase().includes(search_query.toLowerCase()));
-    } else {
-      bubble_data = highlightBubbleChart(bubble_data,
-        (k) => k !== highlight!!.name);
+      radar_data = highlightRadarChart(radar_data, () => false);
+      bubble_data = highlightBubbleChart(bubble_data, (k) => !k.toLowerCase().includes(search_query.toLowerCase()));
+    } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
+      radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
+      bubble_data = highlightBubbleChart(bubble_data, (k) => k !== highlight!!.name);
     }
+  }
+
+  $: {
+    radar_data = toRadarChartData(preview ? [...selected, preview] : selected)
   }
 </script>
 
@@ -36,8 +42,7 @@
 </svelte:head>
 
 <div class="root">
-  <div class="side">
-    <h1>BLOCKBUSTER</h1>
+  <div class="side"> <h1>BLOCKBUSTER</h1>
   </div>
   <div class="main">
     <div class="header">
@@ -76,7 +81,7 @@
           />
         </Card>
         <Card --flex="1" --max-width="300px" --max-height="572px" --direction="column">
-          <RadarChart data={preview ? [...selected, preview] : selected} />
+          <RadarChart data={radar_data} />
           <div class="search-container">
             <TextField text={search_query}
               onInput={(s) => search_query = s}
@@ -85,7 +90,12 @@
           <div class="list-container">
             <List
               data={selected.sort((a, b) => a.rank - b.rank)}
-              onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
+              onRemove={(d) => {
+                selected = selected.filter((x) => x.name !== d.name)
+                if (!selected.length || !selected.find(x => x.name === highlight?.name)) {
+                  highlight = null;
+                }
+              }}
               onMouseOver={(d) => highlight = d}
               onMouseOut={() => highlight = null}
             />

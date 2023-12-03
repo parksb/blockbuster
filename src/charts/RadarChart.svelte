@@ -3,22 +3,14 @@
   import * as Plot from "@observablehq/plot";
 
   import type { Chain } from "@src/data/models";
+  import type { RadarChartData } from "@src/charts/radar_chart";
 
-  export let data: Chain[];
+  export let data: RadarChartData<Chain>[];
 
   let el: HTMLElement;
 
   $: {
-    const points = data.flatMap(({ name, ...values }) =>
-      Object.entries(values)
-        .filter(([k, _]) => k.startsWith("ev_"))
-        .map(([key, value]) => ({
-          name,
-          key: `${key.replaceAll("ev_", "").replaceAll("_", "\n")}`,
-          value })
-        )
-    );
-
+    const points = data;
     const longitude = d3.scalePoint(new Set(Plot.valueof(points, "key")), [180, -180]).padding(0.5).align(1)
 
     el?.firstChild?.remove();
@@ -78,9 +70,9 @@
             y1: ({ value }) => 90 - value,
             x2: 0,
             y2: 90,
-            fill: "name",
+            fill: ({ data, blur }) => blur ? "gray" : "#ff0000",
             fillOpacity: 0.1,
-            stroke: "name",
+            stroke: ({ data, blur }) => blur ? "gray" : "#ff0000",
             curve: "cardinal-closed",
           }),
 
@@ -88,7 +80,7 @@
           Plot.dot(points, {
             x: ({ key }) => longitude(key),
             y: ({ value }) => 90 - value,
-            fill: "name",
+            fill: ({ data, blur }) => blur ? "gray" : "#ff0000",
           }),
 
           // interactive labels

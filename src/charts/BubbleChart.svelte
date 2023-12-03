@@ -7,8 +7,8 @@
   import type {BubbleChartData, BubbleChartDataMap} from '@src/charts/bubble_chart';
 
   export let data: BubbleChartDataMap<Chain>;
-
   export let selected: Chain[];
+
   export let onClick: (e: any, d: BubbleChartData<Chain>) => void;
   export let onMouseOver: (e: any, d: BubbleChartData<Chain>) => void;
   export let onMouseOut: (e: any, d: BubbleChartData<Chain>) => void;
@@ -82,14 +82,9 @@
 
   $: {
     try {
-      data_list = Object.values(data);
       d3.selectAll("circle").style("fill", (dt) => {
         const d = dt as BubbleChartData<Chain>;
-        const found = data_list.find((x) => x.data.name === d.data.name);
-        if (!found) {
-          return rankNumToColor(d.data.rank);
-        }
-        return found.b ? "gray" : rankNumToColor(d.data.rank);
+        return data[d.data.name].b ? "gray" : rankNumToColor(d.data.rank);
       });
     } catch (_) { /* do nothing */ }
   }
