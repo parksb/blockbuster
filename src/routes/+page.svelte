@@ -54,7 +54,8 @@
     </div>
     <div class="body">
       <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
-      <Section title="Chain Ranking" --bottom="30px">
+      <Section title="Chain Ranking" --bottom="30px"
+        tab_labels={["Bubble", "Table"]} onTabChange={(_) => {}}>
         <Card --flex="2" --right="30px">
           <BubbleChart
             data={bubble_data}
@@ -168,8 +169,8 @@
   }
 
   :global(:root) {
-    --color-emphasis: #1325AE;
-    --color-main: #1e2860;
+    --color-emphasis: #7543ff;
+    --color-main: #9d43dc;
     --color-text: #DDE0E3;
     --color-description: #98A2AE;
     --color-line: #2d3239;
