@@ -1,7 +1,8 @@
 <script lang="ts">
   import * as d3 from "d3";
   import * as Plot from "@observablehq/plot";
-  import type { Chain } from "../data/models";
+
+  import type { Chain } from "@src/data/models";
 
   export let data: Chain[];
 

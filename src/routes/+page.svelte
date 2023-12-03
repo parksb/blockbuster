@@ -1,47 +1,27 @@
 <script lang="ts">
   import * as d3 from "d3";
+
   import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
-  import BubbleChart from "../components/BubbleChart.svelte";
+  import BubbleChart from "@src/components/BubbleChart.svelte";
   import RadarChart from "@src/components/RadarChart.svelte";
-  import type { Chain, ChainWrapper } from "../data/models";
-
-  import tsne_data from "../data/blockbuster_chain_tsne.json";
-  import chain_data from "../data/blockbuster_chains.json";
   import List from "@src/components/List.svelte";
   import TextField from "@src/components/TextField.svelte";
 
-  const chains: ChainWrapper = chain_data;
-  const chain_tsne: { [key: string]: { x: number, y: number } } = tsne_data;
+  import type { Chain, ChainTsneMap } from "@src/data/models";
+  import tsne_data from "@src/data/blockbuster_chain_tsne.json";
 
-  let bubble_data = Object.keys(tsne_data).map((key) => (
-    {
-      chain: chains[key],
-      b: false,
-      x: (chain_tsne[key].x + 1) / 2,
-      y: (chain_tsne[key].y + 1) / 2,
-      r: (
-        chains[key].ev_activity +
-        chains[key].ev_decentralization +
-        chains[key].ev_proposal +
-        chains[key].ev_relayer_exchange +
-        chains[key].ev_relayer_account
-      ),
-    }
-  ));
+  let bubble_data: ChainTsneMap = tsne_data;
+  let selected: Chain[] = [];
+  let preview: Chain | null = null;
+  let search_query: string = "";
 
-  let selected: Chain[];
-  $: selected = [];
-
-  let preview: Chain | null;
-  $: preview = null;
-
-  let search_query: string;
-  $: search_query = "";
   $: {
-    bubble_data = bubble_data.map((d) =>
-      ({ ...d, b: !d.chain.name.toLowerCase().includes(search_query.toLowerCase()) })
-    )
+    bubble_data = Object.fromEntries(
+      Object.entries(bubble_data).map(([k, v]) =>
+        ([k, { ...v, b: !k.toLowerCase().includes(search_query.toLowerCase()) }])
+      )
+    );
   }
 </script>
 

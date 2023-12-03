@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { Chain } from "@src/data/models";
   import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome"
   import { faXmark } from "@fortawesome/free-solid-svg-icons"
+
+  import type { Chain } from "@src/data/models";
 
   export let data: Chain[];
   export let onRemove: (d: Chain) => void;

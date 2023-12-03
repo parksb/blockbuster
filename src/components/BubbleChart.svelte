@@ -1,16 +1,26 @@
 <script lang="ts">
   import * as d3 from 'd3';
   import {onMount} from 'svelte';
-  import type {Chain} from "../data/models";
-  import { rankNumToColor } from "@src/utils";
 
-  export let data: { chain: Chain, b: boolean, x: number, y: number, r: number }[];
+  import type {Chain, ChainTsne, ChainTsneMap} from "@src/data/models";
+  import {rankNumToColor} from "@src/utils";
+
+  export let data: ChainTsneMap;
   export let selected: Chain[];
   export let onClick: (e: any, d: any) => void;
   export let onMouseOver: (e: any, d: any) => void;
   export let onMouseOut: (e: any, d: any) => void;
 
+  let data_list = Object.values(data);
   let el: HTMLElement;
+
+  const data_min = (key: "x" | "y" | "r") => {
+    return Math.min(...data_list.map(d => d[key]));
+  };
+
+  const data_max = (key: "x" | "y" | "r") => {
+    return Math.max(...data_list.map(d => d[key]));
+  };
 
   onMount(() => {
     // set the dimensions and margins of the graph
@@ -29,23 +39,23 @@
 
     // Add X axis
     const x = d3.scaleLinear()
-      .domain([Math.min(...data.map(d => d.x)), Math.max(...data.map(d => d.x))])
-      .range([0, width ]);
+      .domain([data_min('x'), data_max('x')])
+      .range([0, width]);
 
     // Add Y axis
     const y = d3.scaleLinear()
-      .domain([Math.min(...data.map(d => d.y)), Math.max(...data.map(d => d.y))])
+      .domain([data_min('y'), data_max('y')])
       .range([height, 0]);
 
     // Add a scale for bubble size
     const z = d3.scaleLinear()
-      .domain([Math.min(...data.map(d => d.r)), Math.max(...data.map(d => d.r))])
+      .domain([data_min('r'), data_max('r')])
       .range([10, 40]);
 
     // Add bubbles
     svg.append('g')
       .selectAll("dot")
-      .data(data)
+      .data(data_list)
       .join("circle")
       .attr("cx", d => x(d.x))
       .attr("cy", d => y(d.y))
@@ -58,6 +68,7 @@
       .on("click", (e, d) => onClick(e, d));
 
     svg.call(
+      // @ts-ignore
       d3.zoom()
         .scaleExtent([0.1, 5])
         .translateExtent([[-500, -500], [width + 500, height + 500]])
@@ -69,8 +80,10 @@
 
   $: {
     try {
-      d3.selectAll("circle").style("fill", d => {
-        const found = data.find((x) => x.chain.name === d.chain.name);
+      data_list = Object.values(data);
+      d3.selectAll("circle").style("fill", (dt) => {
+        const d = dt as ChainTsne;
+        const found = data_list.find((x) => x.chain.name === d.chain.name);
         if (!found) {
           return rankNumToColor(d.chain.rank);
         }
@@ -81,7 +94,8 @@
 
   $: {
     try {
-      d3.selectAll("circle").attr("stroke", d => {
+      d3.selectAll("circle").attr("stroke", (dt) => {
+        const d = dt as ChainTsne;
         if (selected.some((x) => x.name === d.chain.name)) {
           return "white";
         }
