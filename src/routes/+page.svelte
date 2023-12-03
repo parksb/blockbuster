@@ -9,13 +9,15 @@
   import tsne_data from "../data/blockbuster_chain_tsne.json";
   import chain_data from "../data/blockbuster_chains.json";
   import List from "@src/components/List.svelte";
+  import TextField from "@src/components/TextField.svelte";
 
   const chains: ChainWrapper = chain_data;
   const chain_tsne: { [key: string]: { x: number, y: number } } = tsne_data;
 
-  const bubble_data = Object.keys(tsne_data).map((key) => (
+  let bubble_data = Object.keys(tsne_data).map((key) => (
     {
       chain: chains[key],
+      b: false,
       x: (chain_tsne[key].x + 1) / 2,
       y: (chain_tsne[key].y + 1) / 2,
       r: (
@@ -33,6 +35,14 @@
 
   let preview: Chain | null;
   $: preview = null;
+
+  let search_query: string;
+  $: search_query = "";
+  $: {
+    bubble_data = bubble_data.map((d) =>
+      ({ ...d, b: !d.chain.name.toLowerCase().includes(search_query.toLowerCase()) })
+    )
+  }
 </script>
 
 <svelte:head>
@@ -57,13 +67,14 @@
         <Card --flex="1" --right="30px">
           <BubbleChart
             data={bubble_data}
+            selected={selected}
             onClick={(e, d) => {
               if (selected.find((x) => x.name === d.chain.name)) {
                 d3.select(e.target).attr("stroke", "none");
                 selected = selected.filter((x) => x.name !== d.chain.name);
               } else {
                 d3.select(e.target).attr("stroke", "white");
-                selected = [...selected, d.chain]
+                selected = [...selected, d.chain];
               }
             }}
             onMouseOver={(e, d) => {
@@ -80,6 +91,11 @@
         </Card>
         <Card --direction="column">
           <RadarChart data={preview ? [...selected, preview] : selected} />
+          <div class="search-container">
+            <TextField text={search_query}
+              onInput={(s) => search_query = s}
+              placeholder="Type chain name to search" />
+          </div>
           <div class="list-container">
             <List --margin="20px 0"
               data={selected.sort((a, b) => a.rank - b.rank)}
@@ -107,7 +123,7 @@
     background-color: var(--color-bg2);
     width: 350px;
     height: 100%;
-    border-right: 2px solid var(--color-line);
+    border-right: 1px solid var(--color-line);
 
     & > h1 {
       font-size: 1rem;
@@ -149,7 +165,7 @@
       }
     }
 
-    div.list-container {
+    div.list-container, div.search-container {
       padding: 0 20px;
     }
   }
@@ -159,7 +175,7 @@
     --color-main: #1e2860;
     --color-text: #DDE0E3;
     --color-description: #98A2AE;
-    --color-line: #202429;
+    --color-line: #2d3239;
     --color-bg: #13151A;
     --color-bg2: #181A20;
   }

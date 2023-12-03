@@ -4,7 +4,8 @@
   import type {Chain} from "../data/models";
   import { rankNumToColor } from "@src/utils";
 
-  export let data: { chain: Chain, x: number, y: number, r: number }[];
+  export let data: { chain: Chain, b: boolean, x: number, y: number, r: number }[];
+  export let selected: Chain[];
   export let onClick: (e: any, d: any) => void;
   export let onMouseOver: (e: any, d: any) => void;
   export let onMouseOut: (e: any, d: any) => void;
@@ -22,8 +23,6 @@
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("height", "100%");
-      // .attr("width", width + margin.left + margin.right)
-      // .attr("height", height + margin.top + margin.bottom);
 
     svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -61,12 +60,35 @@
     svg.call(
       d3.zoom()
         .scaleExtent([0.1, 5])
-        .translateExtent([[-100, -100], [width + 100, height + 100]])
+        .translateExtent([[-500, -500], [width + 500, height + 500]])
         .on("zoom", (e) => svg.selectChildren('g').attr("transform", e.transform))
     );
 
     el?.append(svg.node()!!);
   });
+
+  $: {
+    try {
+      d3.selectAll("circle").style("fill", d => {
+        const found = data.find((x) => x.chain.name === d.chain.name);
+        if (!found) {
+          return rankNumToColor(d.chain.rank);
+        }
+        return found.b ? "gray" : rankNumToColor(d.chain.rank);
+      });
+    } catch (_) { /* do nothing */ }
+  }
+
+  $: {
+    try {
+      d3.selectAll("circle").attr("stroke", d => {
+        if (selected.some((x) => x.name === d.chain.name)) {
+          return "white";
+        }
+        return "none";
+      });
+    } catch (_) { /* do nothing */ }
+  }
 </script>
 
 <div class="root" bind:this={el} role="img"></div>
