@@ -10,5 +10,6 @@
     background-color: var(--color-bg2);
     overflow: hidden;
     flex-direction: var(--direction);
+    max-width: var(--max-width);
   }
 </style>

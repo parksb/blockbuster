@@ -44,7 +44,7 @@
     <div class="body">
       <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
       <Section title="Chain Ranking" --bottom="30px">
-        <Card --flex="1" --right="30px">
+        <Card --flex="2" --right="30px">
           <BubbleChart
             data={bubble_data}
             selected={selected}
@@ -69,7 +69,7 @@
             }}
           />
         </Card>
-        <Card --direction="column">
+        <Card --flex="1" --max-width="300px" --direction="column">
           <RadarChart data={preview ? [...selected, preview] : selected} />
           <div class="search-container">
             <TextField text={search_query}

@@ -114,6 +114,5 @@
 <style>
   div.root {
     background-color: var(--color-bg2);
-    width: 100%;
   }
 </style>

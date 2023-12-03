@@ -38,6 +38,7 @@
       padding: 0;
       border: 0;
       margin-left: 10px;
+      width: 100%;
       background: transparent;
     }
   }
