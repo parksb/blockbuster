@@ -18,7 +18,11 @@ export function toBubbleChartDataMap(chains: ChainTsneMap): BubbleChartDataMap<C
       data: chain.chain,
       x: chain.x,
       y: chain.y,
-      r: chain.r,
+      r: chain.chain.ev_activity +
+        chain.chain.ev_decentralization +
+        chain.chain.ev_proposal +
+        chain.chain.ev_relayer_exchange +
+        chain.chain.ev_relayer_account,
       b: false,
     };
   }

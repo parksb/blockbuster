@@ -18,8 +18,6 @@ export interface ChainTsne {
   chain: Chain; // 체인 정보
   x: number;
   y: number;
-  b: boolean; // 블러 여부
-  r: number; // 반지름
 }
 
 export type ChainTsneMap = { [key: string]: ChainTsne };
