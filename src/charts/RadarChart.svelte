@@ -70,9 +70,10 @@
             y1: ({ value }) => 90 - value,
             x2: 0,
             y2: 90,
-            fill: ({ data, blur }) => blur ? "gray" : "#ff0000",
-            fillOpacity: 0.1,
-            stroke: ({ data, blur }) => blur ? "gray" : "#ff0000",
+            fill: ({ data }) => data.name,
+            fillOpacity: ({ blur }) => blur ? 0 : 0.1,
+            stroke: ({ data }) => data.name,
+            strokeWidth: ({ blur }) => blur ? 0.5 : 1,
             curve: "cardinal-closed",
           }),
 
@@ -80,7 +81,8 @@
           Plot.dot(points, {
             x: ({ key }) => longitude(key),
             y: ({ value }) => 90 - value,
-            fill: ({ data, blur }) => blur ? "gray" : "#ff0000",
+            fill: ({ data }) => data.name,
+            fillOpacity: ({ blur }) => blur ? 0.3 : 0.7,
           }),
 
           // interactive labels
