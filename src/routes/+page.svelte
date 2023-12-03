@@ -21,11 +21,11 @@
   let preview: Chain | null = null;
   let highlight: Chain | null = null;
   let search_query: string = "";
+  let show_search_result: boolean = false;
 
   $: {
     if (!highlight) {
       radar_data = highlightRadarChart(radar_data, () => false);
-      bubble_data = highlightBubbleChart(bubble_data, (k) => !k.toLowerCase().includes(search_query.toLowerCase()));
     } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
       radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
       bubble_data = highlightBubbleChart(bubble_data, (k) => k !== highlight!!.name);
@@ -34,6 +34,17 @@
 
   $: {
     radar_data = toRadarChartData(preview ? [...selected, preview] : selected)
+  }
+
+  $: {
+    if (!highlight) {
+      if (show_search_result) {
+        bubble_data = highlightBubbleChart(bubble_data, (k) =>
+          !k.toLowerCase().includes(search_query.toLowerCase()));
+      } else {
+        bubble_data = highlightBubbleChart(bubble_data, () => false);
+      }
+    }
   }
 </script>
 
@@ -46,7 +57,7 @@
   </div>
   <div class="main">
     <div class="header">
-      <h2>Score</h2>
+      <h2>Dashboard</h2>
       <div class="title-section">
         <h3>Score</h3>
         <p>Analyze and score blockchains based on on-chain data.</p>
@@ -86,6 +97,8 @@
           <div class="search-container">
             <TextField text={search_query}
               onInput={(s) => search_query = s}
+              onFocus={() => show_search_result = true}
+              onBlur={() => show_search_result = false}
               placeholder="Type chain name to search" />
           </div>
           <div class="list-container">

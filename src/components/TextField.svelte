@@ -4,6 +4,8 @@
 
   export let placeholder: string = "";
   export let onInput: (s: string) => void;
+  export let onFocus: () => void;
+  export let onBlur: () => void;
 
   export let text: string;
 </script>
@@ -17,6 +19,8 @@
       placeholder={placeholder}
       bind:value={text}
       on:input={() => onInput(text)}
+      on:focus={onFocus}
+      on:blur={onBlur}
     />
   </div>
 </div>
