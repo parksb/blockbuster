@@ -2,14 +2,16 @@
   import * as d3 from 'd3';
   import {onMount} from 'svelte';
 
-  import type {Chain, ChainTsne, ChainTsneMap} from "@src/data/models";
   import {rankNumToColor} from "@src/utils";
+  import type {Chain} from "@src/data/models";
+  import type {BubbleChartData, BubbleChartDataMap} from '@src/charts/bubble_chart';
 
-  export let data: ChainTsneMap;
+  export let data: BubbleChartDataMap<Chain>;
+
   export let selected: Chain[];
-  export let onClick: (e: any, d: any) => void;
-  export let onMouseOver: (e: any, d: any) => void;
-  export let onMouseOut: (e: any, d: any) => void;
+  export let onClick: (e: any, d: BubbleChartData<Chain>) => void;
+  export let onMouseOver: (e: any, d: BubbleChartData<Chain>) => void;
+  export let onMouseOut: (e: any, d: BubbleChartData<Chain>) => void;
 
   let data_list = Object.values(data);
   let el: HTMLElement;
@@ -61,7 +63,7 @@
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r))
       .attr("stroke-width", 3)
-      .style("fill", d => rankNumToColor(d.chain.rank))
+      .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
       .on("mouseover", (e, d) => onMouseOver(e, d))
       .on("mouseout", (e, d) => onMouseOut(e, d))
@@ -82,12 +84,12 @@
     try {
       data_list = Object.values(data);
       d3.selectAll("circle").style("fill", (dt) => {
-        const d = dt as ChainTsne;
-        const found = data_list.find((x) => x.chain.name === d.chain.name);
+        const d = dt as BubbleChartData<Chain>;
+        const found = data_list.find((x) => x.data.name === d.data.name);
         if (!found) {
-          return rankNumToColor(d.chain.rank);
+          return rankNumToColor(d.data.rank);
         }
-        return found.b ? "gray" : rankNumToColor(d.chain.rank);
+        return found.b ? "gray" : rankNumToColor(d.data.rank);
       });
     } catch (_) { /* do nothing */ }
   }
@@ -95,8 +97,8 @@
   $: {
     try {
       d3.selectAll("circle").attr("stroke", (dt) => {
-        const d = dt as ChainTsne;
-        if (selected.some((x) => x.name === d.chain.name)) {
+        const d = dt as BubbleChartData<Chain>;
+        if (selected.some((x) => x.name === d.data.name)) {
           return "white";
         }
         return "none";

@@ -3,25 +3,31 @@
 
   import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
-  import BubbleChart from "@src/components/BubbleChart.svelte";
-  import RadarChart from "@src/components/RadarChart.svelte";
   import List from "@src/components/List.svelte";
   import TextField from "@src/components/TextField.svelte";
 
+  import BubbleChart from "@src/charts/BubbleChart.svelte";
+  import RadarChart from "@src/charts/RadarChart.svelte";
+
   import type { Chain, ChainTsneMap } from "@src/data/models";
   import tsne_data from "@src/data/blockbuster_chain_tsne.json";
+  import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
 
-  let bubble_data: ChainTsneMap = tsne_data;
+  let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
+
   let selected: Chain[] = [];
   let preview: Chain | null = null;
+  let highlight: Chain | null = null;
   let search_query: string = "";
 
   $: {
-    bubble_data = Object.fromEntries(
-      Object.entries(bubble_data).map(([k, v]) =>
-        ([k, { ...v, b: !k.toLowerCase().includes(search_query.toLowerCase()) }])
-      )
-    );
+    if (!highlight) {
+      bubble_data = highlightBubbleChart(bubble_data,
+        (k) => !k.toLowerCase().includes(search_query.toLowerCase()));
+    } else {
+      bubble_data = highlightBubbleChart(bubble_data,
+        (k) => k !== highlight!!.name);
+    }
   }
 </script>
 
@@ -49,16 +55,16 @@
             data={bubble_data}
             selected={selected}
             onClick={(e, d) => {
-              if (selected.find((x) => x.name === d.chain.name)) {
+              if (selected.find((x) => x.name === d.data.name)) {
                 d3.select(e.target).attr("stroke", "none");
-                selected = selected.filter((x) => x.name !== d.chain.name);
+                selected = selected.filter((x) => x.name !== d.data.name);
               } else {
                 d3.select(e.target).attr("stroke", "white");
-                selected = [...selected, d.chain];
+                selected = [...selected, d.data];
               }
             }}
             onMouseOver={(e, d) => {
-              preview = d.chain;
+              preview = d.data;
               d3.select(e.target).attr("stroke", "white");
             }}
             onMouseOut={(e, _) => {
@@ -80,6 +86,8 @@
             <List
               data={selected.sort((a, b) => a.rank - b.rank)}
               onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
+              onMouseOver={(d) => highlight = d}
+              onMouseOut={() => highlight = null}
             />
           </div>
         </Card>

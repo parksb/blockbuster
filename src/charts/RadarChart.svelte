@@ -12,7 +12,11 @@
     const points = data.flatMap(({ name, ...values }) =>
       Object.entries(values)
         .filter(([k, _]) => k.startsWith("ev_"))
-        .map(([key, value]) => ({ name, key: `${key.replaceAll("ev_", "").replaceAll("_", "\n")}`, value }))
+        .map(([key, value]) => ({
+          name,
+          key: `${key.replaceAll("ev_", "").replaceAll("_", "\n")}`,
+          value })
+        )
     );
 
     const longitude = d3.scalePoint(new Set(Plot.valueof(points, "key")), [180, -180]).padding(0.5).align(1)

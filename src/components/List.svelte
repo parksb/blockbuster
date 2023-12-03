@@ -6,11 +6,16 @@
 
   export let data: Chain[];
   export let onRemove: (d: Chain) => void;
+  export let onMouseOver: (d: Chain) => void;
+  export let onMouseOut: (d: Chain) => void;
 </script>
 
 <ul class="root">
   {#each data as d}
-    <li>
+    <li on:focus={() => onMouseOver(d)}
+      on:blur={() => onMouseOut(d)}
+      on:mouseover={() => onMouseOver(d)}
+      on:mouseout={() => onMouseOut(d)}>
       <div>
         <div class="chip"></div>
         <div class="left">{d.name}</div>
@@ -39,6 +44,7 @@
       display: flex;
       justify-content: space-between;
       padding: 0 0 15px;
+      cursor: default;
 
       div {
         display: inline-block;
