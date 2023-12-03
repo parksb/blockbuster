@@ -69,7 +69,7 @@
             }}
           />
         </Card>
-        <Card --flex="1" --max-width="300px" --direction="column">
+        <Card --flex="1" --max-width="300px" --max-height="572px" --direction="column">
           <RadarChart data={preview ? [...selected, preview] : selected} />
           <div class="search-container">
             <TextField text={search_query}
@@ -77,7 +77,7 @@
               placeholder="Type chain name to search" />
           </div>
           <div class="list-container">
-            <List --margin="20px 0"
+            <List
               data={selected.sort((a, b) => a.rank - b.rank)}
               onRemove={(d) => selected = selected.filter((x) => x.name !== d.name)}
             />
@@ -145,9 +145,8 @@
       }
     }
 
-    div.list-container, div.search-container {
-      padding: 0 20px;
-    }
+    div.search-container, div.list-container { padding: 0 20px; }
+    div.list-container { margin: 20px 0 0 0; overflow: auto; }
   }
 
   :global(:root) {

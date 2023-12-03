@@ -17,9 +17,9 @@
       </div>
       <div>
         <div class="right">{d.rank}</div>
-        <div class="btn" on:click={() => onRemove(d)}>
+        <button on:click={() => onRemove(d)}>
           <FontAwesomeIcon icon={faXmark} />
-        </div>
+        </button>
       </div>
     </li>
   {/each}
@@ -33,8 +33,6 @@
     flex-direction: column;
     padding: 0;
     margin: var(--margin);
-    overflow: scroll;
-    max-height: 200px;
 
     li {
       font-size: 1rem;
@@ -58,8 +56,15 @@
         margin-right: 5px;
       }
 
-      .btn {
+      button {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--color-text);
         cursor: pointer;
+        font-size: .9rem;
       }
     }
   }
