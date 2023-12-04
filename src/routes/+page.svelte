@@ -17,6 +17,7 @@
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
+  import Sidebar from "@src/components/Sidebar.svelte";
 
   let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
   let radar_data = toRadarChartData([]);
@@ -59,8 +60,7 @@
 </svelte:head>
 
 <div class="root">
-  <div class="side"> <h1>BLOCKBUSTER</h1>
-  </div>
+  <Sidebar />
   <div class="main">
     <div class="header">
       <h2>Dashboard</h2>
@@ -143,21 +143,6 @@
     overflow: hidden;
   }
 
-  .side {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg2);
-    width: 350px;
-    height: 100%;
-    border-right: 1px solid var(--color-line);
-
-    & > h1 {
-      font-size: 1rem;
-      color: var(--color-text);
-      padding: 20px;
-    }
-  }
-
   .main {
     background-color: var(--color-bg);
     width: 100%;
@@ -194,15 +179,5 @@
     div.table-container { padding: 20px; }
     div.search-container, div.list-container { padding: 0 20px; }
     div.list-container { margin: 20px 0 0 0; overflow: auto; }
-  }
-
-  :global(:root) {
-    --color-emphasis: #7543ff;
-    --color-main: #9d43dc;
-    --color-text: #DDE0E3;
-    --color-description: #98A2AE;
-    --color-line: #2d3239;
-    --color-bg: #13151A;
-    --color-bg2: #181A20;
   }
 </style>
