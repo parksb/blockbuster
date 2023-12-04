@@ -10,9 +10,11 @@
   import RadarChart from "@src/charts/RadarChart.svelte";
 
   import type { Chain, ChainTsneMap } from "@src/data/models";
+  import chains from "@src/data/blockbuster_chains.json";
   import tsne_data from "@src/data/blockbuster_chain_tsne.json";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
+  import Table from "@src/components/Table.svelte";
 
   let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
   let radar_data = toRadarChartData([]);
@@ -22,6 +24,9 @@
   let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
+
+  const vis = ["Bubble", "Table"];
+  let current_vis = vis[0];
 
   $: {
     if (!highlight) {
@@ -66,8 +71,9 @@
     <div class="body">
       <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
       <Section title="Chain Ranking" --bottom="30px"
-        tab_labels={["Bubble", "Table"]} onTabChange={(_) => {}}>
+        tab_labels={vis} onTabChange={(d) => current_vis = d}>
         <Card --flex="2" --right="30px">
+          {#if current_vis === vis[0]}
           <BubbleChart
             data={bubble_data}
             selected={selected}
@@ -91,7 +97,15 @@
               preview = null;
             }}
           />
+          {:else}
+            <div class="table-container">
+              <Table columns={Object.keys(chains['akash'])}
+                rows={Object.values(chains).map(x => Object.values(x))}
+                highlighted={selected} />
+            </div>
+          {/if}
         </Card>
+
         <Card --flex="1" --max-width="300px" --max-height="572px" --direction="column">
           <RadarChart data={radar_data} />
           <div class="search-container">
@@ -177,6 +191,7 @@
       }
     }
 
+    div.table-container { padding: 20px; }
     div.search-container, div.list-container { padding: 0 20px; }
     div.list-container { margin: 20px 0 0 0; overflow: auto; }
   }
