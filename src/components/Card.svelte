@@ -11,6 +11,7 @@
     overflow: hidden;
     flex-direction: var(--direction);
     max-width: var(--max-width);
+    height: var(--max-height);
     max-height: var(--max-height);
   }
 </style>

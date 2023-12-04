@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as d3 from "d3";
 
+  import { selected } from "@src/store";
+
   import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
@@ -19,7 +21,6 @@
   let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
   let radar_data = toRadarChartData([]);
 
-  let selected: Chain[] = [];
   let preview: Chain | null = null;
   let highlight: Chain | null = null;
   let search_query: string = "";
@@ -38,7 +39,7 @@
   }
 
   $: {
-    radar_data = toRadarChartData(preview ? [...selected, preview] : selected)
+    radar_data = toRadarChartData(preview ? [...$selected, preview] : $selected)
   }
 
   $: {
@@ -70,20 +71,20 @@
     </div>
     <div class="body">
       <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
-      <Section title="Chain Ranking" --bottom="30px"
+      <Section title="Chain Ranking" --bottom="30px" --max-height="570px"
         tab_labels={vis} onTabChange={(d) => current_vis = d}>
         <Card --flex="2" --right="30px">
           {#if current_vis === vis[0]}
           <BubbleChart
             data={bubble_data}
-            selected={selected}
+            selected={$selected}
             onClick={(e, d) => {
-              if (selected.find((x) => x.name === d.data.name)) {
+              if ($selected.find((x) => x.name === d.data.name)) {
                 d3.select(e.target).attr("stroke", "none");
-                selected = selected.filter((x) => x.name !== d.data.name);
+                $selected = $selected.filter((x) => x.name !== d.data.name);
               } else {
                 d3.select(e.target).attr("stroke", "white");
-                selected = [...selected, d.data];
+                $selected = [...$selected, d.data];
               }
             }}
             onMouseOver={(e, d) => {
@@ -91,7 +92,7 @@
               d3.select(e.target).attr("stroke", "white");
             }}
             onMouseOut={(e, _) => {
-              if (!selected.some((x) => x.name === preview?.name)) {
+              if (!$selected.some((x) => x.name === preview?.name)) {
                 d3.select(e.target).attr("stroke", "none");
               }
               preview = null;
@@ -101,12 +102,11 @@
             <div class="table-container">
               <Table columns={Object.keys(chains['akash'])}
                 rows={Object.values(chains).map(x => Object.values(x))}
-                highlighted={selected} />
+                highlighted={$selected} />
             </div>
           {/if}
         </Card>
-
-        <Card --flex="1" --max-width="300px" --max-height="572px" --direction="column">
+        <Card --flex="1" --max-width="300px" --direction="column">
           <RadarChart data={radar_data} />
           <div class="search-container">
             <TextField text={search_query}
@@ -117,10 +117,10 @@
           </div>
           <div class="list-container">
             <List
-              data={selected.sort((a, b) => a.rank - b.rank)}
+              data={$selected.sort((a, b) => a.rank - b.rank)}
               onRemove={(d) => {
-                selected = selected.filter((x) => x.name !== d.name)
-                if (!selected.length || !selected.find(x => x.name === highlight?.name)) {
+                $selected = $selected.filter((x) => x.name !== d.name)
+                if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
                   highlight = null;
                 }
               }}

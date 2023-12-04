@@ -62,6 +62,7 @@
       .attr("cx", d => x(d.x))
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r))
+      .attr("stroke", d => selected.some(x => x.name === d.data.name) ? "white" : "none")
       .attr("stroke-width", 3)
       .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
@@ -93,7 +94,7 @@
     try {
       d3.selectAll("circle").attr("stroke", (dt) => {
         const d = dt as BubbleChartData<Chain>;
-        if (selected.some((x) => x.name === d.data.name)) {
+        if (selected.some(x => x.name === d.data.name)) {
           return "white";
         }
         return "none";

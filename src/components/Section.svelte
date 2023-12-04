@@ -21,6 +21,8 @@
 <style lang="scss">
   .root {
     margin-bottom: var(--bottom);
+    height: var(--height);
+    max-height: var(--max-height);
 
     .header {
       display: flex;
