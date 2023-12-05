@@ -41,8 +41,8 @@
 <table>
   <thead>
     <tr>
-      {#each columns as column}
-        <th>
+      {#each columns as column, i}
+        <th class={typeof rows[0][i] === "number" ? "num" : ""}>
           <span>{column}</span>
           <span class="icon" on:click={() => { changeOrder(column) }}>
             {#if order_target === column}
@@ -63,7 +63,7 @@
     {#each rows as row}
       <tr class={highlighted.map(x => x.name).includes(row[0].toString()) ? "highlighted" : ""}>
         {#each row as cell}
-          <td>{cell}</td>
+          <td class={typeof cell === "number" ? "num" : ""}>{cell}</td>
         {/each}
       </tr>
     {/each}
@@ -86,6 +86,10 @@
       color: var(--color-text);
       font-weight: 400;
       min-width: max-content;
+
+      &.num {
+        text-align: right;
+      }
     }
 
     .icon {
@@ -97,6 +101,11 @@
   tbody {
     & > tr > td {
       padding: 10px 0;
+      min-width: max-content;
+
+      &.num {
+        text-align: right;
+      }
     }
 
     & > tr.highlighted {

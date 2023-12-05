@@ -1,5 +1,15 @@
 <script lang="ts">
+  import { selected, is_fresh } from "@src/store";
+  import {loadChains} from "@src/data/loader";
   import "../app.css";
+
+  const chains = loadChains();
+  const default_selected = Object.values(chains).slice(0, 2);
+
+  if ($is_fresh) {
+    $selected = default_selected;
+    $is_fresh = false;
+  }
 </script>
 
 <slot />

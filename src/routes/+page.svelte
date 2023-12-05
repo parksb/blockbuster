@@ -2,7 +2,6 @@
   import * as d3 from "d3";
 
   import { selected } from "@src/store";
-
   import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
@@ -11,15 +10,16 @@
   import BubbleChart from "@src/charts/BubbleChart.svelte";
   import RadarChart from "@src/charts/RadarChart.svelte";
 
-  import type { Chain, ChainTsneMap } from "@src/data/models";
-  import chains from "@src/data/blockbuster_chains.json";
-  import tsne_data from "@src/data/blockbuster_chain_tsne.json";
+  import {loadChains, loadChainTsne} from "@src/data/loader";
+  import type {Chain} from "@src/data/models";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
   import Sidebar from "@src/components/Sidebar.svelte";
 
-  let bubble_data = toBubbleChartDataMap(tsne_data as ChainTsneMap);
+  const chains = loadChains();
+
+  let bubble_data = toBubbleChartDataMap(loadChainTsne());
   let radar_data = toRadarChartData([]);
 
   let preview: Chain | null = null;

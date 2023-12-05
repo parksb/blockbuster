@@ -1,6 +1,6 @@
 // It MUST be synced with the remote.
 
-export interface ChainWrapper {
+export interface ChainMap {
   [key: string]: Chain;
 }
 
