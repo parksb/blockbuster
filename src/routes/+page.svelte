@@ -33,6 +33,13 @@
   $: {
     if (!highlight) {
       radar_data = highlightRadarChart(radar_data, () => false);
+
+      if (show_search_result) {
+        bubble_data = highlightBubbleChart(bubble_data, (k) =>
+          !k.toLowerCase().includes(search_query.toLowerCase()));
+      } else {
+        bubble_data = highlightBubbleChart(bubble_data, () => false);
+      }
     } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
       radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
       bubble_data = highlightBubbleChart(bubble_data, (k) => k !== highlight!!.name);
@@ -41,17 +48,6 @@
 
   $: {
     radar_data = toRadarChartData(preview ? [...$selected, preview] : $selected)
-  }
-
-  $: {
-    if (!highlight) {
-      if (show_search_result) {
-        bubble_data = highlightBubbleChart(bubble_data, (k) =>
-          !k.toLowerCase().includes(search_query.toLowerCase()));
-      } else {
-        bubble_data = highlightBubbleChart(bubble_data, () => false);
-      }
-    }
   }
 </script>
 
@@ -176,7 +172,7 @@
       }
     }
 
-    div.table-container { padding: 20px; }
+    div.table-container { padding: 20px; overflow: auto; }
     div.search-container, div.list-container { padding: 0 20px; }
     div.list-container { margin: 20px 0 0 0; overflow: auto; }
   }
