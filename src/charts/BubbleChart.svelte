@@ -27,13 +27,14 @@
   onMount(() => {
     // set the dimensions and margins of the graph
     const margin = {top: 0, right: 0, bottom: 0, left: 0};
-    const width = 1430 - margin.left - margin.right;
-    const height = 700 - margin.top - margin.bottom;
+    const width = 1200 - margin.left - margin.right;
+    const height = 570 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.create("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("width", "100%")
       .attr("height", "100%");
 
     svg.append("g")
@@ -74,7 +75,7 @@
       // @ts-ignore
       d3.zoom()
         .scaleExtent([0.1, 5])
-        .translateExtent([[-500, -500], [width + 500, height + 500]])
+        .translateExtent([[(width * -2), (height * -2)], [width * 2, height * 2]])
         .on("zoom", (e) => svg.selectChildren('g').attr("transform", e.transform))
     );
 
