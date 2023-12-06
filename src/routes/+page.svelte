@@ -5,7 +5,6 @@
   import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
-  import TextField from "@src/components/TextField.svelte";
 
   import BubbleChart from "@src/charts/BubbleChart.svelte";
   import RadarChart from "@src/charts/RadarChart.svelte";
@@ -15,7 +14,6 @@
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
-  import Sidebar from "@src/components/Sidebar.svelte";
 
   const chains = loadChains();
 
@@ -28,7 +26,6 @@
   let show_search_result: boolean = false;
 
   const vis = ["Bubble", "Table"];
-  let current_vis = vis[0];
 
   $: {
     if (!highlight) {
@@ -56,21 +53,21 @@
 </svelte:head>
 
 <div class="root">
-  <Sidebar />
   <div class="main">
     <div class="header">
-      <h2>Dashboard</h2>
-      <div class="title-section">
-        <h3>Score</h3>
-        <p>Analyze and score blockchains based on on-chain data.</p>
-      </div>
+      <h2>Blockbuster / Score</h2>
     </div>
     <div class="body">
-      <Section title="Real-time Rapidly Chaninging Chains" --bottom="30px" />
-      <Section title="Chain Ranking" --bottom="30px" --max-height="570px"
-        tab_labels={vis} onTabChange={(d) => current_vis = d}>
+      <Section title="Chain Ranking" --bottom="60px" --max-height="570px"
+        text_field={{
+          text: search_query,
+          onTextFieldInput: (s) => search_query = s,
+          onTextFieldFocus: () => show_search_result = true,
+          onTextFieldBlur: () => show_search_result = false
+        }}
+        --text-field-max-width="300px"
+      >
         <Card --flex="2" --right="30px">
-          {#if current_vis === vis[0]}
           <BubbleChart
             data={bubble_data}
             selected={$selected}
@@ -94,37 +91,32 @@
               preview = null;
             }}
           />
-          {:else}
-            <div class="table-container">
-              <Table columns={Object.keys(chains['akash'])}
-                rows={Object.values(chains).map(x => Object.values(x))}
-                highlighted={$selected} />
+        </Card>
+        <div class="radar-container">
+          <Card --flex="1" --max-width="300px" --direction="column">
+            <RadarChart data={radar_data} />
+            <div class="list-container">
+              <List
+                data={$selected.sort((a, b) => a.rank - b.rank)}
+                onRemove={(d) => {
+                  $selected = $selected.filter((x) => x.name !== d.name)
+                  if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
+                    highlight = null;
+                  }
+                }}
+                onMouseOver={(d) => highlight = d}
+                onMouseOut={() => highlight = null}
+              />
             </div>
-          {/if}
-        </Card>
-        <Card --flex="1" --max-width="300px" --direction="column">
-          <RadarChart data={radar_data} />
-          <div class="search-container">
-            <TextField text={search_query}
-              onInput={(s) => search_query = s}
-              onFocus={() => show_search_result = true}
-              onBlur={() => show_search_result = false}
-              placeholder="Type chain name to search" />
-          </div>
-          <div class="list-container">
-            <List
-              data={$selected.sort((a, b) => a.rank - b.rank)}
-              onRemove={(d) => {
-                $selected = $selected.filter((x) => x.name !== d.name)
-                if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
-                  highlight = null;
-                }
-              }}
-              onMouseOver={(d) => highlight = d}
-              onMouseOut={() => highlight = null}
-            />
-          </div>
-        </Card>
+          </Card>
+        </div>
+      </Section>
+      <Section title="Table">
+        <div class="table-container">
+          <Table columns={Object.keys(chains['akash'])}
+            rows={Object.values(chains).map(x => Object.values(x))}
+            highlighted={$selected} />
+        </div>
       </Section>
     </div>
   </div>
@@ -172,8 +164,8 @@
       }
     }
 
-    div.table-container { padding: 20px; overflow: auto; }
-    div.search-container, div.list-container { padding: 0 20px; }
-    div.list-container { margin: 20px 0 0 0; overflow: auto; }
+    div.table-container { width: 100%; overflow: auto; }
+    div.list-container { padding: 0 20px; }
+    div.list-container { margin: 0; overflow: auto; }
   }
 </style>
