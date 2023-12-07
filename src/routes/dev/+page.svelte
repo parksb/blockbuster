@@ -13,18 +13,17 @@
       Plot.plot({
         width: 900,
         height: 500,
-        marginBottom: 50,
+        marginBottom: 80,
         y: {
           grid: true,
         },
         x: {
-          tickRotate: 90,
+          tickRotate: 50,
         },
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
             {x: "name", y: "e_decentralization", sort: {x: "y", reverse: true}}),
-          Plot.text(chain_list, Plot.pointerY({ x: 'x', y: 'y', text: (d) => `${d.e_decentralization}` })),
         ],
       })
     );
@@ -37,18 +36,17 @@
       Plot.plot({
         width: 900,
         height: 500,
-        marginBottom: 50,
+        marginBottom: 80,
         y: {
           grid: true,
         },
         x: {
-          tickRotate: 90,
+          tickRotate: 50,
         },
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
             {x: "name", y: "e_proposal_activity", sort: {x: "y", reverse: true}}),
-          Plot.text(chain_list, Plot.pointerY({ x: 'x', y: 'y', text: (d) => `${d.e_proposal_activity}` })),
         ],
       })
     );
@@ -61,18 +59,40 @@
       Plot.plot({
         width: 900,
         height: 800,
-        marginBottom: 130,
+        marginBottom: 80,
         y: {
           grid: true,
         },
         x: {
-          tickRotate: 90,
+          tickRotate: 50,
         },
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
             {x: "name", y: "e_active_account", sort: {x: "y", reverse: true}}),
-          Plot.text(chain_list, Plot.pointerY({ x: 'x', y: 'y', text: (d) => `${d.e_active_account}` })),
+        ],
+      })
+    );
+  }
+
+  let total: HTMLElement;
+  $: {
+    total?.firstChild?.remove();
+    total?.append(
+      Plot.plot({
+        width: 900,
+        height: 800,
+        marginBottom: 80,
+        y: {
+          grid: true,
+        },
+        x: {
+          tickRotate: 50,
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.barY(chain_list,
+            {x: "name", y: (x) => x.e_active_account + x.e_decentralization + x.e_proposal_activity, sort: {x: "y", reverse: true}}),
         ],
       })
     );
@@ -90,4 +110,7 @@
 
   <h1>Active Account</h1>
   <div bind:this={active_account} />
+
+  <h1>Total</h1>
+  <div bind:this={total} />
 </div>
