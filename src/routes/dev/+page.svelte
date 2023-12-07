@@ -6,6 +6,10 @@
   const chain_map = loadChains();
   const chain_list = Object.values(chain_map);
 
+  const normalize = (x: number, min: number, max: number) => {
+    return (x - min) / (max - min);
+  };
+
   let decentralization: HTMLElement;
   $: {
     decentralization?.firstChild?.remove();
@@ -75,6 +79,12 @@
     );
   }
 
+  const normalized_chain_list = chain_list.map((x) => (
+    { ...x, total: x.e_decentralization + x.e_proposal_activity + x.e_active_account }
+  ));
+  const min_total = Math.min(...normalized_chain_list.map((x) => x.total));
+  const max_total = Math.max(...normalized_chain_list.map((x) => x.total));
+
   let total: HTMLElement;
   $: {
     total?.firstChild?.remove();
@@ -91,8 +101,8 @@
         },
         marks: [
           Plot.ruleY([0]),
-          Plot.barY(chain_list,
-            {x: "name", y: (x) => x.e_active_account + x.e_decentralization + x.e_proposal_activity, sort: {x: "y", reverse: true}}),
+          Plot.barY(normalized_chain_list,
+            {x: "name", y: (x) => normalize(x.total, min_total, max_total), sort: {x: "y", reverse: true}}),
         ],
       })
     );
@@ -111,6 +121,6 @@
   <h1>Active Account</h1>
   <div bind:this={active_account} />
 
-  <h1>Total</h1>
+  <h1>Total (Normalized)</h1>
   <div bind:this={total} />
 </div>
