@@ -84,13 +84,12 @@
           />
         </Card>
         <Card --overflow="auto" --padding="20px">
-          <Table columns={Object.keys(chains['akash'])}
-            rows={Object.values(chains).map(x => Object.values(x))}
-            highlighted={$selected} />
+          <Table data={Object.values(chains)} highlighted={$selected} />
         </Card>
       </div>
       <div class="right">
         <TextField text={search_query}
+          placeholder="Type chain name to search"
           onInput={(s) => search_query = s}
           onFocus={() => show_search_result = true}
           onBlur={() => show_search_result = false}
