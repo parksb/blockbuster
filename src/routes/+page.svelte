@@ -1,8 +1,9 @@
 <script lang="ts">
   import * as d3 from "d3";
+  import ExpandMore from "@src/icons/ExpandMore.svelte";
+  import ExpandLess from "@src/icons/ExpandLess.svelte";
 
   import { selected } from "@src/store";
-  import Section from "@src/components/Section.svelte";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
 
@@ -25,6 +26,7 @@
   let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
+  let is_table_expanded = false;
 
   $: {
     if (!highlight) {
@@ -83,8 +85,16 @@
             }}
           />
         </Card>
-        <Card --overflow="auto" --padding="20px">
-          <Table data={Object.values(chains)} highlighted={$selected} />
+        <Card --overflow="auto" --padding="0 20px 0 20px" --direction="column">
+          <Table data={Object.values(chains)} highlighted={$selected}
+            --max-height={is_table_expanded ? "auto" : "372px"} />
+          <button class="expand-button" on:click={() => is_table_expanded = !is_table_expanded}>
+            {#if is_table_expanded}
+              <ExpandLess />
+            {:else}
+              <ExpandMore />
+            {/if}
+          </button>
         </Card>
       </div>
       <div class="right">
@@ -95,19 +105,26 @@
           onBlur={() => show_search_result = false}
           --margin="0 0 10px 0" />
         <Card --direction="column" --height="100%">
-          <RadarChart data={radar_data} />
-          <div class="list-container">
-            <List
-              data={$selected.sort((a, b) => a.rank - b.rank)}
-              onRemove={(d) => {
-                $selected = $selected.filter((x) => x.name !== d.name)
-                if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
-                  highlight = null;
-                }
-              }}
-              onMouseOver={(d) => highlight = d}
-              onMouseOut={() => highlight = null}
-            />
+          <div>
+            <RadarChart data={radar_data} />
+            <div class="list-container">
+              <List
+                data={$selected.sort((a, b) => a.rank - b.rank)}
+                onRemove={(d) => {
+                  $selected = $selected.filter((x) => x.name !== d.name)
+                  if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
+                    highlight = null;
+                  }
+                }}
+                onMouseOver={(d) => highlight = d}
+                onMouseOut={() => highlight = null}
+              />
+            </div>
+            <div class="detail-button-container">
+              <a href="/compare">
+                <div class="detail-button">Click to view details</div>
+              </a>
+            </div>
           </div>
         </Card>
       </div>
@@ -160,6 +177,7 @@
     .body {
       display: flex;
       flex-direction: row;
+      margin-bottom: 50px;
 
       .left {
         flex: 2;
@@ -175,7 +193,38 @@
     }
 
     div.table-container { width: 100%; height: 100px; overflow: auto; }
-    div.list-container { padding: 0 20px; }
-    div.list-container { margin: 0; overflow: auto; }
+
+    div.list-container {
+      padding: 0 20px;
+      margin: 0;
+      overflow: auto;
+      max-height: 20%;
+    }
+
+    div.detail-button-container {
+      padding: 20px;
+
+      a {
+        text-decoration: none;
+        color: var(--color-text);
+      }
+
+      .detail-button {
+        text-align: center;
+        border: 1px solid var(--color-line);
+        padding: 7px;
+      }
+    }
+  }
+
+  button.expand-button {
+    width: 100%;
+    background-color: var(--color-bg2);
+    border: 0;
+    text-align: center;
+    color: var(--color-text);
+    font-size: 1.4rem;
+    padding: 15px 0 10px 0;
+    cursor: pointer;
   }
 </style>

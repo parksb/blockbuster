@@ -1,6 +1,7 @@
 <script lang="ts">
   import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome"
-  import { faSort, faSortUp, faSortDown, faThumbtack } from "@fortawesome/free-solid-svg-icons"
+  import { faSort, faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons"
+  import Pin from "svelte-material-icons/Pin.svelte";
 
   import type { Chain } from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
@@ -80,83 +81,90 @@
   }
 </script>
 
-<table>
-  <thead>
-    <tr>
-      {#each columns as column}
-        <th>
-          <span>{column}</span>
-          <span class="icon" on:click={() => { changeOrder(column) }}>
-            {#if order_column_label === column}
-              {#if order_by === OrderBy.DESC}
-                <FontAwesomeIcon icon={faSortDown} />
-              {:else}
-                <FontAwesomeIcon icon={faSortUp} />
-              {/if}
-            {:else}
-              <FontAwesomeIcon icon={faSort} />
-            {/if}
-          </span>
-        </th>
-      {/each}
-    </tr>
-  </thead>
-  <tbody>
-    {#each rows as row}
+<div class="root">
+  <table>
+    <thead>
       <tr>
-        {#each [[], ...Object.entries(row)] as [key, x], i}
-          {#if i === 0}
-            <td class={highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}>
-              <span class="pin-icon" on:click={() => {
-                if ($selected.map(x => x.name).includes(row.name)) {
-                  $selected = $selected.filter(x => x.name !== row.name)
-                } else {
-                  $selected = [...$selected, row]
-                }
-              }}>
-                <FontAwesomeIcon icon={faThumbtack} />
-              </span>
-            </td>
-          {:else}
-            <td>
-              {#if to_row_type(key) === 0}
-                {x}
+        {#each columns as column}
+          <th>
+            <span>{column}</span>
+            <span class="icon" on:click={() => { changeOrder(column) }}>
+              {#if order_column_label === column}
+                {#if order_by === OrderBy.DESC}
+                  <FontAwesomeIcon icon={faSortDown} />
+                {:else}
+                  <FontAwesomeIcon icon={faSortUp} />
+                {/if}
               {:else}
-                <div class="single-bar">
-                  <SingleBar --height="20px"
-                    percentage={(Number(x) * 100).toFixed(1)} />
-                </div>
+                <FontAwesomeIcon icon={faSort} />
               {/if}
-            </td>
-          {/if}
+            </span>
+          </th>
         {/each}
       </tr>
-    {/each}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {#each rows as row}
+        <tr>
+          {#each [[], ...Object.entries(row)] as [key, x], i}
+            {#if i === 0} <!-- Pin -->
+              <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
+                <span class="pin-icon" on:click={() => {
+                  if ($selected.map(x => x.name).includes(row.name)) {
+                    $selected = $selected.filter(x => x.name !== row.name)
+                  } else {
+                    $selected = [...$selected, row]
+                  }
+                }}>
+                  <Pin />
+                </span>
+              </td>
+            {:else}
+              <td>
+                {#if to_row_type(key) === 0}
+                  {x}
+                {:else}
+                  <div class="single-bar">
+                    <SingleBar --height="25px"
+                      percentage={(Number(x) * 100).toFixed(1)} />
+                  </div>
+                {/if}
+              </td>
+            {/if}
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
 
 <style lang="scss">
   .root {
-    width: 100%;
+    max-height: var(--max-height);
+    overflow: auto;
   }
 
   table {
-    border-collapse: collapse;
+    border-collapse: separate;
     width: 100%;
     color: var(--color-text);
+    overflow: auto;
   }
 
   thead {
-    border-bottom: 1px solid var(--color-line);
+    position: sticky;
+    top: 0;
+    background-color: var(--color-bg2);
     text-align: left;
 
     & > tr > th {
-      padding-bottom: 15px;
+      padding: 15px 0 15px 0;
       color: var(--color-description);
       font-weight: 400;
       padding-right: 15px;
       min-width: max-content;
       text-align: left;
+      border-bottom: 1px solid var(--color-line);
 
       &.num {
         text-align: right;
@@ -182,12 +190,16 @@
         color: var(--color-emphasis);
       }
 
-      .pin-icon {
-        cursor: pointer;
+      &.pin {
+        vertical-align: bottom;
+
+        .pin-icon {
+          cursor: pointer;
+        }
       }
 
       .single-bar {
-        width: 230px;
+        min-width: 200px;
       }
     }
   }

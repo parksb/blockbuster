@@ -12,6 +12,7 @@
 
 <style lang="scss">
   .root {
+    display: flex;
     width: 100%;
     max-width: var(--max-width);
     height: var(--height);
@@ -22,14 +23,16 @@
     width: 100%;
     height: 100%;
     background-color: var(--color-line);
-    border-radius: 2px;
+    border-radius: 3px;
   }
 
   .fill {
+    display: flex;
+    align-items: center;
     width: var(--width);
     height: 100%;
     background-color: var(--color-emphasis);
-    border-radius: 2px 0 0 2px;
+    border-radius: 3px 0 0 3px;
 
     & > span {
       color: var(--color-text);
