@@ -121,7 +121,7 @@
               />
             </div>
             <div class="detail-button-container">
-              <a href="/compare">
+              <a href="/detail">
                 <div class="detail-button">Click to view details</div>
               </a>
             </div>
