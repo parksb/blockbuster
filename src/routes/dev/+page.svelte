@@ -1,14 +1,13 @@
 <script lang="ts">
   import * as Plot from "@observablehq/plot";
 
-  import { loadChains } from "@src/data/loader";
+  import { loadChains, loadRawChains } from "@src/data/loader";
 
   const chain_map = loadChains();
-  let chain_list = Object.values(chain_map);
+  const raw_chain_map = loadRawChains();
 
-  const normalize = (x: number, min: number, max: number) => {
-    return (x - min) / (max - min);
-  };
+  let chain_list = Object.values(chain_map);
+  let raw_chain_list = Object.values(raw_chain_map);
 
   let decentralization_raw: HTMLElement;
   $: {
@@ -26,17 +25,12 @@
         },
         marks: [
           Plot.ruleY([0]),
-          Plot.barY(chain_list,
-            {x: "name", y: (x) => x.e_decentralization, sort: {x: "y", reverse: true}}),
+          Plot.barY(raw_chain_list,
+            {x: "name", y: "e_decentralization", sort: {x: "y", reverse: true}}),
         ],
       })
     );
   }
-  const min_decentralization = Math.min(...chain_list.map((x) => x.e_decentralization));
-  const max_decentralization = Math.max(...chain_list.map((x) => x.e_decentralization));
-  chain_list = chain_list.map((x) => {
-    return { ...x, normalized_decentralization: normalize(x.e_decentralization, min_decentralization, max_decentralization) };
-  });
   let decentralization: HTMLElement;
   $: {
     decentralization?.firstChild?.remove();
@@ -54,17 +48,12 @@
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
-            {x: "name", y: (x) => x.normalized_decentralization, sort: {x: "y", reverse: true}}),
+            {x: "name", y: "e_decentralization", sort: {x: "y", reverse: true}}),
         ],
       })
     );
   }
 
-  const min_proposal_activity = Math.min(...chain_list.map((x) => x.e_proposal_activity));
-  const max_proposal_activity = Math.max(...chain_list.map((x) => x.e_proposal_activity));
-  chain_list = chain_list.map((x) => {
-    return { ...x, normalized_proposal_activity: normalize(x.e_proposal_activity, min_proposal_activity, max_proposal_activity) };
-  })
   let proposal_activity: HTMLElement;
   $: {
     proposal_activity?.firstChild?.remove();
@@ -82,7 +71,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
-            {x: "name", y: (x) => x.normalized_proposal_activity,
+            {x: "name", y: "e_proposal_activity",
               sort: {x: "y", reverse: true}}),
         ],
       })
@@ -105,17 +94,12 @@
         },
         marks: [
           Plot.ruleY([0]),
-          Plot.barY(chain_list,
-            {x: "name", y: (x) => x.e_active_account, sort: {x: "y", reverse: true}}),
+          Plot.barY(raw_chain_list,
+            {x: "name", y: "e_active_account", sort: {x: "y", reverse: true}}),
         ],
       })
     );
   }
-  let min_active_account = Math.min(...chain_list.map((x) => x.e_active_account));
-  let max_active_account = Math.max(...chain_list.map((x) => x.e_active_account));
-  chain_list = chain_list.map((x) => {
-    return { ...x, normalized_active_account: normalize(x.e_active_account, min_active_account, max_active_account) };
-  });
   let active_account: HTMLElement;
   $: {
     active_account?.firstChild?.remove();
@@ -133,25 +117,12 @@
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
-            {x: "name", y: (x) => x.normalized_active_account,
+            {x: "name", y: "e_active_account",
               sort: {x: "y", reverse: true}}),
         ],
       })
     );
   }
-
-  const normalized_chain_list = (chain_list as any).map((x: any) => {
-    return {
-      ...x, total: x.normalized_decentralization +
-        x.normalized_proposal_activity +
-        x.normalized_active_account,
-    }
-  })
-  const min_total = Math.min(...normalized_chain_list.map((x: any) => x.total));
-  const max_total = Math.max(...normalized_chain_list.map((x: any) => x.total));
-  chain_list = normalized_chain_list.map((x: any) => {
-    return { ...x, normalized_total: normalize(x.total, min_total, max_total) };
-  });
 
   let total: HTMLElement;
   $: {
@@ -170,7 +141,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
-            {x: "name", y: (x) => x.normalized_total, sort: {x: "y", reverse: true}}),
+            {x: "name", y: "e_total", sort: {x: "y", reverse: true}}),
         ],
       })
     );

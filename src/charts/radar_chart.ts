@@ -18,7 +18,7 @@ export function toRadarChartData(chains: Chain[]): RadarChartData<Chain>[] {
       e_markget_cap: chain.e_markget_cap,
     }).map(([key, value]) => ({
       data: chain,
-      key: `${key.replaceAll("e_", "").replaceAll("_", "\n")}`,
+      key: `${key.replace("e_", "").replaceAll("_", "\n")}`,
       value,
       blur: false,
     })

@@ -14,6 +14,7 @@
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
+  import TextField from "@src/components/TextField.svelte";
 
   const chains = loadChains();
 
@@ -24,8 +25,6 @@
   let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
-
-  const vis = ["Bubble", "Table"];
 
   $: {
     if (!highlight) {
@@ -49,7 +48,7 @@
 </script>
 
 <svelte:head>
-	<title>Blockbuster</title>
+  <title>Blockbuster</title>
 </svelte:head>
 
 <div class="root">
@@ -58,16 +57,8 @@
       <h2>Blockbuster / Score</h2>
     </div>
     <div class="body">
-      <Section title="Chain Ranking" --bottom="60px" --max-height="570px"
-        text_field={{
-          text: search_query,
-          onTextFieldInput: (s) => search_query = s,
-          onTextFieldFocus: () => show_search_result = true,
-          onTextFieldBlur: () => show_search_result = false
-        }}
-        --text-field-max-width="300px"
-      >
-        <Card --flex="2" --right="30px">
+      <div class="left">
+        <Card --height="400px" --margin="0 0 30px 0">
           <BubbleChart
             data={bubble_data}
             selected={$selected}
@@ -92,32 +83,35 @@
             }}
           />
         </Card>
-        <div class="radar-container">
-          <Card --flex="1" --max-width="300px" --direction="column">
-            <RadarChart data={radar_data} />
-            <div class="list-container">
-              <List
-                data={$selected.sort((a, b) => a.rank - b.rank)}
-                onRemove={(d) => {
-                  $selected = $selected.filter((x) => x.name !== d.name)
-                  if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
-                    highlight = null;
-                  }
-                }}
-                onMouseOver={(d) => highlight = d}
-                onMouseOut={() => highlight = null}
-              />
-            </div>
-          </Card>
-        </div>
-      </Section>
-      <Section title="Table">
-        <div class="table-container">
+        <Card --overflow="auto">
           <Table columns={Object.keys(chains['akash'])}
             rows={Object.values(chains).map(x => Object.values(x))}
             highlighted={$selected} />
-        </div>
-      </Section>
+        </Card>
+      </div>
+      <div class="right">
+        <TextField text={search_query}
+          onInput={(s) => search_query = s}
+          onFocus={() => show_search_result = true}
+          onBlur={() => show_search_result = false}
+          --margin="0 0 10px 0" />
+        <Card --direction="column" --height="100%">
+          <RadarChart data={radar_data} />
+          <div class="list-container">
+            <List
+              data={$selected.sort((a, b) => a.rank - b.rank)}
+              onRemove={(d) => {
+                $selected = $selected.filter((x) => x.name !== d.name)
+                if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
+                  highlight = null;
+                }
+              }}
+              onMouseOver={(d) => highlight = d}
+              onMouseOut={() => highlight = null}
+            />
+          </div>
+        </Card>
+      </div>
     </div>
   </div>
 </div>
@@ -140,7 +134,7 @@
 
     .header {
       padding: 10px 0;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
 
       & > h2 {
         font-size: 1rem;
@@ -164,7 +158,24 @@
       }
     }
 
-    div.table-container { width: 100%; overflow: auto; }
+    .body {
+      display: flex;
+      flex-direction: row;
+
+      .left {
+        flex: 2;
+        margin-right: 20px;
+        overflow: auto;
+      }
+
+      .right {
+        position: sticky;
+        top: 10px;
+        height: 80vh;
+      }
+    }
+
+    div.table-container { width: 100%; height: 100px; overflow: auto; }
     div.list-container { padding: 0 20px; }
     div.list-container { margin: 0; overflow: auto; }
   }

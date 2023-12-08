@@ -71,6 +71,10 @@
 </table>
 
 <style lang="scss">
+  .root {
+    width: 100%;
+  }
+
   table {
     border-collapse: collapse;
     width: 100%;

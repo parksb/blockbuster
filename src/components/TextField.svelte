@@ -27,6 +27,8 @@
 
 <style lang="scss">
   .root {
+    margin: var(--margin);
+
     .input {
       display: flex;
       flex-direction: row;

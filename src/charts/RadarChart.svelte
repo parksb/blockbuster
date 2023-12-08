@@ -20,7 +20,7 @@
         projection: {
           type: "azimuthal-equidistant",
           rotate: [0, -90],
-          domain: d3.geoCircle().center([0, 90]).radius(1.2)()
+          domain: d3.geoCircle().center([0, 90]).radius(1.3)()
         },
         color: { legend: false },
         marks: [
@@ -33,7 +33,7 @@
             strokeWidth: 0.5
           }),
 
-          // white axes
+          // axes
           Plot.link(longitude.domain(), {
             x1: longitude,
             y1: 0,
@@ -46,21 +46,21 @@
 
           // tick labels
           Plot.text([0.2, 0.4, 0.6, 0.8, 1.0], {
-            x: 180,
+            x: -135,
             y: (d) => 90 - d,
             dx: 0,
             textAnchor: "start",
             text: (d) => `${d}`,
-            fill: "white",
+            fill: "#98A2AE",
             fontSize: 9,
           }),
 
           // axes labels
           Plot.text(longitude.domain(), {
             x: longitude,
-            y: 90 - 0.9,
+            y: 90 - 1.0,
             text: Plot.identity,
-            fill: "white",
+            fill: "#98A2AE",
             lineWidth: 5
           }),
 
