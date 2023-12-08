@@ -83,7 +83,7 @@
             }}
           />
         </Card>
-        <Card --overflow="auto">
+        <Card --overflow="auto" --padding="20px">
           <Table columns={Object.keys(chains['akash'])}
             rows={Object.values(chains).map(x => Object.values(x))}
             highlighted={$selected} />

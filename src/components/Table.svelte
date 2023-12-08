@@ -86,8 +86,8 @@
     text-align: left;
 
     & > tr > th {
-      padding-bottom: 10px;
-      color: var(--color-text);
+      padding-bottom: 15px;
+      color: var(--color-description);
       font-weight: 400;
       min-width: max-content;
 
