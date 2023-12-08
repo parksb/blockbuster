@@ -63,10 +63,19 @@
 
   $: {
     const key = label_to_column_key(order_column_label) as keyof Chain;
-    if (order_by === OrderBy.ASC) {
-      rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+    if (order_column_label === "Pin") {
+      const f = (x: Chain) => $selected.map(k => k.name).includes(x.name)
+      if (order_by === OrderBy.ASC) {
+        rows = [...rows.filter(x => !f(x)), ...rows.filter(f)];
+      } else {
+        rows = [...rows.filter(f), ...rows.filter(x => !f(x))];
+      }
     } else {
-      rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+      if (order_by === OrderBy.ASC) {
+        rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+      } else {
+        rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+      }
     }
   }
 </script>
@@ -113,7 +122,10 @@
               {#if to_row_type(key) === 0}
                 {x}
               {:else}
-                <SingleBar --height="20px" percentage={(Number(x) * 100).toFixed(1)} />
+                <div class="single-bar">
+                  <SingleBar --height="20px"
+                    percentage={(Number(x) * 100).toFixed(1)} />
+                </div>
               {/if}
             </td>
           {/if}
@@ -142,7 +154,8 @@
       padding-bottom: 15px;
       color: var(--color-description);
       font-weight: 400;
-      width: max-content;
+      padding-right: 15px;
+      min-width: max-content;
       text-align: left;
 
       &.num {
@@ -171,6 +184,10 @@
 
       .pin-icon {
         cursor: pointer;
+      }
+
+      .single-bar {
+        width: 230px;
       }
     }
   }
