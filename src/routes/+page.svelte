@@ -104,7 +104,7 @@
           onFocus={() => show_search_result = true}
           onBlur={() => show_search_result = false}
           --margin="0 0 10px 0" />
-        <Card --direction="column" --height="100%">
+        <Card --direction="column" --height="100%" --justify="space-between">
           <div>
             <RadarChart data={radar_data} />
             <div class="list-container">
@@ -120,11 +120,11 @@
                 onMouseOut={() => highlight = null}
               />
             </div>
-            <div class="detail-button-container">
-              <a href="/detail">
-                <div class="detail-button">Click to view details</div>
-              </a>
-            </div>
+          </div>
+          <div class="detail-button-container">
+            <a href="/detail">
+              <div class="detail-button">Click to view details</div>
+            </a>
           </div>
         </Card>
       </div>
@@ -188,17 +188,21 @@
       .right {
         position: sticky;
         top: 10px;
-        height: 80vh;
+        height: 83vh;
       }
     }
 
-    div.table-container { width: 100%; height: 100px; overflow: auto; }
+    div.table-container {
+      width: 100%;
+      height: 100px;
+      overflow: auto;
+    }
 
     div.list-container {
+      height: calc(83vh - 380px);
       padding: 0 20px;
       margin: 0;
       overflow: auto;
-      max-height: 20%;
     }
 
     div.detail-button-container {

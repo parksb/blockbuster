@@ -13,5 +13,6 @@
     max-width: var(--max-width);
     height: var(--height);
     max-height: var(--max-height);
+    justify-content: var(--justify);
   }
 </style>
