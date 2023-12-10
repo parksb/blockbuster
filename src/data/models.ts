@@ -21,3 +21,9 @@ export interface ChainTsne {
 }
 
 export type ChainTsneMap = { [key: string]: ChainTsne };
+
+
+export enum OrderBy {
+  ASC,
+  DESC,
+}

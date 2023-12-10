@@ -16,6 +16,8 @@
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
+  import Toggle from "@src/components/Toggle.svelte";
+  import StackedBarTable from "@src/components/StackedBarTable.svelte";
 
   const chains = loadChains();
 
@@ -27,6 +29,7 @@
   let search_query: string = "";
   let show_search_result: boolean = false;
   let is_table_expanded = false;
+  let show_stacked_bar = false;
 
   $: {
     if (!highlight) {
@@ -85,9 +88,20 @@
             }}
           />
         </Card>
-        <Card --overflow="auto" --padding="0 20px 0 20px" --direction="column">
-          <Table data={Object.values(chains)} highlighted={$selected}
-            --max-height={is_table_expanded ? "auto" : "372px"} />
+        <Card --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
+          <div class="table-toggle-container">
+            <div>View stacked bar</div>
+            <Toggle checked={show_stacked_bar} onChange={() => show_stacked_bar = !show_stacked_bar} />
+          </div>
+          {#if show_stacked_bar}
+            <!-- <StackedBarTable data={Object.values(chains)} highlighted={$selected} -->
+            <!--   --max-height={is_table_expanded ? "auto" : "300px"} -->
+            <!--   --margin="15px 0 0 0" /> -->
+          {:else}
+            <Table data={Object.values(chains)} highlighted={$selected}
+              --max-height={is_table_expanded ? "auto" : "300px"}
+              --margin="15px 0 0 0" />
+          {/if}
           <button class="expand-button" on:click={() => is_table_expanded = !is_table_expanded}>
             {#if is_table_expanded}
               <ExpandLess />
@@ -177,7 +191,7 @@
     .body {
       display: flex;
       flex-direction: row;
-      margin-bottom: 50px;
+      margin-bottom: 30px;
 
       .left {
         flex: 2;
@@ -188,18 +202,24 @@
       .right {
         position: sticky;
         top: 10px;
-        height: 83vh;
+        height: 82vh;
       }
     }
 
-    div.table-container {
+    div.table-toggle-container {
       width: 100%;
-      height: 100px;
-      overflow: auto;
+      color: var(--color-description);
+      display: flex;
+      justify-content: flex-end;
+
+      & > div {
+        display: inline-block;
+        margin-right: 10px;
+      }
     }
 
     div.list-container {
-      height: calc(83vh - 380px);
+      height: calc(82vh - 380px);
       padding: 0 20px;
       margin: 0;
       overflow: auto;

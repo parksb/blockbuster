@@ -31,7 +31,7 @@
     align-items: center;
     width: var(--width);
     height: 100%;
-    background-color: var(--color-emphasis);
+    background-color: var(--fill);
     border-radius: 3px 0 0 3px;
 
     & > span {

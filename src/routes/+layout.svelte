@@ -23,5 +23,9 @@
     --color-line: #2d3239;
     --color-bg: #13151A;
     --color-bg2: #181A20;
+    --color-pink: #e03493;
+    --color-orange: #e97e2a;
+    --color-blue: #4080d4;
+    --color-emerald: #53b08e;
   }
 </style>

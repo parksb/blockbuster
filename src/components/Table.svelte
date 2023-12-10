@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome"
-  import { faSort, faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons"
   import Pin from "svelte-material-icons/Pin.svelte";
 
-  import type { Chain } from "@src/data/models";
+  import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
   import {selected} from "@src/store";
+  import SortIcon from "./SortIcon.svelte";
 
   export let data: Chain[] = [];
   export let highlighted: Chain[] = [];
@@ -28,12 +27,23 @@
       case "Decentralization": return "e_decentralization";
       case "Proposal activity": return "e_proposal_activity";
       case "Active account": return "e_active_account";
-      case "Markget cap": return "e_markget_cap";
+      case "Market cap": return "e_markget_cap";
     }
     return "";
   }
 
-  const columns = ["Pin", "Name", "Decentralization", "Proposal activity", "Active account", "Markget cap", "Rank"];
+  const key_to_bar_color = (k: string) => {
+    switch (k) {
+      case "e_decentralization": return "var(--color-pink)";
+      case "e_proposal_activity": return "var(--color-orange)";
+      case "e_active_account": return "var(--color-blue)";
+      case "e_markget_cap": return "var(--color-emerald)";
+    }
+
+    return "var(--color-emphasis)";
+  }
+
+  const columns = ["Pin", "Name", "Decentralization", "Proposal activity", "Active account", "Market cap", "Rank"];
   let rows = data.map((d) => (
     { // 키 순서가 컬럼 순서와 같아야 함.
       name: d.name,
@@ -45,13 +55,18 @@
     } as Chain
   ));
 
-  enum OrderBy {
-    ASC,
-    DESC,
-  }
 
   let order_column_label = columns[6];
   let order_by = OrderBy.ASC;
+  let pin_state = 0;
+
+  const onClickGlobalPin = () => {
+    if (pin_state) {
+      $selected = [];
+    } else {
+      $selected = rows;
+    }
+  }
 
   const changeOrder = (target: string) => {
     if (order_column_label == target) {
@@ -64,19 +79,24 @@
 
   $: {
     const key = label_to_column_key(order_column_label) as keyof Chain;
-    if (order_column_label === "Pin") {
-      const f = (x: Chain) => $selected.map(k => k.name).includes(x.name)
-      if (order_by === OrderBy.ASC) {
-        rows = [...rows.filter(x => !f(x)), ...rows.filter(f)];
-      } else {
-        rows = [...rows.filter(f), ...rows.filter(x => !f(x))];
-      }
+    const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name)
+    if (order_by === OrderBy.ASC) {
+      rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
     } else {
-      if (order_by === OrderBy.ASC) {
-        rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
-      } else {
-        rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
-      }
+      rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+    }
+    rows = [...rows.filter(pinf), ...rows.filter(x => !pinf(x))];
+  }
+
+  $: {
+    if ($selected.length == 0) {
+      pin_state = 0;
+    }
+    if ($selected.length > 0) {
+      pin_state = 1;
+    }
+    if ($selected.length == rows.length) {
+      pin_state = 2;
     }
   }
 </script>
@@ -85,22 +105,39 @@
   <table>
     <thead>
       <tr>
-        {#each columns as column}
-          <th>
-            <span>{column}</span>
-            <span class="icon" on:click={() => { changeOrder(column) }}>
-              {#if order_column_label === column}
-                {#if order_by === OrderBy.DESC}
-                  <FontAwesomeIcon icon={faSortDown} />
-                {:else}
-                  <FontAwesomeIcon icon={faSortUp} />
-                {/if}
-              {:else}
-                <FontAwesomeIcon icon={faSort} />
-              {/if}
-            </span>
-          </th>
-        {/each}
+        <th class={`pin pin-state-${pin_state}`}>
+          <span class="pin-icon" on:click={onClickGlobalPin}><Pin /></span>
+        </th>
+        <th>
+          Name
+          <SortIcon key="Name" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
+        <th>
+          Decentralization
+          <SortIcon key="Decentralization" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
+        <th>
+          Proposal activity
+          <SortIcon key="Proposal activity" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
+        <th>
+          Active account
+          <SortIcon key="Active account" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
+        <th>
+          Market cap
+          <SortIcon key="Market cap" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
+        <th>
+          Rank
+          <SortIcon key="Rank" onClick={changeOrder}
+            order_key={order_column_label} order_by={order_by} />
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -125,7 +162,8 @@
                   {x}
                 {:else}
                   <div class="single-bar">
-                    <SingleBar --height="25px"
+                    <SingleBar --height="24px"
+                      --fill={key_to_bar_color(key)}
                       percentage={(Number(x) * 100).toFixed(1)} />
                   </div>
                 {/if}
@@ -141,6 +179,7 @@
 <style lang="scss">
   .root {
     max-height: var(--max-height);
+    margin: var(--margin);
     overflow: auto;
   }
 
@@ -158,7 +197,7 @@
     text-align: left;
 
     & > tr > th {
-      padding: 15px 0 15px 0;
+      padding: 0 0 15px 0;
       color: var(--color-description);
       font-weight: 400;
       padding-right: 15px;
@@ -170,16 +209,11 @@
         text-align: right;
       }
     }
-
-    .icon {
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
   }
 
   tbody {
     & > tr > td {
-      padding: 10px 10px;
+      padding: 10px 0;
       min-width: max-content;
 
       &.num {
@@ -190,17 +224,21 @@
         color: var(--color-emphasis);
       }
 
-      &.pin {
-        vertical-align: bottom;
-
-        .pin-icon {
-          cursor: pointer;
-        }
-      }
-
       .single-bar {
-        min-width: 200px;
+        width: 200px;
       }
+    }
+  }
+
+  .pin {
+    vertical-align: bottom;
+
+    &.pin-state-2 {
+      color: var(--color-emphasis);
+    }
+
+    .pin-icon {
+      cursor: pointer;
     }
   }
 </style>
