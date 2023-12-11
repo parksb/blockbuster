@@ -1,6 +1,7 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
+  import {cdn_url} from "@src/data/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
   import {selected} from "@src/store";
@@ -143,32 +144,33 @@
     <tbody>
       {#each rows as row}
         <tr>
-          {#each [[], ...Object.entries(row)] as [key, x], i}
-            {#if i === 0} <!-- Pin -->
-              <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
-                <span class="pin-icon" on:click={() => {
-                  if ($selected.map(x => x.name).includes(row.name)) {
-                    $selected = $selected.filter(x => x.name !== row.name)
-                  } else {
-                    $selected = [...$selected, row]
-                  }
-                }}>
-                  <Pin />
-                </span>
-              </td>
-            {:else}
-              <td>
-                {#if to_row_type(key) === 0}
-                  {x}
-                {:else}
-                  <div class="single-bar">
-                    <SingleBar --height="24px"
-                      --fill={key_to_bar_color(key)}
-                      percentage={(Number(x) * 100).toFixed(1)} />
-                  </div>
-                {/if}
-              </td>
-            {/if}
+          <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
+            <span class="pin-icon" on:click={() => {
+              if ($selected.map(x => x.name).includes(row.name)) {
+                $selected = $selected.filter(x => x.name !== row.name)
+              } else {
+                $selected = [...$selected, row]
+              }
+            }}>
+              <Pin />
+            </span>
+          </td>
+          <td>
+            <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
+            {row.name}
+          </td>
+          {#each Object.entries(row).slice(1) as [key, x]}
+            <td>
+              {#if to_row_type(key) === 0}
+                {x}
+              {:else}
+                <div class="single-bar">
+                  <SingleBar --height="24px"
+                    --fill={key_to_bar_color(key)}
+                    percentage={(Number(x) * 100).toFixed(1)} />
+                </div>
+              {/if}
+            </td>
           {/each}
         </tr>
       {/each}
@@ -200,7 +202,6 @@
       padding: 0 0 15px 0;
       color: var(--color-description);
       font-weight: 400;
-      padding-right: 15px;
       min-width: max-content;
       text-align: left;
       border-bottom: 1px solid var(--color-line);
@@ -213,7 +214,7 @@
 
   tbody {
     & > tr > td {
-      padding: 10px 0;
+      padding: 10px 15px 10px 0;
       min-width: max-content;
 
       &.num {
@@ -226,6 +227,13 @@
 
       .single-bar {
         width: 200px;
+      }
+
+      img {
+        width: 1.1rem;
+        height: 1.1rem;
+        vertical-align: bottom;
+        margin-right: 2px;
       }
     }
   }
