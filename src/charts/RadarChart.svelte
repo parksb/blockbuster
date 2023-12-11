@@ -70,9 +70,9 @@
             y1: ({ value }) => 90 - value,
             x2: 0,
             y2: 90,
-            fill: ({ data }) => data.color,
+            fill: ({ data }) => data.name,
             fillOpacity: ({ blur }) => blur ? 0 : 0.1,
-            stroke: ({ data }) => data.color,
+            stroke: ({ data }) => data.name,
             strokeWidth: ({ blur }) => blur ? 0.5 : 1,
             curve: "cardinal-closed",
           }),
@@ -81,7 +81,7 @@
           Plot.dot(points, {
             x: ({ key }) => longitude(key),
             y: ({ value }) => 90 - value,
-            fill: ({ data }) => data.color,
+            fill: ({ data }) => data.name,
             fillOpacity: ({ blur }) => blur ? 0.3 : 0.7,
           }),
 
@@ -91,7 +91,7 @@
             Plot.pointer({
               x: ({ key }) => longitude(key),
               y: ({ value }) => 90 - value,
-              text: (d) => `${(d.value).toFixed(2)}`,
+              text: (d) => `${d.data.name}\n${(d.value * 100).toFixed(1)}%`,
               textAnchor: "start",
               dx: 4,
               fill: "currentColor",

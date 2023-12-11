@@ -55,6 +55,24 @@
       .domain([data_min('r'), data_max('r')])
       .range([10, 40]);
 
+    const tooltip = d3.select(".root")
+      .append("div")
+      .style("position", "absolute")
+      .style("display", "none")
+      .style("color", "var(--color-text)")
+      .style("font-size", "0.7rem");
+
+    const showTooltip = (e: any, d: Chain) => {
+      tooltip.style("display", "block")
+        .html(`${d.name} (${d.rank})`)
+        .style("left", (e.x + 10) + "px")
+        .style("top", (e.y + 10) + "px");
+    };
+
+    const hideTooltip = () => {
+      tooltip.style("display", "none");
+    };
+
     // Add bubbles
     svg.append('g')
       .selectAll("dot")
@@ -67,8 +85,9 @@
       .attr("stroke-width", 3)
       .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
-      .on("mouseover", (e, d) => onMouseOver(e, d))
-      .on("mouseout", (e, d) => onMouseOut(e, d))
+      .on("mouseover", (e, d) => { onMouseOver(e, d); showTooltip(e, d.data); })
+      .on("mouseout", (e, d) => { onMouseOut(e, d); hideTooltip(); })
+      .on("mousemove", (e, d) => showTooltip(e, d.data))
       .on("click", (e, d) => onClick(e, d));
 
     svg.call(
