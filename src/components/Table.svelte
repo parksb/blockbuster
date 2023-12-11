@@ -10,6 +10,10 @@
   export let data: Chain[] = [];
   export let highlighted: Chain[] = [];
 
+  export let onMouseOver: (d: Chain) => void;
+  export let onMouseOut: () => void;
+  export let onClick: (d: Chain) => void;
+
   const to_row_type = (k: string) => {
     switch (k) {
       case "name": return 0;
@@ -144,7 +148,12 @@
     </thead>
     <tbody>
       {#each rows as row}
-        <tr>
+        <tr on:click={() => onClick(row)}
+          on:mouseover={() => onMouseOver(row)}
+          on:focus={() => onMouseOver(row)}
+          on:mouseout={onMouseOut}
+          on:blur={onMouseOut}
+        >
           <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
             <span class="pin-icon" on:click={() => {
               if ($selected.map(x => x.name).includes(row.name)) {
@@ -214,6 +223,14 @@
   }
 
   tbody {
+    & > tr {
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--color-bg);
+      }
+    }
+
     & > tr > td {
       padding: 10px 15px 10px 0;
       min-width: max-content;

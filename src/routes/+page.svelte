@@ -3,7 +3,7 @@
   import ExpandMore from "@src/icons/ExpandMore.svelte";
   import ExpandLess from "@src/icons/ExpandLess.svelte";
 
-  import { selected } from "@src/store";
+  import { selected, preview } from "@src/store";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
 
@@ -17,14 +17,12 @@
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
-  import StackedBarTable from "@src/components/StackedBarTable.svelte";
 
   const chains = loadChains();
 
   let bubble_data = toBubbleChartDataMap(loadChainTsne());
   let radar_data = toRadarChartData([]);
 
-  let preview: Chain | null = null;
   let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
@@ -48,7 +46,7 @@
   }
 
   $: {
-    radar_data = toRadarChartData(preview ? [...$selected, preview] : $selected)
+    radar_data = toRadarChartData($preview ? [...$selected, $preview] : $selected)
   }
 </script>
 
@@ -66,26 +64,15 @@
         <Card --height="400px" --margin="0 0 30px 0">
           <BubbleChart
             data={bubble_data}
-            selected={$selected}
-            onClick={(e, d) => {
+            onClick={(d) => {
               if ($selected.find((x) => x.name === d.data.name)) {
-                d3.select(e.target).attr("stroke", "none");
                 $selected = $selected.filter((x) => x.name !== d.data.name);
               } else {
-                d3.select(e.target).attr("stroke", "white");
                 $selected = [...$selected, d.data];
               }
             }}
-            onMouseOver={(e, d) => {
-              preview = d.data;
-              d3.select(e.target).attr("stroke", "white");
-            }}
-            onMouseOut={(e, _) => {
-              if (!$selected.some((x) => x.name === preview?.name)) {
-                d3.select(e.target).attr("stroke", "none");
-              }
-              preview = null;
-            }}
+            onMouseOver={(d) => { $preview = d.data }}
+            onMouseOut={() => { $preview = null }}
           />
         </Card>
         <Card --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
@@ -100,7 +87,17 @@
           {:else}
             <Table data={Object.values(chains)} highlighted={$selected}
               --max-height={is_table_expanded ? "auto" : "300px"}
-              --margin="15px 0 0 0" />
+              --margin="15px 0 0 0"
+              onClick={(d) => {
+                if ($selected.find((x) => x.name === d.name)) {
+                  $selected = $selected.filter((x) => x.name !== d.name);
+                } else {
+                  $selected = [...$selected, d];
+                }
+              }}
+              onMouseOver={(d) => { $preview = d; highlight = d }}
+              onMouseOut={() => { $preview = null; highlight = null }}
+            />
           {/if}
           <button class="expand-button" on:click={() => is_table_expanded = !is_table_expanded}>
             {#if is_table_expanded}

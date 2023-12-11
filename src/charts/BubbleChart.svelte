@@ -5,13 +5,13 @@
   import {rankNumToColor} from "@src/utils";
   import type {Chain} from "@src/data/models";
   import type {BubbleChartData, BubbleChartDataMap} from '@src/charts/bubble_chart';
+  import {selected, preview} from '@src/store';
 
   export let data: BubbleChartDataMap<Chain>;
-  export let selected: Chain[];
 
-  export let onClick: (e: any, d: BubbleChartData<Chain>) => void;
-  export let onMouseOver: (e: any, d: BubbleChartData<Chain>) => void;
-  export let onMouseOut: (e: any, d: BubbleChartData<Chain>) => void;
+  export let onClick: (d: BubbleChartData<Chain>) => void;
+  export let onMouseOver: (d: BubbleChartData<Chain>) => void;
+  export let onMouseOut: () => void;
 
   let data_list = Object.values(data);
   let el: HTMLElement;
@@ -81,14 +81,14 @@
       .attr("cx", d => x(d.x))
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r))
-      .attr("stroke", d => selected.some(x => x.name === d.data.name) ? "white" : "none")
+      .attr("stroke", d => $selected.some(x => x.name === d.data.name) ? "white" : "none")
       .attr("stroke-width", 3)
       .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
-      .on("mouseover", (e, d) => { onMouseOver(e, d); showTooltip(e, d.data); })
-      .on("mouseout", (e, d) => { onMouseOut(e, d); hideTooltip(); })
+      .on("mouseover", (e, d) => { onMouseOver(d); showTooltip(e, d.data); })
+      .on("mouseout", (_, d) => { onMouseOut(d); hideTooltip(); })
       .on("mousemove", (e, d) => showTooltip(e, d.data))
-      .on("click", (e, d) => onClick(e, d));
+      .on("click", (_, d) => onClick(d));
 
     svg.call(
       // @ts-ignore
@@ -114,7 +114,10 @@
     try {
       d3.selectAll("circle").attr("stroke", (dt) => {
         const d = dt as BubbleChartData<Chain>;
-        if (selected.some(x => x.name === d.data.name)) {
+        if ($preview?.name === d.data.name) {
+          return "white";
+        }
+        if ($selected.some(x => x.name === d.data.name)) {
           return "white";
         }
         return "none";
