@@ -230,8 +230,8 @@
       }
 
       img {
-        width: 1.1rem;
-        height: 1.1rem;
+        width: 18px;
+        height: 18px;
         vertical-align: bottom;
         margin-right: 2px;
       }
