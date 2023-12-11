@@ -4,7 +4,8 @@
   import "../app.css";
 
   const chains = loadChains();
-  const default_selected = Object.values(chains).slice(0, 2);
+  const default_selected = Object.values(chains)
+    .sort((a, b) => b.e_total - a.e_total).slice(0, 3);
 
   if ($is_fresh) {
     $selected = default_selected;

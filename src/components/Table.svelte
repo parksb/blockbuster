@@ -85,7 +85,8 @@
 
   $: {
     const key = label_to_column_key(order_column_label) as keyof Chain;
-    const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name)
+    const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
+
     if (order_by === OrderBy.ASC) {
       rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
     } else {
@@ -155,15 +156,7 @@
           on:blur={onMouseOut}
         >
           <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
-            <span class="pin-icon" on:click={() => {
-              if ($selected.map(x => x.name).includes(row.name)) {
-                $selected = $selected.filter(x => x.name !== row.name)
-              } else {
-                $selected = [...$selected, row]
-              }
-            }}>
-              <Pin />
-            </span>
+            <span class="pin-icon"><Pin /></span>
           </td>
           <td>
             <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
