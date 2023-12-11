@@ -17,7 +17,7 @@
       on:mouseover={() => onMouseOver(d)}
       on:mouseout={() => onMouseOut(d)}>
       <div>
-        <div class="chip"></div>
+        <div class="chip" style="--color:{d.color}" />
         <div class="left">{d.name}</div>
       </div>
       <div>
@@ -53,7 +53,7 @@
       .chip {
         width: 0.5rem;
         height: 0.5rem;
-        background-color: red;
+        background-color: var(--color);
         border-radius: 100%;
         margin-right: 3px;
       }

@@ -53,6 +53,7 @@
       e_active_account: d.e_active_account,
       e_markget_cap: d.e_markget_cap,
       rank: d.rank,
+      color: d.color,
     } as Chain
   ));
 
@@ -159,7 +160,7 @@
             <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
             {row.name}
           </td>
-          {#each Object.entries(row).slice(1) as [key, x]}
+          {#each Object.entries(row).slice(1, 6) as [key, x]}
             <td>
               {#if to_row_type(key) === 0}
                 {x}
