@@ -1,5 +1,4 @@
 <script lang="ts">
-  import * as d3 from "d3";
   import ExpandMore from "@src/icons/ExpandMore.svelte";
   import ExpandLess from "@src/icons/ExpandLess.svelte";
 
@@ -20,7 +19,7 @@
 
   const chains = loadChains();
 
-  let bubble_data = toBubbleChartDataMap(loadChainTsne());
+  let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
   let radar_data = toRadarChartData([]);
 
   let highlight: Chain | null = null;

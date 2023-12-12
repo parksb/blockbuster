@@ -27,8 +27,8 @@
   onMount(() => {
     // set the dimensions and margins of the graph
     const margin = {top: 0, right: 0, bottom: 0, left: 0};
-    const width = 1200 - margin.left - margin.right;
-    const height = 570 - margin.top - margin.bottom;
+    const width = 1500 - margin.left - margin.right;
+    const height = 1000 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.create("svg")
@@ -53,7 +53,7 @@
     // Add a scale for bubble size
     const z = d3.scaleLinear()
       .domain([data_min('r'), data_max('r')])
-      .range([10, 40]);
+      .range([10, 50]);
 
     const tooltip = d3.select(".root")
       .append("div")
@@ -86,7 +86,7 @@
       .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
       .on("mouseover", (e, d) => { onMouseOver(d); showTooltip(e, d.data); })
-      .on("mouseout", (_, d) => { onMouseOut(d); hideTooltip(); })
+      .on("mouseout", () => { onMouseOut(); hideTooltip(); })
       .on("mousemove", (e, d) => showTooltip(e, d.data))
       .on("click", (_, d) => onClick(d));
 

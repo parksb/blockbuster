@@ -1,11 +1,11 @@
-import chains from "./blockbuster_chains.json";
-import raw_chains from "./blockbuster_raw_chains.json";
-import tsne_data from "./blockbuster_chain_tsne.json";
+import chains from "./chains.json";
+import raw_chains from "./raw_chains.json";
+import tsne_data from "./chain_tsne.json";
 
 import {ChainMap, ChainTsneMap} from "./models";
 
 export function loadChains(): ChainMap {
-  const loaded: ChainMap = chains
+  const loaded: ChainMap = chains;
 
   const NORMAL_DIST = [
     3, // Math.ceil(len * 0.001),
@@ -40,6 +40,12 @@ export function loadRawChains(): ChainMap {
   return raw_chains;
 }
 
-export function loadChainTsne(): ChainTsneMap {
-  return tsne_data;
+export function loadChainTsne(chains: ChainMap): ChainTsneMap {
+  const ret: ChainTsneMap = tsne_data;
+
+  for (const d of Object.values(ret)) {
+    ret[d.chain.name].chain = chains[d.chain.name];
+  }
+
+  return ret;
 }
