@@ -49,20 +49,22 @@
   }
 
   const columns = ["Pin", "Name", "Decentralization", "Proposal activity", "Active account", "Market cap", "Rank"];
-  let rows = data.map((d) => (
-    { // 키 순서가 컬럼 순서와 같아야 함.
-      name: d.name,
-      e_decentralization: d.e_decentralization,
-      e_proposal_activity: d.e_proposal_activity,
-      e_active_account: d.e_active_account,
-      e_markget_cap: d.e_markget_cap,
-      rank: d.rank,
-      // 이하로는 미노출
-      color: d.color,
-      e_total: d.e_total,
-    } as Chain
-  ));
-
+  let rows: Chain[] = [];
+  $: {
+    rows = data.map((d) => (
+      { // 키 순서가 컬럼 순서와 같아야 함.
+        name: d.name,
+        e_decentralization: d.e_decentralization,
+        e_proposal_activity: d.e_proposal_activity,
+        e_active_account: d.e_active_account,
+        e_markget_cap: d.e_markget_cap,
+        rank: d.rank,
+        // 이하로는 미노출
+        color: d.color,
+        e_total: d.e_total,
+      } as Chain
+    ));
+  }
 
   let order_column_label = columns[6];
   let order_by = OrderBy.DESC;

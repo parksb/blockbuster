@@ -17,7 +17,7 @@
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
 
-  const chains = loadChainsAt();
+  let chains = loadChainsAt();
 
   let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
   let radar_data = toRadarChartData([]);
@@ -25,8 +25,13 @@
   let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
+  let date = "2023-11-13";
   let is_table_expanded = false;
   let show_stacked_bar = false;
+
+  $: {
+    chains = loadChainsAt(date);
+  }
 
   $: {
     if (!highlight) {
@@ -58,9 +63,22 @@
     <div class="header">
       <h2>Blockbuster / Score</h2>
     </div>
+    <div class="top">
+      <TextField text={search_query}
+        --width="400px"
+        placeholder="Type chain name to search"
+        onInput={(s) => search_query = s}
+        onFocus={() => show_search_result = true}
+        onBlur={() => show_search_result = false}
+        --margin="0 20px 20px 0" />
+      <input type="date"
+        min="2023-10-30"
+        max="2023-11-13"
+        bind:value={date} />
+    </div>
     <div class="body">
       <div class="left">
-        <Card --height="400px" --margin="0 0 30px 0">
+        <Card --flex="1" --margin="0 0 20px 0" --overflow="hidden">
           <BubbleChart
             data={bubble_data}
             onClick={(d) => {
@@ -74,7 +92,7 @@
             onMouseOut={() => { $preview = null }}
           />
         </Card>
-        <Card --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
+        <Card --flex="1" --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
           <div class="table-toggle-container">
             <div>View stacked bar</div>
             <Toggle checked={show_stacked_bar} onChange={() => show_stacked_bar = !show_stacked_bar} />
@@ -85,7 +103,7 @@
             <!--   --margin="15px 0 0 0" /> -->
           {:else}
             <Table data={Object.values(chains)} highlighted={$selected}
-              --max-height={is_table_expanded ? "auto" : "300px"}
+              --max-height={is_table_expanded ? "auto" : "320px"}
               --margin="15px 0 0 0"
               onClick={(d) => {
                 if ($selected.find((x) => x.name === d.name)) {
@@ -108,12 +126,6 @@
         </Card>
       </div>
       <div class="right">
-        <TextField text={search_query}
-          placeholder="Type chain name to search"
-          onInput={(s) => search_query = s}
-          onFocus={() => show_search_result = true}
-          onBlur={() => show_search_result = false}
-          --margin="0 0 10px 0" />
         <Card --direction="column" --height="100%" --justify="space-between">
           <div>
             <RadarChart data={radar_data} />
@@ -152,6 +164,8 @@
   }
 
   .main {
+    display: flex;
+    flex-direction: column;
     background-color: var(--color-bg);
     width: 100%;
     height: 100%;
@@ -184,21 +198,36 @@
       }
     }
 
+    .top {
+      display: flex;
+      flex-direction: row;
+
+      input {
+        height: 30px;
+        background-color: var(--color-bg2);
+        border: 1px solid var(--color-line);
+        color: var(--color-description);
+      }
+    }
+
     .body {
       display: flex;
       flex-direction: row;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      height: calc(100% - 175px);
 
       .left {
+        display: flex;
+        flex-direction: column;
         flex: 2;
         margin-right: 20px;
         overflow: auto;
       }
 
       .right {
-        position: sticky;
+        display: flex;
+        flex-direction: column;
         top: 10px;
-        height: 82vh;
       }
     }
 

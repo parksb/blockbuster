@@ -28,6 +28,7 @@
 <style lang="scss">
   .root {
     margin: var(--margin);
+    width: var(--width);
 
     .input {
       display: flex;
@@ -36,6 +37,7 @@
       padding: 0.5rem 0.5rem 0.5rem 10px;
       border: 1px solid var(--color-line);
       color: var(--color-text);
+      height: 1rem;
     }
 
     input {

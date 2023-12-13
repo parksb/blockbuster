@@ -9,8 +9,7 @@ const chains = ochains as ChainDateMap;
 export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): ChainMap {
   const ret: ChainMap = {};
 
-  const first_date = Object.values(Object.values(chains)[0])[0].date;
-  if (d === "latest") d = first_date;
+  if (d === "latest") d = Object.values(Object.values(chains)[0])[0].date;
 
   // Calculate total score at d
   for (const key in chains) {
