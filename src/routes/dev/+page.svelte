@@ -2,16 +2,23 @@
   import * as Plot from "@observablehq/plot";
 
   import { loadChainsAt, loadRawChains } from "@src/data/loader";
-  import {all_chains_at} from "@src/utils";
+  import {all_chains_at, rankNumToColor} from "@src/utils";
 
-  const chain_map = loadChainsAt();
-  const raw_chain_map = loadRawChains();
+  let date = "2023-11-13";
+  const hide = ["cerberus", "kujira", "sifchain", "konstellation"];
+  // const hide: string[] = [];
 
-  let hide = ["cerberus", "kujira", "sifchain", "konstellation"];
-  // let hide: string[] = [];
-
+  let chain_map = loadChainsAt();
   let chain_list = Object.values(chain_map)
     .filter(x => !hide.includes(x.name));
+
+  const raw_chain_map = loadRawChains();
+
+  $: {
+    console.log(date);
+    chain_map = loadChainsAt(date);
+    chain_list = Object.values(chain_map).filter(x => !hide.includes(x.name));
+  }
 
   let raw_chain_list = all_chains_at(raw_chain_map, "2023-11-13")
     .filter(x => !hide.includes(x.name));
@@ -187,7 +194,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.barY(chain_list,
-            {x: "name", y: "e_total", sort: {x: "y", reverse: true}}),
+            {x: "name", y: "e_total", sort: {x: "y", reverse: true}, fill: d => rankNumToColor(d.rank)}),
         ],
       })
     );
@@ -209,30 +216,58 @@
       })
     );
   }
+  let total_histogram: HTMLElement;
+  const rank_count: { [key: number]: number } = {};
+  for (const chain of chain_list) {
+    rank_count[chain.rank] = (rank_count[chain.rank] || 0) + 1;
+  }
+  $: {
+    total_histogram?.firstChild?.remove();
+    total_histogram?.append(
+      Plot.plot({
+        width: 900,
+        height: 800,
+        marginBottom: 80,
+        y: {
+          grid: true,
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.barY(Object.entries(rank_count),
+            {x: d => d[0], y: d => d[1], fill: d => rankNumToColor(Number(d[0]))}),
+        ],
+      })
+    );
+  }
 </script>
 
 <div class="root">
-  <p>The number of chains: {chain_list.length}</p>
+  <div style="top: 0; background-color: black; color: white; position: fixed; width: 100%;">
+    <span>The number of chains: {chain_list.length}</span>
+    <input type="date" bind:value={date} />
+  </div>
+  <div>
+    <h1>Decentralization (Nakamoto)</h1>
+    <h2>Raw</h2>
+    <div bind:this={decentralization_raw} />
+    <div bind:this={decentralization_timeseries} />
+    <h2>Normalized</h2>
+    <div bind:this={decentralization} />
 
-  <h1>Decentralization (Nakamoto)</h1>
-  <h2>Raw</h2>
-  <div bind:this={decentralization_raw} />
-  <div bind:this={decentralization_timeseries} />
-  <h2>Normalized</h2>
-  <div bind:this={decentralization} />
+    <h1>Proposal Activity</h1>
+    <div bind:this={proposal_activity} />
 
-  <h1>Proposal Activity</h1>
-  <div bind:this={proposal_activity} />
+    <h1>Active Account</h1>
+    <h2>Raw</h2>
+    <div bind:this={active_account_raw} />
+    <div bind:this={active_account_timeseries} />
+    <h2>Normalized</h2>
+    <div bind:this={active_account} />
 
-  <h1>Active Account</h1>
-  <h2>Raw</h2>
-  <div bind:this={active_account_raw} />
-  <div bind:this={active_account_timeseries} />
-  <h2>Normalized</h2>
-  <div bind:this={active_account} />
-
-  <h1>Total</h1>
-  <h2>Normalized</h2>
-  <div bind:this={total} />
-  <div bind:this={total_timeseries} />
+    <h1>Total</h1>
+    <h2>Normalized</h2>
+    <div bind:this={total} />
+    <div bind:this={total_timeseries} />
+    <div bind:this={total_histogram} />
+  </div>
 </div>
