@@ -1,4 +1,5 @@
 import {Chain} from "@src/data/models";
+import {display_name} from "@src/utils";
 
 export interface RadarChartData<T> {
   data: T; // 데이터
@@ -18,7 +19,7 @@ export function toRadarChartData(chains: Chain[]): RadarChartData<Chain>[] {
       e_markget_cap: chain.e_markget_cap,
     }).map(([key, value]) => ({
       data: chain,
-      key: `${key.replace("e_", "").replaceAll("_", "\n")}`,
+      key: `${display_name((key).replace("e_", "").replaceAll("_", "\n"))}`,
       value,
       blur: false,
     })

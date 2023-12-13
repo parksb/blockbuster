@@ -1,6 +1,7 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
+  import {display_name, display_rank} from "@src/utils";
   import {cdn_url} from "@src/data/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
@@ -13,17 +14,6 @@
   export let onMouseOver: (d: Chain) => void;
   export let onMouseOut: () => void;
   export let onClick: (d: Chain) => void;
-
-  const to_row_type = (k: string) => {
-    switch (k) {
-      case "name": return 0;
-      case "rank": return 0;
-      case "e_decentralization": return 1;
-      case "e_proposal_activity": return 1;
-      case "e_active_account": return 1;
-      case "e_markget_cap": return 1;
-    }
-  };
 
   const label_to_column_key = (k: string) => {
     switch (k) {
@@ -172,21 +162,18 @@
           </td>
           <td>
             <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
-            {row.name}
+            {display_name(row.name)}
           </td>
-          {#each Object.entries(row).slice(1, 6) as [key, x]}
+          {#each Object.entries(row).slice(1, 5) as [key, x]}
             <td>
-              {#if to_row_type(key) === 0}
-                {x}
-              {:else}
-                <div class="single-bar">
-                  <SingleBar --height="24px"
-                    --fill={key_to_bar_color(key)}
-                    percentage={(Number(x) * 100).toFixed(1)} />
-                </div>
-              {/if}
+              <div class="single-bar">
+                <SingleBar --height="24px"
+                  --fill={key_to_bar_color(key)}
+                  percentage={(Number(x) * 100).toFixed(1)} />
+              </div>
             </td>
           {/each}
+          <td>{display_rank(row.rank)}</td>
         </tr>
       {/each}
     </tbody>

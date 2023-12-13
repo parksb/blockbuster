@@ -4,6 +4,7 @@ import tsne_data from "./chain_tsne.json";
 
 import {Chain, ChainDateMap, ChainMap, ChainTsneMap} from "./models";
 import {normalize, evalChain} from "@src/utils";
+import {RANKS} from "./constants";
 const chains = ochains as ChainDateMap;
 
 export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): ChainMap {
@@ -40,8 +41,6 @@ export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): C
     6, // Math.ceil(len * 0.021),
     3, // Math.ceil(len * 0.001),
   ];
-
-  const RANKS = Array.from({ length: 8 }, (_, k) => k + 1);
 
   let acc = 0;
   let chain_list = Object.values(ret).sort((a, b) => b.e_total - a.e_total);

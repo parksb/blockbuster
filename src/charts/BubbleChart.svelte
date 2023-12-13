@@ -2,7 +2,7 @@
   import * as d3 from 'd3';
   import {onMount} from 'svelte';
 
-  import {rankNumToColor} from "@src/utils";
+  import {display_name, display_rank, rankNumToColor} from "@src/utils";
   import type {Chain} from "@src/data/models";
   import type {BubbleChartData, BubbleChartDataMap} from '@src/charts/bubble_chart';
   import {selected, preview} from '@src/store';
@@ -64,7 +64,7 @@
 
     const showTooltip = (e: any, d: Chain) => {
       tooltip.style("display", "block")
-        .html(`${d.name} (${d.rank})`)
+        .html(`${display_name(d.name)} (${display_rank(d.rank)})`)
         .style("left", (e.x + 10) + "px")
         .style("top", (e.y + 10) + "px");
     };

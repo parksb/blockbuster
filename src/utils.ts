@@ -1,3 +1,4 @@
+import {DISPLAY_RANKS} from "./data/constants";
 import {Chain, ChainDateMap, ChainMap} from "./data/models";
 
 export function rankNumToStr(rank: number) {
@@ -34,6 +35,8 @@ export function rankNumToColor(rank: number) {
   return rankToColor(rankNumToStr(rank));
 }
 
+export const display_rank = (rank: number) => DISPLAY_RANKS[rank - 1];
+
 export function normalize(x: number, min: number, max: number) {
   const ret = (x - min) / (max - min);
   if (!ret) return 0;
@@ -58,4 +61,30 @@ export function evalChain(x: Chain, exclude: string[]): number {
     .filter(key => key.startsWith("e_"))
     // @ts-ignore
     .reduce((total, key) => total + x[key], 0);
+}
+
+export const display_name = (name: string) =>
+  name.split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+
+
+export function increaseBrightness(hex: string, percent: number) {
+  // strip the leading # if it's there
+  hex = hex.replace(/^\s*#|\s*$/g, '');
+
+  // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
+  if(hex.length == 3){
+    hex = hex.replace(/(.)/g, '$1$1');
+  }
+
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  return '#' +
+    ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+    ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+    ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
 }

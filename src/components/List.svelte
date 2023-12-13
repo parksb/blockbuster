@@ -3,6 +3,7 @@
   import { faXmark } from "@fortawesome/free-solid-svg-icons"
 
   import type { Chain } from "@src/data/models";
+  import { display_name, display_rank } from "@src/utils";
 
   export let data: Chain[];
   export let onRemove: (d: Chain) => void;
@@ -18,10 +19,10 @@
       on:mouseout={() => onMouseOut(d)}>
       <div>
         <div class="chip" style="--color:{d.color}" />
-        <div class="left">{d.name}</div>
+        <div class="left">{display_name(d.name)}</div>
       </div>
       <div>
-        <div class="right">{d.rank}</div>
+        <div class="right">{display_rank(d.rank)}</div>
         <button on:click={() => onRemove(d)}>
           <FontAwesomeIcon icon={faXmark} />
         </button>
@@ -62,7 +63,12 @@
         margin-right: 5px;
       }
 
+      &:hover button {
+        display: inline;
+      }
+
       button {
+        display: none;
         margin: 0;
         padding: 0;
         border: 0;

@@ -16,6 +16,8 @@
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
+  import {CHART_COLORS} from "@src/data/constants";
+  import {increaseBrightness} from "@src/utils";
 
   let chains = loadChainsAt();
 
@@ -51,6 +53,15 @@
 
   $: {
     radar_data = toRadarChartData($preview ? [...$selected, $preview] : $selected)
+  }
+
+  $: {
+    $selected = $selected.map((x, i) => ({
+      ...x,
+      color: increaseBrightness(CHART_COLORS[i % CHART_COLORS.length], i),
+    }));
+
+    if ($preview) $preview.color = "white";
   }
 </script>
 
@@ -116,13 +127,6 @@
               onMouseOut={() => { $preview = null; highlight = null }}
             />
           {/if}
-          <button class="expand-button" on:click={() => is_table_expanded = !is_table_expanded}>
-            {#if is_table_expanded}
-              <ExpandLess />
-            {:else}
-              <ExpandMore />
-            {/if}
-          </button>
         </Card>
       </div>
       <div class="right">
@@ -207,6 +211,7 @@
         background-color: var(--color-bg2);
         border: 1px solid var(--color-line);
         color: var(--color-description);
+        padding: 0 5px;
       }
     }
 
@@ -262,6 +267,10 @@
         text-align: center;
         border: 1px solid var(--color-line);
         padding: 7px;
+
+        &:hover {
+          background-color: var(--color-bg);
+        }
       }
     }
   }
