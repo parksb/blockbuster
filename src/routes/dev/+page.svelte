@@ -16,7 +16,9 @@
   let raw_chain_list = all_chains_at(raw_chain_map, "2023-11-13")
     .filter(x => !hide.includes(x.name));
 
-  let chain_list_timeseries = Object.values(raw_chain_map).flatMap(x => Object.values(x))
+  let chain_list_timeseries = Object.values(raw_chain_map)
+    // .slice(0, 10)
+    .flatMap(x => Object.values(x))
     .filter(x => !hide.includes(x.name));
 
   let decentralization_raw: HTMLElement;
@@ -75,7 +77,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_decentralization", stroke: "name"}),
-          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_decentralization", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_decentralization", z: "name", text: "name", textAnchor: "start", dx: 850 }))
         ]
       })
     );
@@ -162,7 +164,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_active_account", stroke: "name"}),
-          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_active_account", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_active_account", z: "name", text: "name", textAnchor: "start", dx: 850 }))
         ]
       })
     );
@@ -202,7 +204,7 @@
         marks: [
           Plot.ruleY([0]),
           Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_total", stroke: "name"}),
-          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_total", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_total", z: "name", text: "name", textAnchor: "start", dx: 850 }))
         ]
       })
     );

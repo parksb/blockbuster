@@ -50,3 +50,12 @@ export const all_chains_at = (chains: ChainDateMap, d: string): Chain[] => {
   }
   return ret;
 }
+
+// 함수 정의
+export function evalChain(x: Chain, exclude: string[]): number {
+  return Object.keys(x)
+    .filter(key => !exclude.includes(key))
+    .filter(key => key.startsWith("e_"))
+    // @ts-ignore
+    .reduce((total, key) => total + x[key], 0);
+}

@@ -57,13 +57,15 @@
       e_active_account: d.e_active_account,
       e_markget_cap: d.e_markget_cap,
       rank: d.rank,
+      // 이하로는 미노출
       color: d.color,
+      e_total: d.e_total,
     } as Chain
   ));
 
 
   let order_column_label = columns[6];
-  let order_by = OrderBy.ASC;
+  let order_by = OrderBy.DESC;
   let pin_state = 0;
 
   const onClickGlobalPin = () => {
@@ -87,10 +89,18 @@
     const key = label_to_column_key(order_column_label) as keyof Chain;
     const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
 
-    if (order_by === OrderBy.ASC) {
-      rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+    if (key === "rank") {
+      if (order_by === OrderBy.ASC) {
+        rows = rows.sort((a, b) => a.e_total - b.e_total);
+      } else {
+        rows = rows.sort((a, b) => b.e_total - a.e_total);
+      }
     } else {
-      rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+      if (order_by === OrderBy.ASC) {
+        rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+      } else {
+        rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+      }
     }
     rows = [...rows.filter(pinf), ...rows.filter(x => !pinf(x))];
   }
