@@ -33,7 +33,7 @@
     // append the svg object to the body of the page
     const svg = d3.create("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("viewBox", `-1200 0 ${width} ${height}`)
       .attr("width", "100%")
       .attr("height", "100%");
 

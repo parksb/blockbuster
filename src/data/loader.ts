@@ -2,10 +2,11 @@ import chains from "./chains.json";
 import raw_chains from "./raw_chains.json";
 import tsne_data from "./chain_tsne.json";
 
-import {ChainMap, ChainTsneMap} from "./models";
+import {ChainDateMap, ChainMap, ChainTsneMap} from "./models";
+import {all_chains_at} from "@src/utils";
 
-export function loadChains(): ChainMap {
-  const loaded: ChainMap = chains;
+export function loadChainsAt(d: string = "latest"): ChainMap {
+  const ret: ChainMap = {};
 
   const NORMAL_DIST = [
     3, // Math.ceil(len * 0.001),
@@ -20,31 +21,37 @@ export function loadChains(): ChainMap {
 
   const RANKS = Array.from({ length: 8 }, (_, k) => k + 1);
 
+  const FIRST_DATE = Object.values(Object.values(chains)[0])[0].date;
+  if (d === "latest") d = FIRST_DATE;
+
   let acc = 0;
-  let chain_list = Object.values(loaded).sort((a, b) => b.e_total - a.e_total);
-  for (let i = 0; i < NORMAL_DIST.length; i++) {
-    const len = NORMAL_DIST[i];
-    const rank = RANKS[i];
+  let chain_list = all_chains_at(chains, d).sort((a, b) => b.e_total - a.e_total);
+
+  for (let j = 0; j < NORMAL_DIST.length; j++) {
+    const len = NORMAL_DIST[j];
+    const rank = RANKS[j];
 
     for (const c of chain_list.slice(acc, acc + len)) {
-      loaded[c.name].rank = rank;
+      ret[c.name] = (chains as ChainDateMap)[c.name][d];
+      ret[c.name].rank = rank;
     }
 
     acc += len;
   }
 
-  return loaded;
+  return ret;
 }
 
-export function loadRawChains(): ChainMap {
+export function loadRawChains(): ChainDateMap {
   return raw_chains;
 }
 
 export function loadChainTsne(chains: ChainMap): ChainTsneMap {
-  const ret: ChainTsneMap = tsne_data;
+  const ret: ChainTsneMap = {};
 
-  for (const d of Object.values(ret)) {
-    ret[d.chain.name].chain = chains[d.chain.name];
+  for (const k of Object.keys(chains)) {
+    ret[k] = (tsne_data as ChainTsneMap)[k];
+    ret[k].chain = chains[k];
   }
 
   return ret;

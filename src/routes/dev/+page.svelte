@@ -1,13 +1,23 @@
 <script lang="ts">
   import * as Plot from "@observablehq/plot";
 
-  import { loadChains, loadRawChains } from "@src/data/loader";
+  import { loadChainsAt, loadRawChains } from "@src/data/loader";
+  import {all_chains_at} from "@src/utils";
 
-  const chain_map = loadChains();
+  const chain_map = loadChainsAt();
   const raw_chain_map = loadRawChains();
 
-  let chain_list = Object.values(chain_map);
-  let raw_chain_list = Object.values(raw_chain_map);
+  let hide = ["cerberus", "kujira", "sifchain", "konstellation"];
+  // let hide: string[] = [];
+
+  let chain_list = Object.values(chain_map)
+    .filter(x => !hide.includes(x.name));
+
+  let raw_chain_list = all_chains_at(raw_chain_map, "2023-11-13")
+    .filter(x => !hide.includes(x.name));
+
+  let chain_list_timeseries = Object.values(raw_chain_map).flatMap(x => Object.values(x))
+    .filter(x => !hide.includes(x.name));
 
   let decentralization_raw: HTMLElement;
   $: {
@@ -50,6 +60,23 @@
           Plot.barY(chain_list,
             {x: "name", y: "e_decentralization", sort: {x: "y", reverse: true}}),
         ],
+      })
+    );
+  }
+  let decentralization_timeseries: HTMLElement;
+  $: {
+    decentralization_timeseries?.firstChild?.remove();
+    decentralization_timeseries?.append(
+      Plot.plot({
+        style: "overflow: visible;",
+        width: 900,
+        height: 500,
+        y: {grid: true},
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_decentralization", stroke: "name"}),
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_decentralization", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+        ]
       })
     );
   }
@@ -123,6 +150,23 @@
       })
     );
   }
+  let active_account_timeseries: HTMLElement;
+  $: {
+    active_account_timeseries?.firstChild?.remove();
+    active_account_timeseries?.append(
+      Plot.plot({
+        style: "overflow: visible;",
+        width: 900,
+        height: 500,
+        y: {grid: true},
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_active_account", stroke: "name"}),
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_active_account", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+        ]
+      })
+    );
+  }
 
   let total: HTMLElement;
   $: {
@@ -146,6 +190,23 @@
       })
     );
   }
+  let total_timeseries: HTMLElement;
+  $: {
+    total_timeseries?.firstChild?.remove();
+    total_timeseries?.append(
+      Plot.plot({
+        style: "overflow: visible;",
+        width: 900,
+        height: 500,
+        y: {grid: true},
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_total", stroke: "name"}),
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_total", z: "name", text: "name", textAnchor: "start", dx: 850, rotate: 45 }))
+        ]
+      })
+    );
+  }
 </script>
 
 <div class="root">
@@ -154,6 +215,7 @@
   <h1>Decentralization (Nakamoto)</h1>
   <h2>Raw</h2>
   <div bind:this={decentralization_raw} />
+  <div bind:this={decentralization_timeseries} />
   <h2>Normalized</h2>
   <div bind:this={decentralization} />
 
@@ -163,9 +225,12 @@
   <h1>Active Account</h1>
   <h2>Raw</h2>
   <div bind:this={active_account_raw} />
+  <div bind:this={active_account_timeseries} />
   <h2>Normalized</h2>
   <div bind:this={active_account} />
 
   <h1>Total</h1>
+  <h2>Normalized</h2>
   <div bind:this={total} />
+  <div bind:this={total_timeseries} />
 </div>

@@ -9,7 +9,7 @@
   import BubbleChart from "@src/charts/BubbleChart.svelte";
   import RadarChart from "@src/charts/RadarChart.svelte";
 
-  import {loadChains, loadChainTsne} from "@src/data/loader";
+  import {loadChainsAt, loadChainTsne} from "@src/data/loader";
   import type {Chain} from "@src/data/models";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
@@ -17,7 +17,7 @@
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
 
-  const chains = loadChains();
+  const chains = loadChainsAt();
 
   let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
   let radar_data = toRadarChartData([]);

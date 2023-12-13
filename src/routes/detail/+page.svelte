@@ -10,7 +10,7 @@
   import BubbleChart from "@src/charts/BubbleChart.svelte";
   import RadarChart from "@src/charts/RadarChart.svelte";
 
-  import {loadChains, loadChainTsne} from "@src/data/loader";
+  import {loadChainsAt, loadChainTsne} from "@src/data/loader";
   import type {Chain} from "@src/data/models";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
@@ -18,9 +18,8 @@
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
 
-  const chains = loadChains();
+  const chains = loadChainsAt();
 
-  let bubble_data = toBubbleChartDataMap(loadChainTsne());
   let radar_data = toRadarChartData([]);
 
   let preview: Chain | null = null;
@@ -33,16 +32,8 @@
   $: {
     if (!highlight) {
       radar_data = highlightRadarChart(radar_data, () => false);
-
-      if (show_search_result) {
-        bubble_data = highlightBubbleChart(bubble_data, (k) =>
-          !k.toLowerCase().includes(search_query.toLowerCase()));
-      } else {
-        bubble_data = highlightBubbleChart(bubble_data, () => false);
-      }
     } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
       radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
-      bubble_data = highlightBubbleChart(bubble_data, (k) => k !== highlight!!.name);
     }
   }
 

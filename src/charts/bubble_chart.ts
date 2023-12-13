@@ -13,15 +13,15 @@ export type BubbleChartDataMap<T> = { [key: string]: BubbleChartData<T> };
 export function toBubbleChartDataMap(chains: ChainTsneMap): BubbleChartDataMap<Chain> {
   const result: BubbleChartDataMap<Chain> = {};
 
-  for (const chain of Object.values(chains)) {
-    result[chain.chain.name] = {
-      data: chain.chain,
-      x: chain.x,
-      y: chain.y,
-      r: chain.chain.e_decentralization +
-        chain.chain.e_markget_cap +
-        chain.chain.e_active_account +
-        chain.chain.e_proposal_activity,
+  for (const c of Object.values(chains)) {
+    result[c.chain.name] = {
+      data: c.chain,
+      x: c.x,
+      y: c.y,
+      r: c.chain.e_decentralization +
+        c.chain.e_markget_cap +
+        c.chain.e_active_account +
+        c.chain.e_proposal_activity,
       b: false,
     };
   }

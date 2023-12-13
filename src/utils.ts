@@ -1,3 +1,5 @@
+import {Chain, ChainDateMap, ChainMap} from "./data/models";
+
 export function rankNumToStr(rank: number) {
   switch (rank) {
     case 1: return 'AAA';
@@ -30,4 +32,21 @@ export function rankToColor(rank: string) {
 
 export function rankNumToColor(rank: number) {
   return rankToColor(rankNumToStr(rank));
+}
+
+export function normalize(x: number, min: number, max: number) {
+  const ret = (x - min) / (max - min);
+  if (!ret) return 0;
+  return ret;
+}
+
+export const datestamp = (d: Date) => d.toISOString().slice(0, 10);
+
+export const all_chains_at = (chains: ChainDateMap, d: string): Chain[] => {
+  const ret: Chain[] = [];
+  for (const key of Object.keys(chains)) {
+    if (!chains[key][d]) continue;
+    ret.push(chains[key][d]);
+  }
+  return ret;
 }

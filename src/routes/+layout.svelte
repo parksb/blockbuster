@@ -1,9 +1,9 @@
 <script lang="ts">
   import { selected, is_fresh } from "@src/store";
-  import {loadChains} from "@src/data/loader";
+  import {loadChainsAt} from "@src/data/loader";
   import "../app.css";
 
-  const chains = loadChains();
+  const chains = loadChainsAt();
   const default_selected = Object.values(chains)
     .sort((a, b) => b.e_total - a.e_total).slice(0, 3);
 

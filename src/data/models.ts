@@ -1,5 +1,9 @@
 // It MUST be synced with the remote.
 
+export interface ChainDateMap {
+  [key: string]: { [key: string]: Chain };
+}
+
 export interface ChainMap {
   [key: string]: Chain;
 }
@@ -13,6 +17,7 @@ export interface Chain {
   e_active_account: number; // 활성 검증자 지표
   e_markget_cap: number; // 시가총액 변동 지표
   e_total: number; // 종합
+  date: string;
 }
 
 export interface ChainTsne {
@@ -22,7 +27,6 @@ export interface ChainTsne {
 }
 
 export type ChainTsneMap = { [key: string]: ChainTsne };
-
 
 export enum OrderBy {
   ASC,
