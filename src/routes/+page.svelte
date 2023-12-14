@@ -7,7 +7,6 @@
   import RadarChart from "@src/charts/RadarChart.svelte";
 
   import {loadChainsAt, loadChainTsne} from "@src/data/loader";
-  import type {Chain} from "@src/data/models";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
@@ -15,13 +14,13 @@
   import Toggle from "@src/components/Toggle.svelte";
   import {CHART_COLORS} from "@src/data/constants";
   import {increaseBrightness} from "@src/utils";
+  import BarChart from "@src/charts/BarChart.svelte";
 
   let chains = loadChainsAt();
 
   let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
   let radar_data = toRadarChartData([]);
 
-  let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
   let date = "2023-11-13";
@@ -35,7 +34,7 @@
   }
 
   $: {
-    if (!highlight) {
+    if (!$preview) {
       radar_data = highlightRadarChart(radar_data, () => false);
 
       if (show_search_result) {
@@ -45,8 +44,8 @@
         bubble_data = highlightBubbleChart(bubble_data, () => false);
       }
     } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
-      radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
-      bubble_data = highlightBubbleChart(bubble_data, (k) => k !== highlight!!.name);
+      radar_data = highlightRadarChart(radar_data, (k) => k !== $preview!!.name);
+      bubble_data = highlightBubbleChart(bubble_data, (k) => k !== $preview!!.name);
     }
   }
 
@@ -122,14 +121,14 @@
                   $selected = [...$selected, d];
                 }
               }}
-              onMouseOver={(d) => { $preview = d; highlight = d }}
-              onMouseOut={() => { $preview = null; highlight = null }}
+              onMouseOver={(d) => { $preview = d; }}
+              onMouseOut={() => { $preview = null; }}
             />
           {/if}
         </Card>
       </div>
       <div class="right">
-        <Card --direction="column" --height="100%" --justify="space-between">
+        <Card --direction="column" --flex="1" --justify="space-between">
           <div>
             <RadarChart data={radar_data} />
             <div class="list-container">
@@ -137,12 +136,12 @@
                 data={$selected.sort((a, b) => a.rank - b.rank)}
                 onRemove={(d) => {
                   $selected = $selected.filter((x) => x.name !== d.name)
-                  if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
-                    highlight = null;
+                  if (!$selected.length || !$selected.find(x => x.name === $preview?.name)) {
+                    $preview = null;
                   }
                 }}
-                onMouseOver={(d) => highlight = d}
-                onMouseOut={() => highlight = null}
+                onMouseOver={(d) => $preview = d}
+                onMouseOut={() => $preview = null}
               />
             </div>
           </div>
@@ -151,6 +150,9 @@
               <div class="detail-button">Click to view details</div>
             </a>
           </div>
+        </Card>
+        <Card --padding="20px" --margin="20px 0 0 0">
+          <BarChart data={Object.values(chains)} />
         </Card>
       </div>
     </div>
@@ -248,7 +250,7 @@
     }
 
     div.list-container {
-      height: calc(82vh - 380px);
+      height: 250px;
       padding: 0 20px;
       margin: 0;
       overflow: auto;
