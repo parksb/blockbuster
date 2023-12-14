@@ -22,7 +22,7 @@
       case "Decentralization": return "e_decentralization";
       case "Proposal activity": return "e_proposal_activity";
       case "Active account": return "e_active_account";
-      case "Market cap": return "e_markget_cap";
+      case "Market cap": return "e_market_cap";
     }
     return "";
   }
@@ -32,7 +32,7 @@
       case "e_decentralization": return "var(--color-pink)";
       case "e_proposal_activity": return "var(--color-orange)";
       case "e_active_account": return "var(--color-blue)";
-      case "e_markget_cap": return "var(--color-emerald)";
+      case "e_market_cap": return "var(--color-emerald)";
     }
 
     return "var(--color-emphasis)";
@@ -47,7 +47,7 @@
         e_decentralization: d.e_decentralization,
         e_proposal_activity: d.e_proposal_activity,
         e_active_account: d.e_active_account,
-        e_markget_cap: d.e_markget_cap,
+        e_market_cap: d.e_market_cap,
         rank: d.rank,
         // 이하로는 미노출
         color: d.color,

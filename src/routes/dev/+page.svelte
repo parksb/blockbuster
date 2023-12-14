@@ -15,7 +15,6 @@
   const raw_chain_map = loadRawChains();
 
   $: {
-    console.log(date);
     chain_map = loadChainsAt(date);
     chain_list = Object.values(chain_map).filter(x => !hide.includes(x.name));
   }
@@ -177,6 +176,46 @@
     );
   }
 
+  let market_cap: HTMLElement;
+  $: {
+    market_cap?.firstChild?.remove();
+    market_cap?.append(
+      Plot.plot({
+        width: 900,
+        height: 500,
+        marginBottom: 80,
+        y: {
+          grid: true,
+        },
+        x: {
+          tickRotate: 50,
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.barY(chain_list,
+            {x: "name", y: "e_market_cap", sort: {x: "y", reverse: true}}),
+        ],
+      })
+    );
+  }
+  let market_cap_timeseries: HTMLElement;
+  $: {
+    market_cap_timeseries?.firstChild?.remove();
+    market_cap_timeseries?.append(
+      Plot.plot({
+        style: "overflow: visible;",
+        width: 900,
+        height: 500,
+        y: {grid: true},
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_market_cap", stroke: "name"}),
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_market_cap", z: "name", text: "name", textAnchor: "start", dx: 850 }))
+        ]
+      })
+    );
+  }
+
   let total: HTMLElement;
   $: {
     total?.firstChild?.remove();
@@ -261,8 +300,13 @@
     <h2>Raw</h2>
     <div bind:this={active_account_raw} />
     <div bind:this={active_account_timeseries} />
+
     <h2>Normalized</h2>
     <div bind:this={active_account} />
+
+    <h1>Market cap.</h1>
+    <div bind:this={market_cap} />
+    <div bind:this={market_cap_timeseries} />
 
     <h1>Total</h1>
     <h2>Normalized</h2>

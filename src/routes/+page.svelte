@@ -1,7 +1,4 @@
 <script lang="ts">
-  import ExpandMore from "@src/icons/ExpandMore.svelte";
-  import ExpandLess from "@src/icons/ExpandLess.svelte";
-
   import { selected, preview } from "@src/store";
   import Card from "@src/components/Card.svelte";
   import List from "@src/components/List.svelte";
@@ -33,6 +30,8 @@
 
   $: {
     chains = loadChainsAt(date);
+    $selected = $selected.map(x => chains[x.name]);
+    $preview = $preview ? chains[$preview.name] : null || null;
   }
 
   $: {

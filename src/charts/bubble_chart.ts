@@ -19,7 +19,7 @@ export function toBubbleChartDataMap(chains: ChainTsneMap): BubbleChartDataMap<C
       x: c.x,
       y: c.y,
       r: c.chain.e_decentralization +
-        c.chain.e_markget_cap +
+        c.chain.e_market_cap +
         c.chain.e_active_account +
         c.chain.e_proposal_activity,
       b: false,

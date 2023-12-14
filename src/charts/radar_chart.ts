@@ -16,7 +16,7 @@ export function toRadarChartData(chains: Chain[]): RadarChartData<Chain>[] {
       e_decentralization: chain.e_decentralization,
       e_active_account: chain.e_active_account,
       e_proposal_activity: chain.e_proposal_activity,
-      e_markget_cap: chain.e_markget_cap,
+      e_market_cap: chain.e_market_cap,
     }).map(([key, value]) => ({
       data: chain,
       key: `${display_name((key).replace("e_", "").replaceAll("_", "\n"))}`,
