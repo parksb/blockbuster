@@ -10,6 +10,7 @@
   import {increaseBrightness} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
+  import HeatMap from "@src/charts/HeatMap.svelte";
 
   let chains = loadChainsAt();
 
@@ -87,6 +88,7 @@
       </div>
       <div class="center">
         <Card --flex="1" --margin="0 0 20px 0" --overflow="hidden">
+          <HeatMap data={Object.values($selected)} />
         </Card>
       </div>
       <div class="right">

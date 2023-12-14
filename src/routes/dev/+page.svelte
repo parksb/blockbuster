@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as Plot from "@observablehq/plot";
+  import HeatMap from "@src/charts/HeatMap.svelte";
 
   import { loadChainsAt, loadRawChains } from "@src/data/loader";
   import {all_chains_at, rankNumToColor} from "@src/utils";
@@ -313,5 +314,6 @@
     <div bind:this={total} />
     <div bind:this={total_timeseries} />
     <div bind:this={total_histogram} />
+    <HeatMap data={Object.values(chain_map)} />
   </div>
 </div>
