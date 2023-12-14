@@ -1,44 +1,48 @@
 <script lang="ts">
-  import * as d3 from "d3";
-  import ExpandMore from "@src/icons/ExpandMore.svelte";
-  import ExpandLess from "@src/icons/ExpandLess.svelte";
-
-  import { selected } from "@src/store";
+  import { selected, preview, date } from "@src/store";
   import Card from "@src/components/Card.svelte";
-  import List from "@src/components/List.svelte";
 
-  import BubbleChart from "@src/charts/BubbleChart.svelte";
-  import RadarChart from "@src/charts/RadarChart.svelte";
-
-  import {loadChainsAt, loadChainTsne} from "@src/data/loader";
-  import type {Chain} from "@src/data/models";
-  import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
+  import {loadChainsAt} from "@src/data/loader";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
-  import Table from "@src/components/Table.svelte";
+  import SimpleTable from "@src/components/SimpleTable.svelte";
   import TextField from "@src/components/TextField.svelte";
-  import Toggle from "@src/components/Toggle.svelte";
+  import {CHART_COLORS} from "@src/data/constants";
+  import {increaseBrightness} from "@src/utils";
+  import BarChart from "@src/charts/BarChart.svelte";
+  import SideArea from "@src/components/SideArea.svelte";
 
-  const chains = loadChainsAt();
+  let chains = loadChainsAt();
 
   let radar_data = toRadarChartData([]);
 
-  let preview: Chain | null = null;
-  let highlight: Chain | null = null;
   let search_query: string = "";
   let show_search_result: boolean = false;
-  let is_table_expanded = false;
-  let show_stacked_bar = false;
 
   $: {
-    if (!highlight) {
+    chains = loadChainsAt($date);
+    $selected = $selected.map(x => chains[x.name]);
+    $preview = $preview ? chains[$preview.name] : null || null;
+  }
+
+  $: {
+    if (!$preview) {
       radar_data = highlightRadarChart(radar_data, () => false);
     } else { // 포커싱한 체인이 있을 때는 검색 하이라이트 무시.
-      radar_data = highlightRadarChart(radar_data, (k) => k !== highlight!!.name);
+      radar_data = highlightRadarChart(radar_data, (k) => k !== $preview!!.name);
     }
   }
 
   $: {
-    radar_data = toRadarChartData(preview ? [...$selected, preview] : $selected)
+    radar_data = toRadarChartData($preview ? [...$selected, $preview] : $selected)
+  }
+
+  $: {
+    $selected = $selected.map((x, i) => ({
+      ...x,
+      color: increaseBrightness(CHART_COLORS[i % CHART_COLORS.length], i),
+    }));
+
+    if ($preview) $preview.color = "white";
   }
 </script>
 
@@ -49,34 +53,48 @@
 <div class="root">
   <div class="main">
     <div class="header">
-      <h2>Blockbuster / Score / Compare</h2>
+      <h2><a href="/">Blockbuster</a> / <a href="/">Score</a> / Details</h2>
+    </div>
+    <div class="top">
+      <TextField text={search_query}
+        --width="400px"
+        placeholder="Type chain name to search"
+        onInput={(s) => search_query = s}
+        onFocus={() => show_search_result = true}
+        onBlur={() => show_search_result = false}
+        --margin="0 20px 20px 0" />
+      <input type="date"
+        min="2023-10-30"
+        max="2023-11-13"
+        bind:value={$date} />
     </div>
     <div class="body">
-      <div class="left"></div>
+      <div class="left">
+        <Card --flex="1" --margin="0" --padding="5px 20px" --overflow="hidden">
+          <SimpleTable data={Object.values(chains)} highlighted={$selected}
+            --margin="15px 0 0 0"
+            onClick={(d) => {
+              if ($selected.find((x) => x.name === d.name)) {
+                $selected = $selected.filter((x) => x.name !== d.name);
+              } else {
+                $selected = [...$selected, d];
+              }
+            }}
+            onMouseOver={(d) => { $preview = d; }}
+            onMouseOut={() => { $preview = null; }}
+          />
+        </Card>
+      </div>
+      <div class="center">
+        <Card --flex="1" --margin="0 0 20px 0" --overflow="hidden">
+        </Card>
+      </div>
       <div class="right">
-        <TextField text={search_query}
-          placeholder="Type chain name to search"
-          onInput={(s) => search_query = s}
-          onFocus={() => show_search_result = true}
-          onBlur={() => show_search_result = false}
-          --margin="0 0 10px 0" />
-        <Card --direction="column" --height="100%" --justify="space-between">
-          <div>
-            <RadarChart data={radar_data} />
-            <div class="list-container">
-              <List
-                data={$selected.sort((a, b) => a.rank - b.rank)}
-                onRemove={(d) => {
-                  $selected = $selected.filter((x) => x.name !== d.name)
-                  if (!$selected.length || !$selected.find(x => x.name === highlight?.name)) {
-                    highlight = null;
-                  }
-                }}
-                onMouseOver={(d) => highlight = d}
-                onMouseOut={() => highlight = null}
-              />
-            </div>
-          </div>
+        <Card --direction="column" --flex="1" --justify="space-between">
+          <SideArea radar_data={radar_data} />
+        </Card>
+        <Card --padding="20px" --margin="20px 0 0 0">
+          <BarChart data={Object.values(chains)} />
         </Card>
       </div>
     </div>
@@ -93,6 +111,8 @@
   }
 
   .main {
+    display: flex;
+    flex-direction: column;
     background-color: var(--color-bg);
     width: 100%;
     height: 100%;
@@ -104,8 +124,11 @@
       margin-bottom: 10px;
 
       & > h2 {
-        font-size: 1rem;
-        color: var(--color-text);
+        &, & > a {
+          font-size: 1rem;
+          color: var(--color-text);
+          text-decoration: none;
+        }
       }
 
       & > div.title-section {
@@ -125,43 +148,56 @@
       }
     }
 
+    .top {
+      display: flex;
+      flex-direction: row;
+
+      input {
+        height: 30px;
+        background-color: var(--color-bg2);
+        border: 1px solid var(--color-line);
+        color: var(--color-description);
+        padding: 0 5px;
+      }
+    }
+
     .body {
       display: flex;
       flex-direction: row;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      height: calc(100% - 175px);
 
       .left {
-        flex: 2;
+        display: flex;
+        flex-direction: column;
+        margin-right: 20px;
+        overflow: auto;
+      }
+
+      .center {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
         margin-right: 20px;
         overflow: auto;
       }
 
       .right {
-        position: sticky;
+        display: flex;
+        flex-direction: column;
         top: 10px;
-        height: 82vh;
       }
     }
 
-    div.list-container {
-      height: calc(82vh - 380px);
-      padding: 0 20px;
-      margin: 0;
-      overflow: auto;
-    }
+    div.table-toggle-container {
+      width: 100%;
+      color: var(--color-description);
+      display: flex;
+      justify-content: flex-end;
 
-    div.detail-button-container {
-      padding: 20px;
-
-      a {
-        text-decoration: none;
-        color: var(--color-text);
-      }
-
-      .detail-button {
-        text-align: center;
-        border: 1px solid var(--color-line);
-        padding: 7px;
+      & > div {
+        display: inline-block;
+        margin-right: 10px;
       }
     }
   }

@@ -12,3 +12,7 @@ export const preview: Writable<Chain | null> = writable(null, () => {
 export const is_fresh: Writable<boolean> = writable(true, () => {
   return () => {};
 });
+
+export const date: Writable<string> = writable("2023-11-13", () => {
+  return () => {};
+});

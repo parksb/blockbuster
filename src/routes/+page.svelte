@@ -1,11 +1,7 @@
 <script lang="ts">
-  import { selected, preview } from "@src/store";
+  import { selected, preview, date } from "@src/store";
   import Card from "@src/components/Card.svelte";
-  import List from "@src/components/List.svelte";
-
   import BubbleChart from "@src/charts/BubbleChart.svelte";
-  import RadarChart from "@src/charts/RadarChart.svelte";
-
   import {loadChainsAt, loadChainTsne} from "@src/data/loader";
   import {highlightBubbleChart, toBubbleChartDataMap} from "@src/charts/bubble_chart";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
@@ -15,6 +11,7 @@
   import {CHART_COLORS} from "@src/data/constants";
   import {increaseBrightness} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
+  import SideArea from "@src/components/SideArea.svelte";
 
   let chains = loadChainsAt();
 
@@ -23,12 +20,11 @@
 
   let search_query: string = "";
   let show_search_result: boolean = false;
-  let date = "2023-11-13";
   let is_table_expanded = false;
   let show_stacked_bar = false;
 
   $: {
-    chains = loadChainsAt(date);
+    chains = loadChainsAt($date);
     $selected = $selected.map(x => chains[x.name]);
     $preview = $preview ? chains[$preview.name] : null || null;
   }
@@ -70,7 +66,7 @@
 <div class="root">
   <div class="main">
     <div class="header">
-      <h2>Blockbuster / Score</h2>
+      <h2><a href="/">Blockbuster</a> / <a href="/">Score</a></h2>
     </div>
     <div class="top">
       <TextField text={search_query}
@@ -83,7 +79,7 @@
       <input type="date"
         min="2023-10-30"
         max="2023-11-13"
-        bind:value={date} />
+        bind:value={$date} />
     </div>
     <div class="body">
       <div class="left">
@@ -129,27 +125,7 @@
       </div>
       <div class="right">
         <Card --direction="column" --flex="1" --justify="space-between">
-          <div>
-            <RadarChart data={radar_data} />
-            <div class="list-container">
-              <List
-                data={$selected.sort((a, b) => a.rank - b.rank)}
-                onRemove={(d) => {
-                  $selected = $selected.filter((x) => x.name !== d.name)
-                  if (!$selected.length || !$selected.find(x => x.name === $preview?.name)) {
-                    $preview = null;
-                  }
-                }}
-                onMouseOver={(d) => $preview = d}
-                onMouseOut={() => $preview = null}
-              />
-            </div>
-          </div>
-          <div class="detail-button-container">
-            <a href="/detail">
-              <div class="detail-button">Click to view details</div>
-            </a>
-          </div>
+          <SideArea radar_data={radar_data} />
         </Card>
         <Card --padding="20px" --margin="20px 0 0 0">
           <BarChart data={Object.values(chains)} />
@@ -182,8 +158,11 @@
       margin-bottom: 10px;
 
       & > h2 {
-        font-size: 1rem;
-        color: var(--color-text);
+        &, & > a {
+          text-decoration: none;
+          font-size: 1rem;
+          color: var(--color-text);
+        }
       }
 
       & > div.title-section {
@@ -248,42 +227,5 @@
         margin-right: 10px;
       }
     }
-
-    div.list-container {
-      height: 250px;
-      padding: 0 20px;
-      margin: 0;
-      overflow: auto;
-    }
-
-    div.detail-button-container {
-      padding: 20px;
-
-      a {
-        text-decoration: none;
-        color: var(--color-text);
-      }
-
-      .detail-button {
-        text-align: center;
-        border: 1px solid var(--color-line);
-        padding: 7px;
-
-        &:hover {
-          background-color: var(--color-bg);
-        }
-      }
-    }
-  }
-
-  button.expand-button {
-    width: 100%;
-    background-color: var(--color-bg2);
-    border: 0;
-    text-align: center;
-    color: var(--color-text);
-    font-size: 1.4rem;
-    padding: 15px 0 10px 0;
-    cursor: pointer;
   }
 </style>
