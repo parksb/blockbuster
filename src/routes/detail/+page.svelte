@@ -2,17 +2,26 @@
   import { selected, preview, date } from "@src/store";
   import Card from "@src/components/Card.svelte";
 
-  import {loadChainsAt} from "@src/data/loader";
+  import {loadChainsBetween, loadChainsAt} from "@src/data/loader";
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import SimpleTable from "@src/components/SimpleTable.svelte";
   import TextField from "@src/components/TextField.svelte";
   import {CHART_COLORS} from "@src/data/constants";
-  import {increaseBrightness} from "@src/utils";
+  import {dates_between, increaseBrightness} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import HeatMap from "@src/charts/HeatMap.svelte";
+  import LineChart from "@src/charts/LineChart.svelte";
+  import {type Chain, type ChainMap} from "@src/data/models";
+  import BumpChart from "@src/charts/BumpChart.svelte";
 
-  let chains = loadChainsAt();
+  let chains = loadChainsAt($date);
+
+  let from_date = "2023-10-30";
+  let to_date = $date;
+
+  let chain_maps: ChainMap[] = [];
+  $: chain_maps = loadChainsBetween(from_date, to_date);
 
   let radar_data = toRadarChartData([]);
 
@@ -87,8 +96,12 @@
         </Card>
       </div>
       <div class="center">
-        <Card --flex="1" --margin="0 0 20px 0" --overflow="hidden">
-          <HeatMap data={Object.values($selected)} />
+        <Card --margin="0 0 20px 0" --padding="20px" --overflow="hidden">
+          <LineChart data_maps={chain_maps} yf={(d) => d.e_total} />
+        </Card>
+        <Card --padding="20px">
+          <BumpChart data_maps={chain_maps} dates={dates_between(from_date, to_date)} />
+          <!-- <HeatMap data={Object.values($selected)} /> -->
         </Card>
       </div>
       <div class="right">

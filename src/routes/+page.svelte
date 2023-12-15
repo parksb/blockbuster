@@ -13,7 +13,7 @@
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
 
-  let chains = loadChainsAt();
+  let chains = loadChainsAt($date);
 
   let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
   let radar_data = toRadarChartData([]);

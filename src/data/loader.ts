@@ -3,7 +3,7 @@ import raw_chains from "./raw_chains.json";
 import tsne_data from "./chain_tsne.json";
 
 import {Chain, ChainDateMap, ChainMap, ChainTsneMap} from "./models";
-import {normalize, evalChain} from "@src/utils";
+import {normalize, evalChain, dates_between} from "@src/utils";
 import {RANKS} from "./constants";
 const chains = ochains as ChainDateMap;
 
@@ -56,6 +56,15 @@ export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): C
     acc += len;
   }
 
+  return ret;
+}
+
+export function loadChainsBetween(from: string, to: string): ChainMap[] {
+  const dates = dates_between(from, to);
+  const ret = [];
+  for (const date of dates) {
+    ret.push(loadChainsAt(date));
+  }
   return ret;
 }
 

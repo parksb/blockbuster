@@ -1,5 +1,6 @@
 // It MUST be synced with the remote.
 
+// { chain_name: { datestamp: Chain } }
 export interface ChainDateMap {
   [key: string]: { [key: string]: Chain };
 }

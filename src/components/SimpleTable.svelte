@@ -27,17 +27,6 @@
     return "";
   }
 
-  const key_to_bar_color = (k: string) => {
-    switch (k) {
-      case "e_decentralization": return "var(--color-pink)";
-      case "e_proposal_activity": return "var(--color-orange)";
-      case "e_active_account": return "var(--color-blue)";
-      case "e_market_cap": return "var(--color-emerald)";
-    }
-
-    return "var(--color-emphasis)";
-  }
-
   const columns = ["Pin", "Name", "Rank"];
   let rows: Chain[] = [];
   $: {
@@ -52,7 +41,7 @@
     ));
   }
 
-  let order_column_label = columns[1];
+  let order_column_label = columns[2];
   let order_by = OrderBy.DESC;
   let pin_state = 0;
 

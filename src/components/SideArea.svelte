@@ -13,7 +13,7 @@
     <RadarChart data={radar_data} />
     <div class="list-container">
       <List
-        data={$selected.sort((a, b) => a.rank - b.rank)}
+        data={$selected.sort((a, b) => b.e_total - a.e_total)}
         onRemove={(d) => {
           $selected = $selected.filter((x) => x.name !== d.name)
           if (!$selected.length || !$selected.find(x => x.name === $preview?.name)) {

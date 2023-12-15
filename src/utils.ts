@@ -68,8 +68,6 @@ export const display_name = (name: string) =>
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-
-
 export function increaseBrightness(hex: string, percent: number) {
   // strip the leading # if it's there
   hex = hex.replace(/^\s*#|\s*$/g, '');
@@ -87,4 +85,17 @@ export function increaseBrightness(hex: string, percent: number) {
     ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
     ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
     ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+}
+
+export const dates_between = (from: string, to: string): string[] => {
+    const from_date: Date = new Date(from);
+    const to_date: Date = new Date(to);
+    const date_list: string[] = [];
+
+    while (from_date <= to_date) {
+        date_list.push(datestamp(from_date));
+        from_date.setDate(from_date.getDate() + 1);
+    }
+
+    return date_list;
 }
