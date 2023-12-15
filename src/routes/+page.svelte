@@ -1,4 +1,8 @@
 <script lang="ts">
+  import Fullscreen from "svelte-material-icons/Fullscreen.svelte";
+  import StackedBarChartIcon from "@src/icons/StackedBarChart.svelte";
+  import BarChartIcon from "@src/icons/BarChart.svelte";
+
   import { selected, preview, date } from "@src/store";
   import Card from "@src/components/Card.svelte";
   import BubbleChart from "@src/charts/BubbleChart.svelte";
@@ -13,6 +17,7 @@
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import type {Chain} from "@src/data/models";
+  import StackedBarTable from "@src/components/StackedBarTable.svelte";
 
   let chains = loadChainsAt($date);
 
@@ -23,8 +28,9 @@
   let searched_chains: Chain[] = [];
 
   let show_search_result: boolean = false;
-  let is_table_expanded = false;
+  let pinned_on_top = false;
   let show_stacked_bar = false;
+  let table_ratio = 1;
 
   $: {
     chains = loadChainsAt($date);
@@ -93,7 +99,7 @@
         onBlur={() => show_search_result = false}
         --margin="0 20px 20px 0" />
       <input type="date"
-        min="2023-10-30"
+        min="2023-10-01"
         max="2023-11-13"
         bind:value={$date} />
     </div>
@@ -113,19 +119,46 @@
             onMouseOut={() => { $preview = null }}
           />
         </Card>
-        <Card --flex="1" --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
-          <div class="table-toggle-container">
-            <div>View stacked bar</div>
-            <Toggle checked={show_stacked_bar} onChange={() => show_stacked_bar = !show_stacked_bar} />
+        <Card --flex={table_ratio} --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
+          <div class="table-util-container">
+            <div class="left card-title">All Chains</div>
+            <div class="right">
+              <div>Show Pinned on Top</div>
+              <Toggle checked={pinned_on_top}
+                onChange={() => pinned_on_top = !pinned_on_top} />
+              <div class="clickable-icon" on:click={() =>
+                table_ratio > 1 ?table_ratio = 1 : table_ratio = 3}>
+                <Fullscreen />
+              </div>
+              <div class="mini-tab">
+                <div class={show_stacked_bar ? "" : "active-tab"}
+                  on:click={() => show_stacked_bar = false}>
+                  <BarChartIcon />
+                </div>
+                <div class={show_stacked_bar ? "active-tab" : ""}
+                  on:click={() => show_stacked_bar = true}>
+                  <StackedBarChartIcon />
+                </div>
+              </div>
+            </div>
           </div>
           {#if show_stacked_bar}
-            <!-- <StackedBarTable data={Object.values(chains)} highlighted={$selected} -->
-            <!--   --max-height={is_table_expanded ? "auto" : "300px"} -->
-            <!--   --margin="15px 0 0 0" /> -->
+            <StackedBarTable data={Object.values(chains)} highlighted={searched_chains}
+              pinned_on_top={pinned_on_top}
+              onClick={(d) => {
+                if ($selected.find((x) => x.name === d.name)) {
+                  $selected = $selected.filter((x) => x.name !== d.name);
+                } else {
+                  $selected = [...$selected, d];
+                }
+              }}
+              onMouseOver={(d) => { $preview = d; }}
+              onMouseOut={() => { $preview = null; }}
+              --margin="15px 0 0 0" />
           {:else}
             <Table data={Object.values(chains)} highlighted={searched_chains}
-              --max-height={is_table_expanded ? "auto" : "320px"}
               --margin="15px 0 0 0"
+              pinned_on_top={pinned_on_top}
               onClick={(d) => {
                 if ($selected.find((x) => x.name === d.name)) {
                   $selected = $selected.filter((x) => x.name !== d.name);
@@ -143,8 +176,9 @@
         <Card --direction="column" --flex="1" --justify="space-between">
           <SideArea radar_data={radar_data} />
         </Card>
-        <Card --padding="20px" --margin="20px 0 0 0">
-          <BarChart data={Object.values(chains)} />
+        <Card --direction="column" --padding="20px" --margin="20px 0 0 0">
+          <div class="card-title">Total Distribution</div>
+          <BarChart data={Object.values(chains)} --margin="20px 0 0 0" />
         </Card>
       </div>
     </div>
@@ -217,7 +251,7 @@
       margin-bottom: 40px;
       height: calc(100% - 175px);
 
-      .left {
+      & > .left {
         display: flex;
         flex-direction: column;
         flex: 2;
@@ -225,23 +259,76 @@
         overflow: auto;
       }
 
-      .right {
+      & > .right {
         display: flex;
         flex-direction: column;
         top: 10px;
       }
     }
 
-    div.table-toggle-container {
+    div.table-util-container {
       width: 100%;
       color: var(--color-description);
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
 
-      & > div {
-        display: inline-block;
-        margin-right: 10px;
+      .right {
+        display: flex;
+        flex-direction: row;
+
+        & > div {
+          display: inline-block;
+          margin-right: 10px;
+        }
+
+        .clickable-icon {
+          display: flex;
+          margin-left: 5px;
+          border-radius: 50px;
+          cursor: pointer;
+          font-size: 1.3rem;
+          padding: 3px;
+          justify-content: center;
+          align-items: center;
+          &:hover {
+            background-color: var(--color-bg);
+          }
+        }
+
+        .mini-tab {
+          display: flex;
+          margin-left: -3px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          padding: 3px;
+          justify-content: center;
+          align-items: center;
+          background-color: var(--color-line);
+
+          & > div {
+            display: flex;
+
+            &.active-tab {
+              background-color: var(--color-bg2);
+            }
+
+            &:nth-child(1).active-tab {
+              border-radius: 3px 0px 0px 3px;
+            }
+
+            &:nth-child(2).active-tab {
+              border-radius: 0px 3px 3px 0;
+            }
+          }
+        }
       }
+    }
+
+    .card-title {
+      color: var(--color-text);
+      font-weight: 700;
+      font-size: 1rem;
     }
   }
 </style>

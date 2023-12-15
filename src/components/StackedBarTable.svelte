@@ -7,6 +7,7 @@
   import SingleBar from "@src/charts/SingleBar.svelte";
   import {selected, preview} from "@src/store";
   import SortIcon from "./SortIcon.svelte";
+  import SingleStackedBar from "@src/charts/SingleStackedBar.svelte";
 
   export let data: Chain[] = [];
   export let highlighted: Chain[] = [];
@@ -26,17 +27,6 @@
       case "Market cap": return "e_market_cap";
     }
     return "";
-  }
-
-  const key_to_bar_color = (k: string) => {
-    switch (k) {
-      case "e_decentralization": return "var(--color-pink)";
-      case "e_proposal_activity": return "var(--color-orange)";
-      case "e_active_account": return "var(--color-blue)";
-      case "e_market_cap": return "var(--color-emerald)";
-    }
-
-    return "var(--color-emphasis)";
   }
 
   const columns = ["Pin", "Name", "Decentralization", "Proposal activity", "Active account", "Market cap", "Rank"];
@@ -126,27 +116,25 @@
           <SortIcon key="Name" onClick={changeOrder}
             order_key={order_column_label} order_by={order_by} />
         </th>
-        <th>
-          Decentralization
-          <SortIcon key="Decentralization" onClick={changeOrder}
-            order_key={order_column_label} order_by={order_by} />
+        <th class="stacked-bar-column">
+          <div>Decentralization
+            <SortIcon key="Decentralization" onClick={changeOrder}
+              order_key={order_column_label} order_by={order_by} />
+          </div>
+          <div>Proposal activity
+            <SortIcon key="Proposal activity" onClick={changeOrder}
+              order_key={order_column_label} order_by={order_by} />
+          </div>
+          <div>Active account
+            <SortIcon key="Active account" onClick={changeOrder}
+              order_key={order_column_label} order_by={order_by} />
+          </div>
+          <div>Market cap
+            <SortIcon key="Market cap" onClick={changeOrder}
+              order_key={order_column_label} order_by={order_by} />
+          </div>
         </th>
-        <th>
-          Proposal activity
-          <SortIcon key="Proposal activity" onClick={changeOrder}
-            order_key={order_column_label} order_by={order_by} />
-        </th>
-        <th>
-          Active account
-          <SortIcon key="Active account" onClick={changeOrder}
-            order_key={order_column_label} order_by={order_by} />
-        </th>
-        <th>
-          Market cap
-          <SortIcon key="Market cap" onClick={changeOrder}
-            order_key={order_column_label} order_by={order_by} />
-        </th>
-        <th>
+        <th class="rank-column">
           Rank
           <SortIcon key="Rank" onClick={changeOrder}
             order_key={order_column_label} order_by={order_by} />
@@ -169,14 +157,19 @@
             <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
             {display_name(row.name)}
           </td>
-          {#each Object.entries(row).slice(1, 5) as [key, x]}
-            <td class="single-bar">
-              <SingleBar --height="24px"
-                --fill={key_to_bar_color(key)}
-                percentage={(Number(x) * 100).toFixed(1)} />
-            </td>
-          {/each}
-          <td class="single-bar">
+          <td>
+            <div class="single-bar">
+              <SingleStackedBar --height="24px"
+                max={row.e_total * 100}
+                percentages={[
+                  {percentage: row.e_decentralization, color: "var(--color-pink)"},
+                  {percentage: row.e_proposal_activity, color: "var(--color-orange)"},
+                  {percentage: row.e_active_account, color: "var(--color-blue)"},
+                  {percentage: row.e_market_cap, color: "var(--color-emerald)"}
+                ]} />
+            </div>
+          </td>
+          <td class="rank-bar">
             <SingleBar --height="24px"
               percentage={(row.e_total * 100).toFixed(1)}
               text={$preview?.name === row.name ? null : display_rank(row.rank)}
@@ -213,7 +206,7 @@
     }
 
     & > tr > th {
-      padding: 0 0 15px 0;
+      padding: 0 15px 15px 0;
       color: var(--color-description);
       font-weight: 400;
       min-width: max-content;
@@ -223,6 +216,22 @@
       &.num {
         text-align: right;
       }
+
+      &.stacked-bar-column {
+        display: flex;
+        & > div {
+          width: 235px;
+        }
+      }
+
+      &.rank-column {
+        width: 220px;
+      }
+    }
+
+    .icon {
+      font-size: 0.7rem;
+      cursor: pointer;
     }
   }
 
@@ -251,8 +260,16 @@
         color: var(--color-emphasis);
       }
 
-      &.single-bar {
-        width: 220px;
+      &.pin {
+        vertical-align: bottom;
+
+        &.pin-state-2 {
+          color: var(--color-emphasis);
+        }
+
+        .pin-icon {
+          cursor: pointer;
+        }
       }
 
       img {
@@ -261,18 +278,6 @@
         vertical-align: bottom;
         margin-right: 2px;
       }
-    }
-  }
-
-  .pin {
-    vertical-align: bottom;
-
-    &.pin-state-2 {
-      color: var(--color-emphasis);
-    }
-
-    .pin-icon {
-      cursor: pointer;
     }
   }
 </style>

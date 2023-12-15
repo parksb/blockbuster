@@ -34,7 +34,7 @@
 
 <style lang="scss">
   div.list-container {
-    height: 250px;
+    height: 215px;
     padding: 0 20px;
     margin: 0;
     overflow: auto;

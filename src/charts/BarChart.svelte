@@ -6,7 +6,7 @@
   import {rankNumToColor} from "@src/utils";
 
   export let data: Chain[];
-  export let width = 260;
+  export let width = 266;
   export let height = 100;
 
   let el: HTMLElement;
@@ -55,5 +55,6 @@
 <style>
   div.root {
     background-color: var(--color-bg2);
+    margin: var(--margin);
   }
 </style>
