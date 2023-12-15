@@ -12,6 +12,7 @@
   import {increaseBrightness} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
+  import type {Chain} from "@src/data/models";
 
   let chains = loadChainsAt($date);
 
@@ -19,6 +20,8 @@
   let radar_data = toRadarChartData([]);
 
   let search_query: string = "";
+  let searched_chains: Chain[] = [];
+
   let show_search_result: boolean = false;
   let is_table_expanded = false;
   let show_stacked_bar = false;
@@ -56,6 +59,19 @@
     }));
 
     if ($preview) $preview.color = "white";
+  }
+
+  $: {
+    if (show_search_result) {
+      if (search_query) {
+        searched_chains = Object.values(chains).filter((x) =>
+          x.name.toLowerCase().includes(search_query.toLowerCase()));
+      } else {
+        searched_chains = [];
+      }
+    } else {
+      searched_chains = [];
+    }
   }
 </script>
 
@@ -107,7 +123,7 @@
             <!--   --max-height={is_table_expanded ? "auto" : "300px"} -->
             <!--   --margin="15px 0 0 0" /> -->
           {:else}
-            <Table data={Object.values(chains)} highlighted={$selected}
+            <Table data={Object.values(chains)} highlighted={searched_chains}
               --max-height={is_table_expanded ? "auto" : "320px"}
               --margin="15px 0 0 0"
               onClick={(d) => {

@@ -66,7 +66,7 @@
         },
         y: {
           axis: null,
-          domain: [Object.values(selected_chains[0]).length + 0.5, 1]
+          domain: [Object.values(selected_chains[0]).length + 1.5, 1]
         },
         color: {
           domain: d3

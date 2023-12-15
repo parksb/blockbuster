@@ -1,11 +1,11 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
-  import {display_name, display_rank} from "@src/utils";
+  import {display_name, display_rank, rankNumToColor} from "@src/utils";
   import {cdn_url} from "@src/data/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
-  import {selected} from "@src/store";
+  import {selected, preview} from "@src/store";
   import SortIcon from "./SortIcon.svelte";
 
   export let data: Chain[] = [];
@@ -116,20 +116,25 @@
     </thead>
     <tbody>
       {#each rows as row}
-        <tr on:click={() => onClick(row)}
+        <tr class={highlighted.length ? (highlighted.map(x => x.name).includes(row.name) ? "" : "blur") : ""}
+          on:click={() => onClick(row)}
           on:mouseover={() => onMouseOver(row)}
           on:focus={() => onMouseOver(row)}
           on:mouseout={onMouseOut}
           on:blur={onMouseOut}
         >
-          <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
+          <td class={`pin ${$selected.map(x => x.name).includes(row.name) ? "pinned" : ""}`}>
             <span class="pin-icon"><Pin /></span>
           </td>
           <td>
             <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
             {display_name(row.name)}
           </td>
-          <td>{display_rank(row.rank)}</td>
+          <td class="single-bar">
+            <SingleBar percentage={(row.e_total * 100).toFixed(1)}
+              text={$preview?.name === row.name ? null : display_rank(row.rank)}
+              --fill={rankNumToColor(row.rank)} />
+          </td>
         </tr>
       {/each}
     </tbody>
@@ -174,6 +179,10 @@
     & > tr {
       cursor: pointer;
 
+      &.blur {
+        opacity: 0.5;
+      }
+
       &:hover {
         background-color: var(--color-bg);
       }
@@ -187,12 +196,12 @@
         text-align: right;
       }
 
-      &.highlighted {
+      &.pinned {
         color: var(--color-emphasis);
       }
 
-      .single-bar {
-        width: 200px;
+      &.single-bar {
+        width: 100px;
       }
 
       img {

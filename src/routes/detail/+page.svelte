@@ -10,7 +10,6 @@
   import {dates_between, increaseBrightness} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
-  import HeatMap from "@src/charts/HeatMap.svelte";
   import LineChart from "@src/charts/LineChart.svelte";
   import {type Chain, type ChainMap} from "@src/data/models";
   import BumpChart from "@src/charts/BumpChart.svelte";
@@ -27,6 +26,7 @@
 
   let search_query: string = "";
   let show_search_result: boolean = false;
+  let searched_chains: Chain[] = [];
 
   $: {
     chains = loadChainsAt($date);
@@ -53,6 +53,19 @@
     }));
 
     if ($preview) $preview.color = "white";
+  }
+
+  $: {
+    if (show_search_result) {
+      if (search_query) {
+        searched_chains = Object.values(chains).filter((x) =>
+          x.name.toLowerCase().includes(search_query.toLowerCase()));
+      } else {
+        searched_chains = [];
+      }
+    } else {
+      searched_chains = [];
+    }
   }
 </script>
 
@@ -81,7 +94,7 @@
     <div class="body">
       <div class="left">
         <Card --flex="1" --margin="0" --padding="5px 20px" --overflow="hidden">
-          <SimpleTable data={Object.values(chains)} highlighted={$selected}
+          <SimpleTable data={Object.values(chains)} highlighted={searched_chains}
             --margin="15px 0 0 0"
             onClick={(d) => {
               if ($selected.find((x) => x.name === d.name)) {
@@ -101,7 +114,6 @@
         </Card>
         <Card --padding="20px">
           <BumpChart data_maps={chain_maps} dates={dates_between(from_date, to_date)} />
-          <!-- <HeatMap data={Object.values($selected)} /> -->
         </Card>
       </div>
       <div class="right">

@@ -151,7 +151,8 @@
     </thead>
     <tbody>
       {#each rows as row}
-        <tr on:click={() => onClick(row)}
+        <tr class={highlighted.length ? (highlighted.map(x => x.name).includes(row.name) ? "" : "blur") : ""}
+          on:click={() => onClick(row)}
           on:mouseover={() => onMouseOver(row)}
           on:focus={() => onMouseOver(row)}
           on:mouseout={onMouseOut}
@@ -200,6 +201,10 @@
     background-color: var(--color-bg2);
     text-align: left;
 
+    & > tr {
+      background-color: var(--color-bg2);
+    }
+
     & > tr > th {
       padding: 0 0 15px 0;
       color: var(--color-description);
@@ -217,6 +222,10 @@
   tbody {
     & > tr {
       cursor: pointer;
+
+      &.blur {
+        opacity: 0.5;
+      }
 
       &:hover {
         background-color: var(--color-bg);

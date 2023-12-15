@@ -1,11 +1,12 @@
 <script lang="ts">
   export let percentage: string;
+  export let text: string | null = null;
 </script>
 
 <div class="root">
   <div class="max">
     <div class="fill" style="--width:{percentage}%;">
-      <span>{percentage}%</span>
+      <span>{text ?? `${percentage}%`}</span>
     </div>
   </div>
 </div>

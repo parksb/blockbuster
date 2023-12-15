@@ -314,6 +314,8 @@
     <div bind:this={total} />
     <div bind:this={total_timeseries} />
     <div bind:this={total_histogram} />
+
+    <h1>Total diffs</h1>
     <HeatMap data={Object.values(chain_map)} />
   </div>
 </div>
