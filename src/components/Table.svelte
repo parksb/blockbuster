@@ -158,7 +158,7 @@
           on:mouseout={onMouseOut}
           on:blur={onMouseOut}
         >
-          <td class={`pin ${highlighted.map(x => x.name).includes(row.name) ? "highlighted" : ""}`}>
+          <td class={`pin ${$selected.map(x => x.name).includes(row.name) ? "pinned" : ""}`}>
             <span class="pin-icon"><Pin /></span>
           </td>
           <td>
@@ -240,7 +240,7 @@
         text-align: right;
       }
 
-      &.highlighted {
+      &.pinned {
         color: var(--color-emphasis);
       }
 

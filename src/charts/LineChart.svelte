@@ -22,8 +22,7 @@
       Plot.plot({
         style: "overflow: visible;",
         width: 900,
-        height: 320,
-        marginBottom: 60,
+        height: 240,
         y: {grid: true},
         marks: [
           Plot.ruleY([0]),

@@ -17,7 +17,7 @@
 
   let el: HTMLElement;
 
-  export let width = 920;
+  export let width = 1000;
 
   export let dates: string[] = [];
 
@@ -33,7 +33,7 @@
         Plot.selectFirst({
           ...options,
           text: options.z,
-          dx: -(15 + (r || options.strokeWidth / 2)),
+          dx: -(10 + (r || options.strokeWidth / 2)),
           textAnchor: "end",
           fill: "currentColor"
         })
@@ -43,7 +43,7 @@
         Plot.selectLast({
           ...options,
           text: options.z,
-          dx: 15 + (r || options.strokeWidth / 2),
+          dx: 10 + (r || options.strokeWidth / 2),
           textAnchor: "start",
           fill: "currentColor"
         })
@@ -87,7 +87,7 @@
               }
             },
             reverse: true,
-            r: 10,
+            r: 8,
             fill: "white",
           })
         ]

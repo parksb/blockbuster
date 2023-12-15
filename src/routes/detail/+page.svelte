@@ -14,9 +14,17 @@
   import {type Chain, type ChainMap} from "@src/data/models";
   import BumpChart from "@src/charts/BumpChart.svelte";
 
+  enum Tab {
+    TOTAL = "total",
+    DECENTRALIZATION = "decentralization",
+    ACTIVE_ACCOUNT = "active_account",
+    PROPOSAL_ACTIVITY = "proposal_activity",
+    MARKET_CAP = "market_cap",
+  }
+
   let chains = loadChainsAt($date);
 
-  let from_date = "2023-10-30";
+  let from_date = "2023-10-01";
   let to_date = $date;
 
   let chain_maps: ChainMap[] = [];
@@ -27,6 +35,8 @@
   let search_query: string = "";
   let show_search_result: boolean = false;
   let searched_chains: Chain[] = [];
+
+  let current_tab = Tab.TOTAL;
 
   $: {
     chains = loadChainsAt($date);
@@ -109,6 +119,13 @@
         </Card>
       </div>
       <div class="center">
+        <div class="radio-container">
+          <div class="radio-button">Total</div>
+          <div class="radio-button">Decentralization</div>
+          <div class="radio-button">Active account</div>
+          <div class="radio-button">Proposal activity</div>
+          <div class="radio-button">Market cap</div>
+        </div>
         <Card --margin="0 0 20px 0" --padding="20px" --overflow="hidden">
           <LineChart data_maps={chain_maps} yf={(d) => d.e_total} />
         </Card>
@@ -207,6 +224,16 @@
         flex: 1;
         margin-right: 20px;
         overflow: auto;
+
+        .radio-container {
+          display: flex;
+          margin-bottom: 20px;
+          color: var(--color-text);
+
+          .radio-button {
+            flex: 1;
+          }
+        }
       }
 
       .right {
