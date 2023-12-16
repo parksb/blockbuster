@@ -55,10 +55,11 @@
     el?.firstChild?.remove();
     el?.append(
       Plot.plot({
+        width: 1030,
+        marginLeft: 40,
+        marginRight: 40,
         marginTop: 15,
-        marginLeft: 35,
-        marginRight: 35,
-        width,
+        marginBottom: 35,
         x: {
           domain: dates.map(x => new Date(x)),
           label: null,

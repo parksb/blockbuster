@@ -237,7 +237,7 @@
       flex-direction: row;
 
       input {
-        height: 30px;
+        height: 32px;
         background-color: var(--color-bg2);
         border: 1px solid var(--color-line);
         color: var(--color-description);

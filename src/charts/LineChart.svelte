@@ -21,14 +21,38 @@
     el?.append(
       Plot.plot({
         style: "overflow: visible;",
-        width: 900,
+        width: 1010,
         height: 240,
-        y: {grid: true},
+        marginLeft: 30,
+        marginRight: 30,
+        marginTop: 20,
+        marginBottom: 35,
+        y: { grid: true },
         marks: [
           Plot.ruleY([0]),
+          Plot.ruleX(data,
+            Plot.pointerX({
+              x: d => new Date(d.date), py: d => d.e_total, stroke: "#2d3239",
+            })
+          ),
+          Plot.text(data,
+            Plot.pointerX({
+              px: d => new Date(d.date),
+              py: d => d.e_total,
+              dy: -17,
+              frameAnchor: "top-left",
+              fontVariant: "tabular-nums",
+              text: (d) => [
+                `${display_name(d.name)}`,
+                `${(d.e_total * 100).toFixed(1)}%`,
+                `(${Plot.formatIsoDate(new Date(d.date))})`,
+              ].join("   "),
+            })
+          ),
           Plot.lineY(data, {
             x: (d) => new Date(d.date),
             y: d => yf(d),
+            curve: "basis",
             stroke: "color",
             strokeOpacity: (d) => {
               if ($preview) {

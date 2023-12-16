@@ -97,7 +97,7 @@
         onBlur={() => show_search_result = false}
         --margin="0 20px 20px 0" />
       <input type="date"
-        min="2023-10-30"
+        min="2023-10-01"
         max="2023-11-13"
         bind:value={$date} />
     </div>
@@ -135,9 +135,10 @@
       </div>
       <div class="right">
         <Card --direction="column" --flex="1" --justify="space-between">
-          <SideArea radar_data={radar_data} />
+          <SideArea radar_data={radar_data} show_detail_button={false} />
         </Card>
-        <Card --padding="20px" --margin="20px 0 0 0">
+        <Card --direction="column" --padding="20px" --margin="20px 0 0 0">
+          <div class="card-title">Total Distribution</div>
           <BarChart data={Object.values(chains)} />
         </Card>
       </div>
@@ -197,7 +198,7 @@
       flex-direction: row;
 
       input {
-        height: 30px;
+        height: 32px;
         background-color: var(--color-bg2);
         border: 1px solid var(--color-line);
         color: var(--color-description);
@@ -253,6 +254,12 @@
         display: inline-block;
         margin-right: 10px;
       }
+    }
+
+    .card-title {
+      color: var(--color-text);
+      font-weight: 700;
+      font-size: 1rem;
     }
   }
 </style>
