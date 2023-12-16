@@ -3,7 +3,7 @@ import raw_chains from "./raw_chains.json";
 import tsne_data from "./chain_tsne.json";
 
 import {Chain, ChainDateMap, ChainMap, ChainTsneMap} from "./models";
-import {normalize, evalChain, dates_between} from "@src/utils";
+import {normalize, evalChain, dates_between, normal_distribution} from "@src/utils";
 import {RANKS} from "./constants";
 const chains = ochains as ChainDateMap;
 
@@ -12,7 +12,6 @@ export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): C
 
   if (d === "latest") d = Object.values(Object.values(chains)[0])[0].date;
 
-  // Calculate total score at d
   for (const key in chains) {
     const x = chains[key][d];
     if (!x) continue; // 해당 날짜에 데이터가 없는 경우 무시.
@@ -30,23 +29,13 @@ export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): C
     ret[key].e_total = normalize(ret[key].e_total, min_total, max_total);
   }
 
-  // Calculate rank
-  const NORMAL_DIST = [
-    3, // Math.ceil(len * 0.001),
-    6, // Math.ceil(len * 0.021),
-    9, // Math.ceil(len * 0.136),
-    12, // Math.ceil(len * 0.341),
-    13, // Math.ceil(len * 0.341),
-    9, // Math.ceil(len * 0.136),
-    6, // Math.ceil(len * 0.021),
-    3, // Math.ceil(len * 0.001),
-  ];
+  const normal_dist = normal_distribution(Object.keys(ret).length + 1, 0, 2);
 
   let acc = 0;
   let chain_list = Object.values(ret).sort((a, b) => b.e_total - a.e_total);
 
-  for (let j = 0; j < NORMAL_DIST.length; j++) {
-    const len = NORMAL_DIST[j];
+  for (let j = 0; j < normal_dist.length; j++) {
+    const len = normal_dist[j];
     const rank = RANKS[j];
 
     for (const c of chain_list.slice(acc, acc + len)) {

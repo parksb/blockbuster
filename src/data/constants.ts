@@ -1,7 +1,7 @@
 export const cdn_url = "https://cdn.jsdelivr.net/gh/parksb/cdn@master"
 
-// 8등급제
-export const RANKS = Array.from({ length: 8 }, (_, k) => k + 1);
+// 9등급제
+export const RANKS = Array.from({ length: 9 }, (_, k) => k + 1);
 
 export const DISPLAY_RANKS = [
   "AAA",
@@ -12,6 +12,7 @@ export const DISPLAY_RANKS = [
   "B",
   "CCC",
   "CC",
+  "C",
 ];
 
 export const CHART_COLORS = [

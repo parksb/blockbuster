@@ -1,4 +1,4 @@
-import {CHART_COLORS, DISPLAY_RANKS} from "./data/constants";
+import {DISPLAY_RANKS} from "./data/constants";
 import {Chain, ChainDateMap} from "./data/models";
 
 export function rankNumToStr(rank: number) {
@@ -90,7 +90,7 @@ export const lightness = (chains: Chain[], x: Chain, i: number) => {
     counts[c.rank] = (counts[c.rank] || 0) + 1;
   });
 
-  return i * Math.floor(50 / (counts[x.rank]));
+  return i * Math.floor(60 / (counts[x.rank]));
 }
 
 export const dates_between = (from: string, to: string): string[] => {
@@ -115,4 +115,20 @@ export function distinct<T>(list: T[], f: (x: T) => string[]): T[] {
   });
 
   return Object.values(uniqueMap);
+}
+
+export function normal_distribution(size: number, mean: number, sd: number) {
+  const histogram: number[] = [];
+  const LEN = 9;
+
+  for (let i = 0; i < LEN; i++) {
+    const x = i - (LEN - 1) / 2;
+
+    const value = (1 / (sd * Math.sqrt(2 * Math.PI))) *
+      Math.exp(-((x - mean) ** 2) / (2 * sd ** 2));
+
+    histogram.push(Math.round(value * size));
+  }
+
+  return histogram;
 }
