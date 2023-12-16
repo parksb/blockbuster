@@ -6,6 +6,8 @@
   import {display_name} from "@src/utils";
 
   export let data_maps: ChainMap[];
+  export let gf: (x: Chain[]) => number;
+  export let key: string = "e_total";
 
   let selected_chains: Chain[][] =  [];
 
@@ -71,14 +73,14 @@
         },
         color: {
           domain: d3
-            .groupSort(data, (v) => v[0].e_total, (d) => d.name)
+            .groupSort(data, gf, (d) => d.name)
             .reverse()
         },
         marks: [
           bump_marks({
             x: (d: Chain) => new Date(d.date),
             z: (d: Chain) => display_name(d.name),
-            order: "e_total",
+            order: key,
             color: (d: Chain) => d.color,
             opacity: (d: Chain) => {
               if ($preview) {

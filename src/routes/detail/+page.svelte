@@ -13,14 +13,8 @@
   import {type Chain, type ChainMap} from "@src/data/models";
   import BumpChart from "@src/charts/BumpChart.svelte";
   import ChevronLeft from "svelte-material-icons/ChevronLeft.svelte";
-
-  enum Tab {
-    TOTAL = "total",
-    DECENTRALIZATION = "decentralization",
-    ACTIVE_ACCOUNT = "active_account",
-    PROPOSAL_ACTIVITY = "proposal_activity",
-    MARKET_CAP = "market_cap",
-  }
+  import { RadioGroupItem } from "@src/components/radio_group";
+  import RadioGroup from "@src/components/RadioGroup.svelte";
 
   let chains = loadChainsAt($date);
 
@@ -36,7 +30,7 @@
   let show_search_result: boolean = false;
   let searched_chains: Chain[] = [];
 
-  let current_tab = Tab.TOTAL;
+  let current_e = RadioGroupItem.TOTAL;
 
   $: {
     chains = loadChainsAt($date);
@@ -99,7 +93,7 @@
     </div>
     <div class="top">
       <TextField text={search_query}
-        --width="400px"
+        --width="350px"
         placeholder="Type chain name to search"
         onInput={(s) => search_query = s}
         onFocus={() => show_search_result = true}
@@ -109,6 +103,9 @@
         min="2023-10-01"
         max="2023-11-13"
         bind:value={$date} />
+      <RadioGroup --margin="0 0 20px 20px"
+        value={current_e}
+        onChange={(e) => current_e = e.currentTarget.value} />
     </div>
     <div class="body">
       <div class="left">
@@ -128,18 +125,13 @@
         </Card>
       </div>
       <div class="center">
-        <div class="radio-container">
-          <div class="radio-button">Total</div>
-          <div class="radio-button">Decentralization</div>
-          <div class="radio-button">Active account</div>
-          <div class="radio-button">Proposal activity</div>
-          <div class="radio-button">Market cap</div>
-        </div>
         <Card --margin="0 0 20px 0" --padding="20px" --overflow="hidden">
-          <LineChart data_maps={chain_maps} yf={(d) => d.e_total} />
+          <LineChart data_maps={chain_maps} yf={(d) => d[`e_${current_e}`]} />
         </Card>
         <Card --padding="20px">
-          <BumpChart data_maps={chain_maps} dates={dates_between(from_date, to_date)} />
+          <BumpChart data_maps={chain_maps} dates={dates_between(from_date, to_date)}
+            gf={(x) => x[0][`e_${current_e}`]}
+            key={`e_${current_e}`} />
         </Card>
       </div>
       <div class="right">
@@ -245,16 +237,6 @@
         flex: 1;
         margin-right: 20px;
         overflow: auto;
-
-        .radio-container {
-          display: flex;
-          margin-bottom: 20px;
-          color: var(--color-text);
-
-          .radio-button {
-            flex: 1;
-          }
-        }
       }
 
       .right {

@@ -12,8 +12,7 @@
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
-  import {CHART_COLORS} from "@src/data/constants";
-  import {increaseBrightness, lightness, rankNumToColor, rankToColor} from "@src/utils";
+  import {increaseBrightness, lightness, rankNumToColor} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import type {Chain} from "@src/data/models";
