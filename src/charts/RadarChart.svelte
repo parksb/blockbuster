@@ -10,7 +10,7 @@
 
   let mean: Chain;
   $: {
-    const pool = distinct(data);
+    const pool = distinct(data, x => [x.key, x.data.name]);
     mean = {
       name: "Mean",
       e_decentralization: pool.reduce((a, b) => a + b.data.e_decentralization, 0) / pool.length,
