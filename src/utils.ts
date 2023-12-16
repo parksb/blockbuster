@@ -98,3 +98,14 @@ export const dates_between = (from: string, to: string): string[] => {
 
     return date_list;
 }
+
+export function distinct<T extends { key: string, data: { name: string } }>(list: T[]): T[] {
+  const uniqueMap: { [key: string]: T } = {};
+
+  list.forEach((item) => {
+    const key = `${item.key}_${item.data.name}`;
+    uniqueMap[key] = item;
+  });
+
+  return Object.values(uniqueMap);
+}

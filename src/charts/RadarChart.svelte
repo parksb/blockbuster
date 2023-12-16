@@ -3,14 +3,34 @@
   import * as Plot from "@observablehq/plot";
 
   import type { Chain } from "@src/data/models";
-  import type { RadarChartData } from "@src/charts/radar_chart";
+  import { toRadarChartData, type RadarChartData } from "@src/charts/radar_chart";
+  import {display_name, distinct} from "@src/utils";
 
   export let data: RadarChartData<Chain>[];
+
+  let mean: Chain;
+  $: {
+    const pool = distinct(data);
+    mean = {
+      name: "Mean",
+      e_decentralization: pool.reduce((a, b) => a + b.data.e_decentralization, 0) / pool.length,
+      e_active_account: pool.reduce((a, b) => a + b.data.e_active_account, 0) / pool.length,
+      e_proposal_activity: pool.reduce((a, b) => a + b.data.e_proposal_activity, 0) / pool.length,
+      e_market_cap: pool.reduce((a, b) => a + b.data.e_market_cap, 0) / pool.length,
+      e_total: pool.reduce((a, b) => a + b.data.e_total, 0) / pool.length,
+      color: "#5f5f5f",
+      rank: 0,
+      date: "",
+    };
+  }
+
+  let means: RadarChartData<Chain>[] = [];
+  $: means = toRadarChartData([mean]).map(x => ({ ...x, blur: true }));
 
   let el: HTMLElement;
 
   $: {
-    const points = data;
+    const points = [...means, ...data];
     const longitude = d3.scalePoint(new Set(Plot.valueof(points, "key")), [180, -180]).padding(0.5).align(1)
 
     el?.firstChild?.remove();
@@ -50,7 +70,7 @@
             y: (d) => 90 - d,
             dx: 0,
             textAnchor: "start",
-            text: (d) => `${d}`,
+            text: (d) => `${d * 100}%`,
             fill: "#98A2AE",
             fontSize: 9,
           }),
@@ -71,14 +91,14 @@
             x2: 0,
             y2: 90,
             fill: ({ data }) => data.color,
-            fillOpacity: ({ blur }) => blur ? 0 : 0.1,
+            fillOpacity: ({ data, blur }) => data.name === "Mean" ? 0.3 : (blur ? 0 : 0.1),
             stroke: ({ data }) => data.color,
-            strokeWidth: ({ blur }) => blur ? 0.5 : 1,
+            strokeWidth: ({ data, blur }) => data.name === "Mean" ? 0.3 : (blur ? 0.5 : 1),
             curve: "cardinal-closed",
           }),
 
           // points
-          Plot.dot(points, {
+          Plot.dot(points.filter(x => x.data.name !== "Mean"), {
             x: ({ key }) => longitude(key),
             y: ({ value }) => 90 - value,
             fill: ({ data }) => data.color,
@@ -91,7 +111,7 @@
             Plot.pointer({
               x: ({ key }) => longitude(key),
               y: ({ value }) => 90 - value,
-              text: (d) => `${d.data.name}\n${(d.value * 100).toFixed(1)}%`,
+              text: (d) => `${display_name(d.data.name)}\n${(d.value * 100).toFixed(1)}%`,
               textAnchor: "start",
               dx: 4,
               fill: "currentColor",
