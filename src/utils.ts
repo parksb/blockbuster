@@ -1,4 +1,4 @@
-import {DISPLAY_RANKS} from "./data/constants";
+import {CHART_COLORS, DISPLAY_RANKS} from "./data/constants";
 import {Chain, ChainDateMap} from "./data/models";
 
 export function rankNumToStr(rank: number) {
@@ -68,10 +68,8 @@ export const display_name = (name: string) =>
     .join(' ');
 
 export function increaseBrightness(hex: string, percent: number) {
-  // strip the leading # if it's there
   hex = hex.replace(/^\s*#|\s*$/g, '');
 
-  // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
   if(hex.length == 3){
     hex = hex.replace(/(.)/g, '$1$1');
   }
@@ -84,6 +82,15 @@ export function increaseBrightness(hex: string, percent: number) {
     ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
     ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
     ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+}
+
+export const lightness = (chains: Chain[], x: Chain, i: number) => {
+  const counts: { [key: string]: number } = {};
+  chains.forEach((c) => {
+    counts[c.rank] = (counts[c.rank] || 0) + 1;
+  });
+
+  return i * Math.floor(50 / (counts[x.rank]));
 }
 
 export const dates_between = (from: string, to: string): string[] => {

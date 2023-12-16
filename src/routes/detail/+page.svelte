@@ -6,8 +6,7 @@
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import SimpleTable from "@src/components/SimpleTable.svelte";
   import TextField from "@src/components/TextField.svelte";
-  import {CHART_COLORS} from "@src/data/constants";
-  import {dates_between, increaseBrightness} from "@src/utils";
+  import {dates_between, increaseBrightness, lightness, rankNumToColor} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import LineChart from "@src/charts/LineChart.svelte";
@@ -58,10 +57,16 @@
   }
 
   $: {
-    $selected = $selected.map((x, i) => ({
-      ...x,
-      color: increaseBrightness(CHART_COLORS[i % CHART_COLORS.length], i),
-    }));
+    const m: { [key: number]: boolean } = {};
+    let j = 0;
+
+    $selected = $selected.map(x => {
+      if (!m[x.rank]) { j = 0; m[x.rank] = true } else { j += 1 }
+      return {
+        ...x,
+        color: increaseBrightness(rankNumToColor(x.rank), lightness($selected, x, j)),
+      }
+    });
 
     if ($preview) $preview.color = "white";
   }
