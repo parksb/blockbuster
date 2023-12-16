@@ -5,6 +5,7 @@
   import type { Chain } from "@src/data/models";
   import { display_name, display_rank, distinct } from "@src/utils";
   import { preview } from "@src/store";
+  import RankChip from "./RankChip.svelte";
 
   export let data: Chain[];
   export let onRemove: (d: Chain) => void;
@@ -52,7 +53,9 @@
         </div>
         <div>
           <div class="right">
-            {$preview?.name === d.name ? (d.e_total * 100).toFixed(1) : display_rank(d.rank)}
+            <RankChip rank={d.rank}
+              text={$preview?.name === d.name ? `${(d.e_total * 100).toFixed(1)}%` : null}
+            />
           </div>
           <button on:click={() => onRemove(d)}>
             <FontAwesomeIcon icon={faXmark} />

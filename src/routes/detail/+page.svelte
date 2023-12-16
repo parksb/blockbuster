@@ -13,6 +13,7 @@
   import LineChart from "@src/charts/LineChart.svelte";
   import {type Chain, type ChainMap} from "@src/data/models";
   import BumpChart from "@src/charts/BumpChart.svelte";
+  import ChevronLeft from "svelte-material-icons/ChevronLeft.svelte";
 
   enum Tab {
     TOTAL = "total",
@@ -86,6 +87,9 @@
 <div class="root">
   <div class="main">
     <div class="header">
+      <div class="back-icon">
+        <a href="/"><ChevronLeft /></a>
+      </div>
       <h2><a href="/">Blockbuster</a> / <a href="/">Score</a> / Details</h2>
     </div>
     <div class="top">
@@ -165,8 +169,19 @@
     overflow: auto;
 
     .header {
+      display: flex;
       padding: 10px 0;
       margin-bottom: 10px;
+      align-items: center;
+
+      & > .back-icon {
+        height: 1.5rem;
+
+        & > a {
+          color: var(--color-text);
+          font-size: 1.5rem;
+        }
+      }
 
       & > h2 {
         &, & > a {
