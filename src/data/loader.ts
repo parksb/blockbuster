@@ -4,7 +4,7 @@ import tsne_data from "./chain_tsne.json";
 
 import {Chain, ChainDateMap, ChainMap, ChainTsneMap} from "./models";
 import {normalize, evalChain, dates_between, normal_distribution} from "@src/utils";
-import {RANKS} from "./constants";
+import {RANKS} from "@src/constants";
 const chains = ochains as ChainDateMap;
 
 export function loadChainsAt(d: string = "latest", exc: (keyof Chain)[] = []): ChainMap {

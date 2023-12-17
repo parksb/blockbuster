@@ -1,4 +1,4 @@
-import {DISPLAY_RANKS} from "./data/constants";
+import {DISPLAY_RANKS, CHART_COLORS} from "@src/constants";
 import {Chain, ChainDateMap, OrderBy} from "./data/models";
 
 export function rankNumToStr(rank: number) {
@@ -18,15 +18,15 @@ export function rankNumToStr(rank: number) {
 
 export function rankToColor(rank: string) {
   switch (rank) {
-    case 'AAA': return '#693ce5';
-    case 'AA': return '#9b3db3';
-    case 'A': return '#c241b0';
-    case 'BBB': return '#ee4395';
-    case 'BB': return '#f65375';
-    case 'B': return '#f66b54';
-    case 'CCC': return '#f78c39';
-    case 'CC': return '#e8b02d';
-    case 'C': return '#c9d33a';
+    case 'AAA': return CHART_COLORS[0];
+    case 'AA': return CHART_COLORS[1];
+    case 'A': return CHART_COLORS[2];
+    case 'BBB': return CHART_COLORS[3];
+    case 'BB': return CHART_COLORS[4];
+    case 'B': return CHART_COLORS[5];
+    case 'CCC': return CHART_COLORS[6];
+    case 'CC': return CHART_COLORS[7];
+    case 'C': return CHART_COLORS[8];
     default: return 'black';
   }
 }

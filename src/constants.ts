@@ -1,4 +1,4 @@
-export const cdn_url = "https://cdn.jsdelivr.net/gh/parksb/cdn@master"
+export const CDN_URL = "https://cdn.jsdelivr.net/gh/parksb/cdn@master"
 
 // 9등급제
 export const RANKS = Array.from({ length: 9 }, (_, k) => k + 1);

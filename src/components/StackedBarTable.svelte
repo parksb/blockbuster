@@ -2,7 +2,7 @@
   import Pin from "svelte-material-icons/Pin.svelte";
 
   import {display_name, display_rank, rankNumToColor, sortChains} from "@src/utils";
-  import {cdn_url} from "@src/data/constants";
+  import {CDN_URL} from "@src/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
   import {selected, preview} from "@src/store";
@@ -142,7 +142,7 @@
             <span class="pin-icon"><Pin /></span>
           </td>
           <td class="name">
-            <img src={`${cdn_url}/images/blockchain/svg/${row.name}.svg`} />
+            <img src={`${CDN_URL}/images/blockchain/svg/${row.name}.svg`} />
             {display_name(row.name)}
           </td>
           <td>
