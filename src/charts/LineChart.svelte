@@ -9,9 +9,11 @@
 
   let selected_chains: Chain[][] =  [];
 
-  $: selected_chains = data_maps.map(x => Object.values(x)
-    .filter(x => ($preview ? [...$selected, $preview] : $selected).map(k => k.name).includes(x.name))
-    .map(x => ({...x, color: ($preview ? [...$selected, $preview] : $selected).find(k => k.name === x.name)!.color})));
+  $: {
+    selected_chains = data_maps.map(x => Object.values(x)
+      .filter(x => ($preview ? [...$selected, $preview] : $selected).map(k => k.name).includes(x.name))
+      .map(x => ({...x, color: ($preview ? [...$selected, $preview] : $selected).find(k => k.name === x.name)!.color})));
+  }
 
   $: data = selected_chains.flat();
 
@@ -27,24 +29,24 @@
         marginRight: 30,
         marginTop: 20,
         marginBottom: 35,
-        y: { grid: true },
+        y: { grid: true, tickFormat: (d) => `${d * 100}%` },
         marks: [
           Plot.ruleY([0]),
           Plot.ruleX(data,
             Plot.pointerX({
-              x: d => new Date(d.date), py: d => d.e_total, stroke: "#2d3239",
+              x: d => new Date(d.date), py: yf, stroke: "#2d3239",
             })
           ),
           Plot.text(data,
             Plot.pointerX({
               px: d => new Date(d.date),
-              py: d => d.e_total,
+              py: yf,
               dy: -17,
               frameAnchor: "top-left",
               fontVariant: "tabular-nums",
               text: (d) => [
                 `${display_name(d.name)}`,
-                `${(d.e_total * 100).toFixed(1)}%`,
+                `${(yf(d) * 100).toFixed(1)}%`,
                 `(${Plot.formatIsoDate(new Date(d.date))})`,
               ].join("   "),
             })
