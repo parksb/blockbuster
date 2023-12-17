@@ -171,13 +171,13 @@
           </td>
           {#each Object.entries(row).slice(1, 5) as [key, x]}
             <td class="single-bar">
-              <SingleBar --height="24px"
+              <SingleBar --height="23px"
                 --fill={key_to_bar_color(key)}
                 percentage={(Number(x) * 100).toFixed(1)} />
             </td>
           {/each}
           <td class="single-bar">
-            <SingleBar --height="24px"
+            <SingleBar --height="23px"
               percentage={(row.e_total * 100).toFixed(1)}
               text={$preview?.name === row.name ? null : display_rank(row.rank)}
               --fill={rankNumToColor(row.rank)} />
@@ -200,6 +200,7 @@
     width: 100%;
     color: var(--color-text);
     overflow: auto;
+    padding: 0 0 20px 0;
   }
 
   thead {
@@ -240,7 +241,7 @@
     }
 
     & > tr > td {
-      padding: 10px 15px 10px 0;
+      padding: 5px 15px 5px 0;
       min-width: max-content;
 
       &.num {

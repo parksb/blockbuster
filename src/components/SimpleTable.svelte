@@ -133,6 +133,7 @@
           <td class="single-bar">
             <SingleBar percentage={(row.e_total * 100).toFixed(1)}
               text={$preview?.name === row.name ? null : display_rank(row.rank)}
+              --height="23px"
               --fill={rankNumToColor(row.rank)} />
           </td>
         </tr>
@@ -153,6 +154,7 @@
     width: 100%;
     color: var(--color-text);
     overflow: auto;
+    padding: 0 0 20px 0;
   }
 
   thead {
@@ -189,7 +191,7 @@
     }
 
     & > tr > td {
-      padding: 10px 15px 10px 0;
+      padding: 5px 15px 5px 0;
       min-width: max-content;
 
       &.num {

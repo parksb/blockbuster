@@ -159,7 +159,7 @@
           </td>
           <td>
             <div class="single-bar">
-              <SingleStackedBar --height="24px"
+              <SingleStackedBar --height="23px"
                 max={row.e_total * 100}
                 percentages={[
                   {percentage: row.e_decentralization, color: "var(--color-pink)"},
@@ -170,7 +170,7 @@
             </div>
           </td>
           <td class="rank-bar">
-            <SingleBar --height="24px"
+            <SingleBar --height="23px"
               percentage={(row.e_total * 100).toFixed(1)}
               text={$preview?.name === row.name ? null : display_rank(row.rank)}
               --fill={rankNumToColor(row.rank)} />
@@ -193,6 +193,7 @@
     width: 100%;
     color: var(--color-text);
     overflow: auto;
+    padding: 0 0 20px 0;
   }
 
   thead {
@@ -249,7 +250,7 @@
     }
 
     & > tr > td {
-      padding: 10px 15px 10px 0;
+      padding: 5px 15px 5px 0;
       min-width: max-content;
 
       &.num {
