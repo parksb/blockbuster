@@ -58,6 +58,7 @@ export function evalChain(x: Chain, exclude: string[]): number {
   return Object.keys(x)
     .filter(key => !exclude.includes(key))
     .filter(key => key.startsWith("e_"))
+    .filter(key => key !== "e_decentralization_gini")
     // @ts-ignore
     .reduce((total, key) => total + x[key], 0);
 }
