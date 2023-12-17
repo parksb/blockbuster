@@ -90,6 +90,46 @@
     );
   }
 
+  let decentralization_gini_raw: HTMLElement;
+  $: {
+    decentralization_gini_raw?.firstChild?.remove();
+    decentralization_gini_raw?.append(
+      Plot.plot({
+        width: 900,
+        height: 500,
+        marginBottom: 80,
+        y: {
+          grid: true,
+        },
+        x: {
+          tickRotate: 50,
+        },
+        marks: [
+          Plot.ruleY([0]),
+          Plot.barY(raw_chain_list,
+            {x: "name", y: "e_decentralization_gini", sort: {x: "y", reverse: true}}),
+        ],
+      })
+    );
+  }
+  let decentralization_gini_timeseries: HTMLElement;
+  $: {
+    decentralization_gini_timeseries?.firstChild?.remove();
+    decentralization_gini_timeseries?.append(
+      Plot.plot({
+        style: "overflow: visible;",
+        width: 900,
+        height: 500,
+        y: {grid: true},
+        marks: [
+          Plot.ruleY([0]),
+          Plot.lineY(chain_list_timeseries, {x: (d) => new Date(d.date), y: "e_decentralization_gini", stroke: "name"}),
+          Plot.text(chain_list_timeseries, Plot.selectLast({x: (d) => new Date(d.date), y: "e_decentralization_gini", z: "name", text: "name", textAnchor: "start", dx: 850 }))
+        ]
+      })
+    );
+  }
+
   let proposal_activity: HTMLElement;
   $: {
     proposal_activity?.firstChild?.remove();
@@ -287,12 +327,16 @@
     <input type="date" bind:value={date} />
   </div>
   <div>
-    <h1>Decentralization (Nakamoto)</h1>
+    <h1>Decentralization (Nakamoto + Gini)</h1>
     <h2>Raw</h2>
     <div bind:this={decentralization_raw} />
     <div bind:this={decentralization_timeseries} />
     <h2>Normalized</h2>
     <div bind:this={decentralization} />
+
+    <h1>Decentralization (1 - Gini index)</h1>
+    <div bind:this={decentralization_gini_raw} />
+    <div bind:this={decentralization_gini_timeseries} />
 
     <h1>Proposal Activity</h1>
     <div bind:this={proposal_activity} />

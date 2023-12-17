@@ -209,7 +209,7 @@
       }
 
       &.single-bar {
-        width: 90px;
+        width: 93px;
       }
 
       img {
