@@ -1,6 +1,7 @@
 <script lang="ts">
   import Fullscreen from "svelte-material-icons/Fullscreen.svelte";
   import FullscreenExit from "svelte-material-icons/FullscreenExit.svelte";
+  import TransitionSlide from "@src/icons/TransitionSlide.svelte";
   import StackedBarChartIcon from "@src/icons/StackedBarChart.svelte";
   import BarChartIcon from "@src/icons/BarChart.svelte";
 
@@ -129,23 +130,22 @@
           <div class="table-util-container">
             <div class="left card-title">All Chains</div>
             <div class="right">
-              <div>Show Pinned on Top</div>
-              <Toggle checked={pinned_on_top}
-                onChange={() => pinned_on_top = !pinned_on_top} />
-              <div class="clickable-icon" on:click={() =>
-                table_ratio > 1 ? table_ratio = 1 : table_ratio = 3}>
-                {#if table_ratio > 1}
-                  <FullscreenExit />
-                {:else}
-                  <Fullscreen />
-                {/if}
+              <div class="mini-tab">
+                <div class={table_ratio < 2 ? "" : "active-tab"}
+                  on:click={() => table_ratio = 1}>
+                  <TransitionSlide rotate={-90} />
+                </div>
+                <div class={table_ratio > 1 ? "" : "active-tab"}
+                  on:click={() => table_ratio = 3}>
+                  <TransitionSlide rotate={90} />
+                </div>
               </div>
               <div class="mini-tab">
-                <div class={show_stacked_bar ? "" : "active-tab"}
+                <div class={show_stacked_bar ? "active-tab" : ""}
                   on:click={() => show_stacked_bar = false}>
                   <BarChartIcon />
                 </div>
-                <div class={show_stacked_bar ? "active-tab" : ""}
+                <div class={show_stacked_bar ? "" : "active-tab"}
                   on:click={() => show_stacked_bar = true}>
                   <StackedBarChartIcon />
                 </div>
@@ -288,7 +288,6 @@
 
         & > div {
           display: inline-block;
-          margin-right: 10px;
         }
 
         .clickable-icon {
@@ -307,7 +306,7 @@
 
         .mini-tab {
           display: flex;
-          margin-left: -3px;
+          margin-left: 10px;
           border-radius: 4px;
           cursor: pointer;
           font-size: 1.2rem;
@@ -319,9 +318,11 @@
 
           & > div {
             display: flex;
+            width: 100%;
+            height: 100%;
 
             &.active-tab {
-              background-color: var(--color-bg2);
+              background-color: var(--color-bg);
             }
 
             &:nth-child(1).active-tab {
