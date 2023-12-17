@@ -117,7 +117,7 @@
             <SortIcon key="Active account" onClick={changeOrder}
               order_key={order_column_label} order_by={order_by} />
           </div>
-          <div>Market cap
+          <div>Market cap.
             <SortIcon key="Market cap" onClick={changeOrder}
               order_key={order_column_label} order_by={order_by} />
           </div>

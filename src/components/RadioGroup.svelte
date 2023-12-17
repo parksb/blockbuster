@@ -29,7 +29,7 @@
   <label>
     <input checked={value === RadioGroupItem.MARKET_CAP}
       on:change={onChange} type="radio" name="Market Cap"
-      value={RadioGroupItem.MARKET_CAP} /> Market Cap
+      value={RadioGroupItem.MARKET_CAP} /> Market Cap.
   </label>
 </div>
 
