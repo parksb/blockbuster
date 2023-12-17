@@ -30,6 +30,10 @@
     margin: var(--margin);
     width: var(--width);
 
+    .icon {
+      margin-top: -2px;
+    }
+
     .input {
       display: flex;
       flex-direction: row;

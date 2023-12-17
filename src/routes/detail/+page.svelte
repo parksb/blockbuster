@@ -18,8 +18,9 @@
 
   let chains = loadChainsAt($date);
 
-  let from_date = "2023-10-01";
+  let from_date = "2023-11-01";
   let to_date = $date;
+  $: $date = to_date;
 
   let chain_maps: ChainMap[] = [];
   $: chain_maps = loadChainsBetween(from_date, to_date);
@@ -101,8 +102,15 @@
         --margin="0 20px 20px 0" />
       <input type="date"
         min="2023-10-01"
+        max={to_date}
+        bind:value={from_date}
+        style="margin:0 5px 0 0" />
+      <span style="color: var(--color-description); line-height: 2rem">―</span>
+      <input type="date"
+        min={from_date}
         max="2023-11-13"
-        bind:value={$date} />
+        bind:value={to_date}
+        style="margin:0 0 0 5px" />
       <RadioGroup --margin="0 0 20px 20px"
         value={current_e}
         onChange={(e) => current_e = e.currentTarget.value} />

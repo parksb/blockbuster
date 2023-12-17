@@ -98,7 +98,7 @@
     </div>
     <div class="top">
       <TextField text={search_query}
-        --width="400px"
+        --width="350px"
         placeholder="Type chain name to search"
         onInput={(s) => search_query = s}
         onFocus={() => show_search_result = true}
