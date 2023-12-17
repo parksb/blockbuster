@@ -22,7 +22,7 @@
       Plot.plot({
         style: "overflow: visible;",
         width: 1010,
-        height: 240,
+        height: 275,
         marginLeft: 30,
         marginRight: 30,
         marginTop: 20,
