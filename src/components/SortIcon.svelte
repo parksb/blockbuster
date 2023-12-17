@@ -10,14 +10,24 @@
 </script>
 
 <span class="root" on:click={() => onClick(key)}>
-  {#if key === order_key}
+  {#if key === "Pin"}
     {#if order_by === OrderBy.DESC}
       <FontAwesomeIcon icon={faSortDown} />
-    {:else}
+    {:else if order_by === OrderBy.ASC}
       <FontAwesomeIcon icon={faSortUp} />
+    {:else}
+      <FontAwesomeIcon icon={faSort} />
     {/if}
   {:else}
-    <FontAwesomeIcon icon={faSort} />
+    {#if key === order_key}
+      {#if order_by === OrderBy.DESC}
+        <FontAwesomeIcon icon={faSortDown} />
+      {:else}
+        <FontAwesomeIcon icon={faSortUp} />
+      {/if}
+    {:else}
+      <FontAwesomeIcon icon={faSort} />
+    {/if}
   {/if}
 </span>
 

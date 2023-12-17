@@ -15,6 +15,8 @@
   export let onMouseOut: () => void;
   export let onClick: (d: Chain) => void;
 
+  let pin_order_by = OrderBy.NORMAL;
+
   const label_to_column_key = (k: string) => {
     switch (k) {
       case "Name": return "name";
@@ -54,7 +56,7 @@
   }
 
   const changeOrder = (target: string) => {
-    if (order_column_label == target) {
+    if (order_column_label === target) {
       order_by = order_by === OrderBy.DESC ? OrderBy.ASC : OrderBy.DESC;
     } else {
       order_by = OrderBy.DESC;
@@ -67,7 +69,12 @@
     const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
 
     rows = sortChains(rows, key, order_by);
-    rows = [...rows.filter(pinf), ...rows.filter(x => !pinf(x))];
+
+    if (pin_order_by === OrderBy.ASC) {
+      rows = [...rows.filter(x => !pinf(x)), ...rows.filter(pinf)];
+    } else if (pin_order_by === OrderBy.DESC) {
+      rows = [...rows.filter(pinf), ...rows.filter(x => !pinf(x))];
+    }
   }
 
   $: {
@@ -88,7 +95,18 @@
     <thead>
       <tr>
         <th class={`pin pin-state-${pin_state}`}>
-          <span class="pin-icon" on:click={onClickGlobalPin}><Pin /></span>
+          <div class="pin-icon" on:click={onClickGlobalPin}><Pin /></div>
+          <span class={pin_order_by !== OrderBy.NORMAL ? "fixed-pin" : ""}>
+            <SortIcon key="Pin" onClick={() => {
+              if (pin_order_by === OrderBy.NORMAL) {
+                pin_order_by = OrderBy.DESC;
+              } else if (pin_order_by === OrderBy.DESC) {
+                pin_order_by = OrderBy.ASC;
+              } else {
+                pin_order_by = OrderBy.NORMAL;
+              }
+            }} order_key={"Pin"} order_by={pin_order_by} />
+          </span>
         </th>
         <th>
           Name
@@ -191,7 +209,7 @@
       }
 
       &.single-bar {
-        width: 100px;
+        width: 90px;
       }
 
       img {
@@ -204,7 +222,7 @@
   }
 
   .pin {
-    vertical-align: bottom;
+    padding-right: 10px;
 
     &.pin-state-2 {
       color: var(--color-emphasis);
@@ -212,6 +230,13 @@
 
     .pin-icon {
       cursor: pointer;
+      display: inline-block;
+      vertical-align: bottom;
+      height: 16px;
+    }
+
+    .fixed-pin {
+      color: var(--color-emphasis);
     }
   }
 </style>

@@ -322,7 +322,7 @@
             height: 100%;
 
             &.active-tab {
-              background-color: var(--color-bg);
+              background-color: var(--color-bg2);
             }
 
             &:nth-child(1).active-tab {
