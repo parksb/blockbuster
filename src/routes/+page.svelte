@@ -1,5 +1,6 @@
 <script lang="ts">
   import Fullscreen from "svelte-material-icons/Fullscreen.svelte";
+  import FullscreenExit from "svelte-material-icons/FullscreenExit.svelte";
   import StackedBarChartIcon from "@src/icons/StackedBarChart.svelte";
   import BarChartIcon from "@src/icons/BarChart.svelte";
 
@@ -132,8 +133,12 @@
               <Toggle checked={pinned_on_top}
                 onChange={() => pinned_on_top = !pinned_on_top} />
               <div class="clickable-icon" on:click={() =>
-                table_ratio > 1 ?table_ratio = 1 : table_ratio = 3}>
-                <Fullscreen />
+                table_ratio > 1 ? table_ratio = 1 : table_ratio = 3}>
+                {#if table_ratio > 1}
+                  <FullscreenExit />
+                {:else}
+                  <Fullscreen />
+                {/if}
               </div>
               <div class="mini-tab">
                 <div class={show_stacked_bar ? "" : "active-tab"}
@@ -306,10 +311,11 @@
           border-radius: 4px;
           cursor: pointer;
           font-size: 1.2rem;
-          padding: 3px;
+          padding: 2px;
           justify-content: center;
           align-items: center;
           background-color: var(--color-line);
+          height: 20px;
 
           & > div {
             display: flex;

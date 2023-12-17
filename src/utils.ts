@@ -1,5 +1,5 @@
 import {DISPLAY_RANKS} from "./data/constants";
-import {Chain, ChainDateMap} from "./data/models";
+import {Chain, ChainDateMap, OrderBy} from "./data/models";
 
 export function rankNumToStr(rank: number) {
   switch (rank) {
@@ -131,4 +131,25 @@ export function normal_distribution(size: number, mean: number, sd: number) {
   }
 
   return histogram;
+}
+
+export function sortChains(chains: Chain[], key: keyof Chain, order_by: OrderBy): Chain[] {
+  if (key === "rank") {
+    if (order_by === OrderBy.ASC) {
+      return chains.sort((a, b) => a.e_total - b.e_total);
+    }
+    return chains.sort((a, b) => b.e_total - a.e_total);
+  }
+
+  if (key === "name") {
+    if (order_by === OrderBy.ASC) {
+      return chains.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
+    }
+    return chains.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+  }
+
+  if (order_by === OrderBy.ASC) {
+    return chains.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
+  }
+  return chains.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
 }

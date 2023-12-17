@@ -1,7 +1,7 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
-  import {display_name, display_rank, rankNumToColor} from "@src/utils";
+  import {display_name, display_rank, rankNumToColor, sortChains} from "@src/utils";
   import {cdn_url} from "@src/data/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
@@ -82,19 +82,7 @@
     const key = label_to_column_key(order_column_label) as keyof Chain;
     const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
 
-    if (key === "rank") {
-      if (order_by === OrderBy.ASC) {
-        rows = rows.sort((a, b) => a.e_total - b.e_total);
-      } else {
-        rows = rows.sort((a, b) => b.e_total - a.e_total);
-      }
-    } else {
-      if (order_by === OrderBy.ASC) {
-        rows = rows.sort((a, b) => a[key].toString().localeCompare(b[key].toString()));
-      } else {
-        rows = rows.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
-      }
-    }
+    rows = sortChains(rows, key, order_by);
 
     if (pinned_on_top) {
       rows = [...rows.filter(pinf), ...rows.filter(x => !pinf(x))];
