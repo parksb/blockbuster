@@ -27,13 +27,13 @@
   onMount(() => {
     // set the dimensions and margins of the graph
     const margin = {top: 0, right: 0, bottom: 0, left: 0};
-    const width = 1500 - margin.left - margin.right;
-    const height = 1000 - margin.top - margin.bottom;
+    const width = 2000 - margin.left - margin.right;
+    const height = 1200 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.create("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `-1500 0 ${width} ${height}`)
+      .attr("viewBox", `-1400 0 ${width} ${height}`)
       .attr("width", "100%")
       .attr("height", "100%");
 
@@ -80,7 +80,7 @@
       .join("circle")
       .attr("cx", d => x(d.x))
       .attr("cy", d => y(d.y))
-      .attr("r", d => z(d.r))
+      .attr("r", d => z(d.r ** 1.5))
       .attr("stroke", d => $selected.some(x => x.name === d.data.name) ? "white" : "none")
       .attr("stroke-width", 3)
       .style("fill", d => rankNumToColor(d.data.rank))
@@ -93,7 +93,7 @@
     svg.call(
       // @ts-ignore
       d3.zoom()
-        .scaleExtent([0.1, 5])
+        .scaleExtent([0.7, 5])
         .translateExtent([[(width * -2), (height * -2)], [width * 2, height * 2]])
         .on("zoom", (e) => svg.selectChildren('g').attr("transform", e.transform))
     );

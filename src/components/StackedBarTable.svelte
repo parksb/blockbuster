@@ -238,7 +238,7 @@
     }
 
     & > tr > td {
-      padding: 5px 15px 5px 0;
+      padding: 7px 15px 7px 0;
       min-width: max-content;
 
       &.num {
