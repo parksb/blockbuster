@@ -5,8 +5,9 @@
 
   export let data: Chain[] = [];
 
-  export let width = 520;
-  export let height = 520;
+  export let width = 800;
+  export let height = 800;
+  export let v: (a: Chain, b: Chain) => number;
 
   let el: HTMLElement;
 
@@ -14,14 +15,14 @@
     const matrix: any[] = [];
     for (const d of data) {
       for (const t of data) {
-        matrix.push({ n: d.name, m: t.name, v: Math.abs(d.e_total - t.e_total)});
+        matrix.push({ n: d.name, m: t.name, v: v(d, t)});
       }
     }
 
     el?.firstChild?.remove();
     el?.append(
       Plot.plot({
-        color: { scheme: 'plasma' },
+        color: { scheme: 'plasma', legend: true },
         width,
         height,
         marginLeft: 60,
@@ -29,7 +30,7 @@
         y: { label: null },
         x: { label: null, tickRotate: 45 },
         marks: [
-          Plot.cell(matrix, {x: "n", y: "m", fill: "v", inset: 0.5}),
+          Plot.cell(matrix, {x: "n", y: "m", fill: "v", inset: 0.4}),
           (Math.sqrt(matrix.length)) < 9 ? Plot.text(matrix, {
             x: "n", y: "m", text: d => `${(d.v * 100).toFixed(1)}%p`, fill: "white",
           }) : null,
@@ -38,7 +39,9 @@
     );
 
     if (el) (el.getElementsByTagName("svg")[0]).style.backgroundColor = "var(--color-bg2)";
+    if (el) (el.getElementsByTagName("svg")[1]).style.backgroundColor = "var(--color-bg2)";
     if (el) (el.getElementsByTagName("svg")[0]).style.color = "var(--color-text)";
+    if (el) (el.getElementsByTagName("svg")[1]).style.color = "var(--color-text)";
   }
 </script>
 

@@ -316,6 +316,9 @@
     <div bind:this={total_histogram} />
 
     <h1>Total diffs</h1>
-    <HeatMap data={Object.values(chain_map)} />
+    <HeatMap data={Object.values(chain_map)} v={(a, b) => a.e_total - b.e_total} />
+
+    <h1>Total diffs (Absolute)</h1>
+    <HeatMap data={Object.values(chain_map)} v={(a, b) => Math.abs(a.e_total - b.e_total)} />
   </div>
 </div>
