@@ -6,7 +6,7 @@
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import SimpleTable from "@src/components/SimpleTable.svelte";
   import TextField from "@src/components/TextField.svelte";
-  import {dates_between, increaseBrightness, lightness, rankNumToColor} from "@src/utils";
+  import {dates_between, increaseLightness, lightness, rankNumToColor} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import LineChart from "@src/charts/LineChart.svelte";
@@ -59,7 +59,7 @@
       if (!m[x.rank]) { j = 0; m[x.rank] = true } else { j += 1 }
       return {
         ...x,
-        color: increaseBrightness(rankNumToColor(x.rank), lightness($selected, x, j)),
+        color: increaseLightness(rankNumToColor(x.rank, -10), lightness($selected, x, j)),
       }
     });
 

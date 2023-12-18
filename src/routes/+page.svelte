@@ -14,7 +14,7 @@
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
   import Toggle from "@src/components/Toggle.svelte";
-  import {increaseBrightness, lightness, rankNumToColor} from "@src/utils";
+  import {increaseLightness, lightness, rankNumToColor} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import type {Chain} from "@src/data/models";
@@ -67,7 +67,7 @@
       if (!m[x.rank]) { j = 0; m[x.rank] = true } else { j += 1 }
       return {
         ...x,
-        color: increaseBrightness(rankNumToColor(x.rank), lightness($selected, x, j)),
+        color: increaseLightness(rankNumToColor(x.rank, -10), lightness($selected, x, j)),
       }
     });
 

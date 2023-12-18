@@ -1,5 +1,7 @@
 import {DISPLAY_RANKS, CHART_COLORS} from "@src/constants";
 import {Chain, ChainDateMap, OrderBy} from "./data/models";
+import hexToHsl from 'hex-to-hsl';
+import hslToHex from 'hsl-to-hex';
 
 export function rankNumToStr(rank: number) {
   switch (rank) {
@@ -16,23 +18,23 @@ export function rankNumToStr(rank: number) {
   }
 }
 
-export function rankToColor(rank: string) {
+export function rankToColor(rank: string, b: number = 0) {
   switch (rank) {
-    case 'AAA': return CHART_COLORS[0];
-    case 'AA': return CHART_COLORS[1];
-    case 'A': return CHART_COLORS[2];
-    case 'BBB': return CHART_COLORS[3];
-    case 'BB': return CHART_COLORS[4];
-    case 'B': return CHART_COLORS[5];
-    case 'CCC': return CHART_COLORS[6];
-    case 'CC': return CHART_COLORS[7];
-    case 'C': return CHART_COLORS[8];
+    case 'AAA': return increaseLightness(CHART_COLORS[0], b);
+    case 'AA': return increaseLightness(CHART_COLORS[1], b);
+    case 'A': return increaseLightness(CHART_COLORS[2], b);
+    case 'BBB': return increaseLightness(CHART_COLORS[3], b);
+    case 'BB': return increaseLightness(CHART_COLORS[4], b);
+    case 'B': return increaseLightness(CHART_COLORS[5], b);
+    case 'CCC': return increaseLightness(CHART_COLORS[6], b);
+    case 'CC': return increaseLightness(CHART_COLORS[7], b);
+    case 'C': return increaseLightness(CHART_COLORS[8], b);
     default: return 'black';
   }
 }
 
-export function rankNumToColor(rank: number) {
-  return rankToColor(rankNumToStr(rank));
+export function rankNumToColor(rank: number, b: number = 0) {
+  return rankToColor(rankNumToStr(rank), b);
 }
 
 export const display_rank = (rank: number) => DISPLAY_RANKS[rank - 1];
@@ -68,21 +70,9 @@ export const display_name = (name: string) =>
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-export function increaseBrightness(hex: string, percent: number) {
-  hex = hex.replace(/^\s*#|\s*$/g, '');
-
-  if(hex.length == 3){
-    hex = hex.replace(/(.)/g, '$1$1');
-  }
-
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-
-  return '#' +
-    ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
-    ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
-    ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+export function increaseLightness(hex: string, p: number) {
+  const [h, s, l] = hexToHsl(hex);
+  return hslToHex(h, s, l + (l * (p / 100)));
 }
 
 export const lightness = (chains: Chain[], x: Chain, i: number) => {
@@ -91,7 +81,7 @@ export const lightness = (chains: Chain[], x: Chain, i: number) => {
     counts[c.rank] = (counts[c.rank] || 0) + 1;
   });
 
-  return i * Math.floor(60 / (counts[x.rank]));
+  return i * Math.floor(50 / (counts[x.rank]));
 }
 
 export const dates_between = (from: string, to: string): string[] => {
