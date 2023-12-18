@@ -18,23 +18,23 @@ export function rankNumToStr(rank: number) {
   }
 }
 
-export function rankToColor(rank: string, b: number = 0) {
+export function rankToColor(rank: string) {
   switch (rank) {
-    case 'AAA': return increaseLightness(CHART_COLORS[0], b);
-    case 'AA': return increaseLightness(CHART_COLORS[1], b);
-    case 'A': return increaseLightness(CHART_COLORS[2], b);
-    case 'BBB': return increaseLightness(CHART_COLORS[3], b);
-    case 'BB': return increaseLightness(CHART_COLORS[4], b);
-    case 'B': return increaseLightness(CHART_COLORS[5], b);
-    case 'CCC': return increaseLightness(CHART_COLORS[6], b);
-    case 'CC': return increaseLightness(CHART_COLORS[7], b);
-    case 'C': return increaseLightness(CHART_COLORS[8], b);
+    case 'AAA': return CHART_COLORS[0];
+    case 'AA': return CHART_COLORS[1];
+    case 'A': return CHART_COLORS[2];
+    case 'BBB': return CHART_COLORS[3];
+    case 'BB': return CHART_COLORS[4];
+    case 'B': return CHART_COLORS[5];
+    case 'CCC': return CHART_COLORS[6];
+    case 'CC': return CHART_COLORS[7];
+    case 'C': return CHART_COLORS[8];
     default: return 'black';
   }
 }
 
-export function rankNumToColor(rank: number, b: number = 0) {
-  return rankToColor(rankNumToStr(rank), b);
+export function rankNumToColor(rank: number) {
+  return rankToColor(rankNumToStr(rank));
 }
 
 export const display_rank = (rank: number) => DISPLAY_RANKS[rank - 1];
@@ -81,7 +81,12 @@ export const lightness = (chains: Chain[], x: Chain, i: number) => {
     counts[c.rank] = (counts[c.rank] || 0) + 1;
   });
 
-  return i * Math.floor(50 / (counts[x.rank]));
+  if (counts[x.rank] <= 1) {
+    return 0;
+  }
+
+  const INIT_LIGHTNESS_PERCENT = -15;
+  return i * Math.floor(50 / (counts[x.rank])) + INIT_LIGHTNESS_PERCENT;
 }
 
 export const dates_between = (from: string, to: string): string[] => {

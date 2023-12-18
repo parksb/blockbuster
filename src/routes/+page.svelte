@@ -67,7 +67,7 @@
       if (!m[x.rank]) { j = 0; m[x.rank] = true } else { j += 1 }
       return {
         ...x,
-        color: increaseLightness(rankNumToColor(x.rank, -10), lightness($selected, x, j)),
+        color: increaseLightness(rankNumToColor(x.rank), lightness($selected, x, j)),
       }
     });
 
