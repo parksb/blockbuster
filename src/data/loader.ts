@@ -1,8 +1,8 @@
 import ochains from "./chains.json";
 import raw_chains from "./raw_chains.json";
-import tsne_data from "./chain_tsne.json";
+import otsne_data from "./chain_tsne.json";
 
-import {Chain, ChainDateMap, ChainMap, ChainTsneMap} from "./models";
+import {Chain, ChainDateMap, ChainMap, RawChainTsneMap, ChainTsneMap} from "./models";
 import {normalize, evalChain, dates_between, normal_distribution} from "@src/utils";
 import {RANKS} from "@src/constants";
 const chains = ochains as ChainDateMap;
@@ -61,12 +61,17 @@ export function loadRawChains(): ChainDateMap {
   return raw_chains;
 }
 
-export function loadChainTsne(chains: ChainMap): ChainTsneMap {
+export function loadChainTsne(chains: ChainMap, d: string = "latest"): ChainTsneMap {
   const ret: ChainTsneMap = {};
 
+  if (d === "latest") d = Object.values(chains)[0].date;
+  const found = (otsne_data as RawChainTsneMap)[d];
+
   for (const k of Object.keys(chains)) {
-    ret[k] = (tsne_data as ChainTsneMap)[k];
-    ret[k].chain = chains[k];
+    ret[k] = {
+      ...found[k],
+      chain: chains[k],
+    };
   }
 
   return ret;

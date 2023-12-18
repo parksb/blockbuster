@@ -19,7 +19,8 @@
 
   let chains = loadChainsAt($date);
 
-  let bubble_data = toBubbleChartDataMap(loadChainTsne(chains));
+  let bubble_data = toBubbleChartDataMap(loadChainTsne(chains, $date));
+
   let radar_data = toRadarChartData([]);
 
   let search_query: string = "";
@@ -34,7 +35,11 @@
     chains = loadChainsAt($date);
     $selected = $selected.map(x => chains[x.name]);
     $preview = $preview ? chains[$preview.name] : null || null;
+    bubble_data = toBubbleChartDataMap(loadChainTsne(chains, $date));
   }
+
+  let flag: string;
+  $: flag = $date;
 
   $: {
     if (!$preview) {
@@ -110,18 +115,20 @@
     <div class="body">
       <div class="left">
         <Card --flex="1" --margin="0 0 20px 0" --overflow="hidden">
-          <BubbleChart
-            data={bubble_data}
-            onClick={(d) => {
-              if ($selected.find((x) => x.name === d.data.name)) {
-                $selected = $selected.filter((x) => x.name !== d.data.name);
-              } else {
-                $selected = [...$selected, d.data];
-              }
-            }}
-            onMouseOver={(d) => { $preview = d.data }}
-            onMouseOut={() => { $preview = null }}
-          />
+          {#key flag}
+            <BubbleChart
+              data={bubble_data}
+              onClick={(d) => {
+                if ($selected.find((x) => x.name === d.data.name)) {
+                  $selected = $selected.filter((x) => x.name !== d.data.name);
+                } else {
+                  $selected = [...$selected, d.data];
+                }
+              }}
+              onMouseOver={(d) => { $preview = d.data }}
+              onMouseOut={() => { $preview = null }}
+            />
+          {/key}
         </Card>
         <Card --flex={table_ratio} --overflow="auto" --padding="20px 20px 0 20px" --direction="column">
           <div class="table-util-container">
@@ -151,7 +158,6 @@
           </div>
           {#if show_stacked_bar}
             <StackedBarTable data={Object.values(chains)} highlighted={searched_chains}
-              pinned_on_top={pinned_on_top}
               onClick={(d) => {
                 if ($selected.find((x) => x.name === d.name)) {
                   $selected = $selected.filter((x) => x.name !== d.name);
@@ -165,7 +171,6 @@
           {:else}
             <Table data={Object.values(chains)} highlighted={searched_chains}
               --margin="15px 0 0 0"
-              pinned_on_top={pinned_on_top}
               onClick={(d) => {
                 if ($selected.find((x) => x.name === d.name)) {
                   $selected = $selected.filter((x) => x.name !== d.name);

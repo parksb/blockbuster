@@ -6,7 +6,7 @@
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import SimpleTable from "@src/components/SimpleTable.svelte";
   import TextField from "@src/components/TextField.svelte";
-  import {dates_between, increaseLightness, lightness, rankNumToColor} from "@src/utils";
+  import {dates_between, increaseLightness, lightness, rankNumToColor, two_weeks_ago} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
   import LineChart from "@src/charts/LineChart.svelte";
@@ -18,7 +18,7 @@
 
   let chains = loadChainsAt($date);
 
-  let from_date = "2023-11-01";
+  let from_date = two_weeks_ago($date) || "2023-10-01";
   let to_date = $date;
   $: $date = to_date;
 

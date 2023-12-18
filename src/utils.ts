@@ -175,3 +175,21 @@ export const key_to_label = (k: string) => {
   }
   return "";
 }
+
+export const two_weeks_ago = (d: string) => {
+  const x = new Date(d);
+
+  if (isNaN(x.getTime())) return null;
+
+  const k = new Date(x);
+  k.setDate(x.getDate() - 14);
+
+  const limit = new Date("2023-10-01");
+  if (k < limit) return "2023-10-01";
+
+  const year = k.getFullYear();
+  const month = String(k.getMonth() + 1).padStart(2, '0');
+  const day = String(k.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
