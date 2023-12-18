@@ -167,7 +167,7 @@
   }
 
   table {
-    border-collapse: separate;
+    border-collapse: collapse;
     width: 100%;
     color: var(--color-text);
     overflow: auto;
