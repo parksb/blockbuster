@@ -1,7 +1,7 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
-  import {display_name, display_rank, rankNumToColor, sortChains} from "@src/utils";
+  import {display_name, display_rank, label_to_key, rankNumToColor, sortChains} from "@src/utils";
   import {CDN_URL} from "@src/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
@@ -16,18 +16,6 @@
   export let onClick: (d: Chain) => void;
 
   let pin_order_by = OrderBy.NORMAL;
-
-  const label_to_column_key = (k: string) => {
-    switch (k) {
-      case "Name": return "name";
-      case "Rank": return "rank";
-      case "Decentralization": return "e_decentralization";
-      case "Proposal activity": return "e_proposal_activity";
-      case "Active account": return "e_active_account";
-      case "Market cap": return "e_market_cap";
-    }
-    return "";
-  }
 
   const key_to_bar_color = (k: string) => {
     switch (k) {
@@ -56,6 +44,9 @@
         e_total: d.e_total,
       } as Chain
     ));
+
+    const key = label_to_key(order_column_label) as keyof Chain;
+    sortChains(rows, key, order_by);
   }
 
   let order_column_label = columns[6];
@@ -80,7 +71,7 @@
   };
 
   $: {
-    const key = label_to_column_key(order_column_label) as keyof Chain;
+    const key = label_to_key(order_column_label) as keyof Chain;
     const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
 
     rows = sortChains(rows, key, order_by);

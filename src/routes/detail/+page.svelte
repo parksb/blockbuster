@@ -94,7 +94,7 @@
     </div>
     <div class="top">
       <TextField text={search_query}
-        --width="350px"
+        --width="372px"
         placeholder="Type chain name to search"
         onInput={(s) => search_query = s}
         onFocus={() => show_search_result = true}
@@ -120,6 +120,7 @@
         <Card --flex="1" --margin="0" --padding="5px 20px" --overflow="hidden">
           <SimpleTable data={Object.values(chains)} highlighted={searched_chains}
             --margin="15px 0 0 0"
+            --width="330px"
             onClick={(d) => {
               if ($selected.find((x) => x.name === d.name)) {
                 $selected = $selected.filter((x) => x.name !== d.name);
@@ -129,6 +130,7 @@
             }}
             onMouseOver={(d) => { $preview = d; }}
             onMouseOut={() => { $preview = null; }}
+            key={`e_${current_e}`}
           />
         </Card>
       </div>

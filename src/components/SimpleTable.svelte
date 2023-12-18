@@ -1,7 +1,7 @@
 <script lang="ts">
   import Pin from "svelte-material-icons/Pin.svelte";
 
-  import {display_name, display_rank, rankNumToColor, sortChains} from "@src/utils";
+  import {display_name, display_rank, key_to_label, label_to_key, rankNumToColor, sortChains} from "@src/utils";
   import {CDN_URL} from "@src/constants";
   import {OrderBy, type Chain} from "@src/data/models";
   import SingleBar from "@src/charts/SingleBar.svelte";
@@ -10,6 +10,10 @@
 
   export let data: Chain[] = [];
   export let highlighted: Chain[] = [];
+  export let key: keyof Chain = "e_total";
+
+  let col: string = "Rank";
+  $: col = key === "e_total" ? "Rank" : key_to_label(key);
 
   export let onMouseOver: (d: Chain) => void;
   export let onMouseOut: () => void;
@@ -17,33 +21,31 @@
 
   let pin_order_by = OrderBy.NORMAL;
 
-  const label_to_column_key = (k: string) => {
-    switch (k) {
-      case "Name": return "name";
-      case "Rank": return "rank";
-      case "Decentralization": return "e_decentralization";
-      case "Proposal activity": return "e_proposal_activity";
-      case "Active account": return "e_active_account";
-      case "Market cap": return "e_market_cap";
-    }
-    return "";
-  }
+  let columns = ["Pin", "Name", col];
+  $: columns = ["Pin", "Name", col];
 
-  const columns = ["Pin", "Name", "Rank"];
+  let order_column_label = columns[2];
+  $: order_column_label = columns[2];
+
   let rows: Chain[] = [];
   $: {
     rows = data.map((d) => (
       { // 키 순서가 컬럼 순서와 같아야 함.
         name: d.name,
         rank: d.rank,
-        // 이하로는 미노출
-        color: d.color,
         e_total: d.e_total,
+        e_decentralization: d.e_decentralization,
+        e_proposal_activity: d.e_proposal_activity,
+        e_active_account: d.e_active_account,
+        e_market_cap: d.e_market_cap,
+        color: d.color,
       } as Chain
     ));
+
+    const key = label_to_key(order_column_label) as keyof Chain;
+    sortChains(rows, key, order_by);
   }
 
-  let order_column_label = columns[2];
   let order_by = OrderBy.DESC;
   let pin_state = 0;
 
@@ -65,7 +67,7 @@
   };
 
   $: {
-    const key = label_to_column_key(order_column_label) as keyof Chain;
+    const key = label_to_key(order_column_label) as keyof Chain;
     const pinf = (x: Chain) => $selected.map(k => k.name).includes(x.name);
 
     rows = sortChains(rows, key, order_by);
@@ -114,8 +116,8 @@
             order_key={order_column_label} order_by={order_by} />
         </th>
         <th>
-          Rank
-          <SortIcon key="Rank" onClick={changeOrder}
+          {col}
+          <SortIcon key={key_to_label(key)} onClick={changeOrder}
             order_key={order_column_label} order_by={order_by} />
         </th>
       </tr>
@@ -137,10 +139,18 @@
             {display_name(row.name)}
           </td>
           <td class="single-bar">
-            <SingleBar percentage={(row.e_total * 100).toFixed(1)}
-              text={$preview?.name === row.name ? null : display_rank(row.rank)}
+            <SingleBar percentage={(row[key] * 100).toFixed(1)}
+              text={col === "Rank" ? ($preview?.name === row.name ? null : display_rank(row.rank)) : null}
               --height="20px"
-              --fill={rankNumToColor(row.rank)} />
+              --min-width="115px"
+              --max-width="115px"
+              --fill={(() => {
+                if (col === "Rank") return rankNumToColor(row.rank);
+                else if (col === "Decentralization") return "var(--color-pink)";
+                else if (col === "Proposal activity") return "var(--color-orange)";
+                else if (col === "Active account") return "var(--color-blue)";
+                else return "var(--color-emerald)";
+              })()} />
           </td>
         </tr>
       {/each}
@@ -152,6 +162,7 @@
   .root {
     max-height: var(--max-height);
     margin: var(--margin);
+    width: var(--width);
     overflow: auto;
   }
 
@@ -198,7 +209,7 @@
 
     & > tr > td {
       padding: 6px 15px 6px 0;
-      min-width: max-content;
+      overflow: auto;
 
       &.num {
         text-align: right;

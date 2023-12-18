@@ -1,6 +1,4 @@
 <script lang="ts">
-  import Fullscreen from "svelte-material-icons/Fullscreen.svelte";
-  import FullscreenExit from "svelte-material-icons/FullscreenExit.svelte";
   import TransitionSlide from "@src/icons/TransitionSlide.svelte";
   import StackedBarChartIcon from "@src/icons/StackedBarChart.svelte";
   import BarChartIcon from "@src/icons/BarChart.svelte";
@@ -13,7 +11,6 @@
   import {highlightRadarChart, toRadarChartData} from "@src/charts/radar_chart";
   import Table from "@src/components/Table.svelte";
   import TextField from "@src/components/TextField.svelte";
-  import Toggle from "@src/components/Toggle.svelte";
   import {increaseLightness, lightness, rankNumToColor} from "@src/utils";
   import BarChart from "@src/charts/BarChart.svelte";
   import SideArea from "@src/components/SideArea.svelte";
@@ -99,7 +96,7 @@
     </div>
     <div class="top">
       <TextField text={search_query}
-        --width="350px"
+        --width="372px"
         placeholder="Type chain name to search"
         onInput={(s) => search_query = s}
         onFocus={() => show_search_result = true}

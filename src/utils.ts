@@ -149,3 +149,29 @@ export function sortChains(chains: Chain[], key: keyof Chain, order_by: OrderBy)
   }
   return chains.sort((a, b) => b[key].toString().localeCompare(a[key].toString()));
 }
+
+export const label_to_key = (k: string) => {
+  switch (k) {
+    case "Name": return "name";
+    case "Rank": return "rank";
+    case "Decentralization": return "e_decentralization";
+    case "Proposal activity": return "e_proposal_activity";
+    case "Active account": return "e_active_account";
+    case "Market cap": return "e_market_cap";
+    case "Market cap.": return "e_market_cap";
+  }
+  return "";
+}
+
+export const key_to_label = (k: string) => {
+  switch (k) {
+    case "name": return "Name";
+    case "rank": return "Rank";
+    case "e_decentralization": return "Decentralization";
+    case "e_proposal_activity": return "Proposal activity";
+    case "e_active_account": return "Active account";
+    case "e_market_cap": return "Market cap.";
+    case "e_total": return "Rank";
+  }
+  return "";
+}

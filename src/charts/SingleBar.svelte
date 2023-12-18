@@ -16,6 +16,7 @@
     display: flex;
     width: 100%;
     max-width: var(--max-width);
+    min-width: var(--min-width);
     height: var(--height);
     max-height: var(--max-height);
   }

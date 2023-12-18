@@ -17,19 +17,19 @@
       value={RadioGroupItem.DECENTRALIZATION} /> Decentralization
   </label>
   <label>
-    <input checked={value === RadioGroupItem.ACTIVE_ACCOUNT}
-      on:change={onChange} type="radio" name="Actice Account"
-      value={RadioGroupItem.ACTIVE_ACCOUNT} /> Active Account
+    <input checked={value === RadioGroupItem.PROPOSAL_ACTIVITY}
+      on:change={onChange} type="radio" name="Proposal activity"
+      value={RadioGroupItem.PROPOSAL_ACTIVITY} /> Proposal activity
   </label>
   <label>
-    <input checked={value === RadioGroupItem.PROPOSAL_ACTIVITY}
-      on:change={onChange} type="radio" name="Proposal Activity"
-      value={RadioGroupItem.PROPOSAL_ACTIVITY} /> Proposal Activity
+    <input checked={value === RadioGroupItem.ACTIVE_ACCOUNT}
+      on:change={onChange} type="radio" name="Actice account"
+      value={RadioGroupItem.ACTIVE_ACCOUNT} /> Active account
   </label>
   <label>
     <input checked={value === RadioGroupItem.MARKET_CAP}
-      on:change={onChange} type="radio" name="Market Cap"
-      value={RadioGroupItem.MARKET_CAP} /> Market Cap.
+      on:change={onChange} type="radio" name="Market cap."
+      value={RadioGroupItem.MARKET_CAP} /> Market cap.
   </label>
 </div>
 
