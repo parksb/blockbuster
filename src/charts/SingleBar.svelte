@@ -5,7 +5,8 @@
 
 <div class="root">
   <div class="max">
-    <div class="fill" style="--width:{percentage}%;">
+    <div class={`fill ${percentage === '100.0' ? 'full' : ''}`}
+      style="--width:{percentage}%;">
       <span>{text ?? `${percentage}%`}</span>
     </div>
   </div>
@@ -40,6 +41,10 @@
       color: var(--color-text);
       font-size: 0.9rem;
       padding-left: 5px;
+    }
+
+    &.full {
+      border-radius: 3px;
     }
   }
 </style>

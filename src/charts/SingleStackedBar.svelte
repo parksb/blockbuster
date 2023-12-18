@@ -6,11 +6,13 @@
 
 <div class="root">
   <div class="max">
-    {#each percentages as p, i}
-      <div class={`fill ${i === 0 ? "first" : ""}`}
-        style="--width:{p.percentage / sum_percentage}%;
+    {#each percentages as p}
+      {#if p.percentage > 0}
+        <div class={`fill ${p.percentage >= 99.9 ? 'full' : ''}`}
+          style="--width:{p.percentage / sum_percentage}%;
           background-color:{p.color}">
-      </div>
+        </div>
+      {/if}
     {/each}
   </div>
 </div>
@@ -31,10 +33,6 @@
     background-color: var(--color-line);
     border-radius: 3px;
 
-    & > div.first {
-      border-radius: 3px 0 0 3px;
-    }
-
     & > div.num {
       margin-left: 10px;
     }
@@ -51,6 +49,14 @@
       color: var(--color-text);
       font-size: 0.9rem;
       padding-left: 5px;
+    }
+
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    &.full {
+      border-radius: 3px;
     }
   }
 </style>
