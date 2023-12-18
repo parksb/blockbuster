@@ -25,7 +25,7 @@
   $: columns = ["Pin", "Name", col];
 
   let order_column_label = columns[2];
-  $: order_column_label = columns[2];
+  $: order_column_label = order_column_label === "Name" ? "Name" : columns[2];
 
   let rows: Chain[] = [];
   $: {
