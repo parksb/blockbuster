@@ -84,7 +84,7 @@
             color: (d: Chain) => d.color,
             opacity: (d: Chain) => {
               if ($preview) {
-                return d.name === $preview.name ? 1 : 0.3;
+                return d.name === $preview.name ? 1 : 0.5;
               } else {
                 return 1;
               }
