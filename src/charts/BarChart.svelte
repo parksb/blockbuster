@@ -25,18 +25,18 @@
             {
               x: "name", y: "e_total",
               sort: {x: "y", reverse: true},
-              fill: (d) => {
-                if ($preview) {
-                  return $preview?.name === d.name ? rankNumToColor(d.rank) : "gray";
-                }
-                return rankNumToColor(d.rank)
-              },
+              fill: d => rankNumToColor(d.rank),
               fillOpacity: (d) => {
-                if ($selected.length) {
-                  if ($preview?.name === d.name) {
+                if ($preview) {
+                  if ($preview.name === d.name) {
                     return 1;
+                  } else if ($selected.map(x => x.name).includes(d.name)) {
+                    return 0.6;
                   }
-                  return ($selected.map(x => x.name).includes(d.name) ? 1 : 0.5);
+                  return 0.2;
+                }
+                if ($selected.length) {
+                  return ($selected.map(x => x.name).includes(d.name) ? 1 : 0.3);
                 }
                 return 1;
               },
