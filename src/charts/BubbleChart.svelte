@@ -82,7 +82,7 @@
       .attr("cy", d => y(d.y))
       .attr("r", d => z(d.r ** 1.5))
       .attr("stroke", d => $selected.some(x => x.name === d.data.name) ? "white" : "none")
-      .attr("stroke-width", 3)
+      .attr("stroke-width", 5)
       .style("fill", d => rankNumToColor(d.data.rank))
       .style("opacity", "0.7")
       .on("mouseover", (e, d) => { onMouseOver(d); showTooltip(e, d.data); })
