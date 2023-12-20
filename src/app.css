@@ -7,3 +7,13 @@
 * {
   font-family: 'Pretendard VF', sans-serif;
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2d3239;
+}
+
